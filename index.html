@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>📱 RASHD APP STORE</title>
+
+    <!-- 🎯 Adsterra Popunder Script (Placement ID: 30398939) -->
+    <script type="text/javascript" src="//pl30398939.highcpmgate.com/59/31/93/5931939.js"></script>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-grad: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --accent-cyan: #38bdf8;
+            --accent-green: #22c55e;
+            --btn-grad: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+            --btn-hover: linear-gradient(135deg, #0369a1 0%, #1d4ed8 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-grad);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* হেডার ডিজাইন */
+        .header-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            padding: 20px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
+
+        .header-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(90deg, #38bdf8, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge-version {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* সার্চ বার */
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 45px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            opacity: 0.6;
+        }
+
+        /* অ্যাপ কার্ড লিস্ট */
+        .app-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .app-card:active {
+            transform: scale(0.98);
+        }
+
+        .app-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            overflow: hidden;
+        }
+
+        .app-icon {
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+        }
+
+        .app-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .app-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .app-meta {
+            font-size: 12px;
+            color: var(--text-sub);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-download {
+            background: var(--btn-grad);
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .btn-download:hover {
+            background: var(--btn-hover);
+        }
+
+        /* স্ট্যাটাস */
+        .status-box {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-sub);
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- হেডার -->
+        <div class="header-card">
+            <div class="header-title">
+                <div class="logo-icon">🚀</div>
+                <div class="header-text">
+                    <h1>Rashd App Store</h1>
+                    <span style="font-size: 11px; color: var(--text-sub);">Official APK Hub</span>
+                </div>
+            </div>
+            <span class="badge-version" id="tagDisplay">v1.0</span>
+        </div>
+
+        <!-- সার্চ বার -->
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search APK files..." oninput="searchApp()">
+        </div>
+
+        <!-- অ্যাপ লিস্ট -->
+        <div id="appList" class="app-list">
+            <div class="status-box">
+                <div class="spinner"></div>
+                <p style="font-size: 13px;">Loading Store Assets...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GITHUB_API = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/latest';
+        let storeData = [];
+
+        if (window.Telegram && Telegram.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+        }
+
+        async function fetchApps() {
+            try {
+                const res = await fetch(GITHUB_API);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                
+                if (data.tag_name) {
+                    document.getElementById('tagDisplay').innerText = data.tag_name;
+                }
+
+                storeData = data.assets || [];
+                renderStore(storeData);
+            } catch (err) {
+                document.getElementById('appList').innerHTML = `
+                    <div class="status-box">
+                        <p style="color: #ef4444; font-size: 14px;">❌ Failed to load store!</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderStore(items) {
+            const container = document.getElementById('appList');
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="status-box">
+                        <p style="font-size: 13px;">No APK files found.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            items.forEach(item => {
+                const size = (item.size / (1024 * 1024)).toFixed(1) + ' MB';
+                html += `
+                    <div class="app-card">
+                        <div class="app-info">
+                            <div class="app-icon">📦</div>
+                            <div class="app-details">
+                                <span class="app-name">${item.name}</span>
+                                <div class="app-meta">
+                                    <span>💾 ${size}</span>
+                                    <span>•</span>
+                                    <span style="color: var(--accent-green);">Verified</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="${item.browser_download_url}" class="btn-download" target="_blank">
+                            <span>Get</span>
+                            <span>⬇️</span>
+                        </a>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function searchApp() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = storeData.filter(item => item.name.toLowerCase().includes(query));
+            renderStore(filtered);
+        }
+
+        fetchApps();
+    </script>
+</body>
+</html>
+
