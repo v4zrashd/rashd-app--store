@@ -1,350 +1,1000 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>📱 RASHD APP STORE</title>
-
-    <!-- 🎯 Adsterra Popunder Script (Placement ID: 30398939) -->
-    <script type="text/javascript" src="//pl30398939.highcpmgate.com/59/31/93/5931939.js"></script>
-
+    <title>Rashd Store — 10 Design Themes</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Courier+Prime:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-grad: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --accent-cyan: #38bdf8;
-            --accent-green: #22c55e;
-            --btn-grad: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-            --btn-hover: linear-gradient(135deg, #0369a1 0%, #1d4ed8 100%);
-        }
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        body{transition:background 0.45s ease,color 0.45s ease;min-height:100vh;display:flex;justify-content:center;overflow-x:hidden}
+        .app{width:100%;max-width:500px;padding:0 16px 40px;position:relative;z-index:1}
+        .gr{display:flex;flex-direction:column;gap:10px}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .ts{display:flex;gap:4px;overflow-x:auto;padding:8px 0 6px;scrollbar-width:none;position:sticky;top:0;z-index:99;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding-top:10px;padding-bottom:10px;transition:all 0.3s}
+        .ts::-webkit-scrollbar{display:none}
+        .ts .th{flex-shrink:0;padding:7px 14px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.25s;font-family:inherit;border:1.5px solid;background:transparent;user-select:none;letter-spacing:0.3px}
+        .ts .th:active{transform:scale(0.92)}
+        .ts .th.act{color:#fff!important;transform:scale(1.02)}
 
-        body {
-            background: var(--bg-grad);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 16px;
-            display: flex;
-            justify-content: center;
-        }
+        .bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;margin-bottom:14px;border-radius:var(--r1);transition:all 0.35s;position:relative;overflow:hidden}
+        .bar .l{display:flex;align-items:center;gap:10px}
+        .bar .i{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all 0.3s;flex-shrink:0}
+        .bar .tx h1{font-size:17px;font-weight:700;transition:all 0.3s;letter-spacing:-0.3px}
+        .bar .tx h1 span{opacity:0.5;font-weight:400}
+        .bar .badge{padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;transition:all 0.3s;letter-spacing:0.3px}
 
-        .app-container {
-            width: 100%;
-            max-width: 500px;
-        }
+        .hero{border-radius:var(--r1);padding:18px;margin-bottom:14px;transition:all 0.35s;position:relative;overflow:hidden}
+        .hero .tg{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;font-size:10px;font-weight:600;margin-bottom:10px;transition:all 0.3s;letter-spacing:0.8px;text-transform:uppercase}
+        .hero .tg .dt{width:6px;height:6px;border-radius:50%;transition:all 0.3s;flex-shrink:0}
+        .hero h2{font-size:26px;font-weight:800;margin-bottom:3px;letter-spacing:-0.8px;transition:all 0.3s;line-height:1.1}
+        .hero p{font-size:13px;font-weight:400;margin-bottom:16px;transition:all 0.3s;line-height:1.4}
+        .hero .sr{display:flex;gap:6px}
+        .hero .sr .st{flex:1;padding:12px 6px;text-align:center;border-radius:var(--r2);transition:all 0.3s}
+        .hero .sr .st .nm{font-size:18px;font-weight:800;transition:all 0.3s;letter-spacing:-0.5px}
+        .hero .sr .st .lb{font-size:8px;text-transform:uppercase;letter-spacing:0.8px;margin-top:3px;transition:all 0.3s;font-weight:600}
 
-        /* হেডার ডিজাইন */
-        .header-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            padding: 20px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-        }
+        .ch{display:flex;align-items:center;gap:10px;padding:12px 16px;margin-bottom:14px;border-radius:var(--r2);transition:all 0.3s}
+        .ch .dt{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:all 0.3s}
+        .ch .dt.ok{box-shadow:0 0 14px rgba(34,211,160,0.25)}
+        .ch .dt.wt{box-shadow:0 0 14px rgba(251,191,36,0.25);animation:pl 1.2s ease-in-out infinite}
+        .ch .dt.no{box-shadow:0 0 14px rgba(248,113,113,0.25)}
+        @keyframes pl{0%,100%{opacity:1}50%{opacity:0.25}}
+        .ch .tx{font-size:12px;font-weight:500;transition:all 0.3s;line-height:1.4}
+        .ch .tx strong{font-weight:700;transition:all 0.3s}
 
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .sw{margin-bottom:14px;transition:all 0.3s}
+        .sw .in{display:flex;align-items:center;gap:8px;padding:0 16px;border-radius:var(--r1);transition:all 0.3s}
+        .sw .in .ic{font-size:16px;opacity:0.4;flex-shrink:0;transition:all 0.3s}
+        .sw .in input{flex:1;padding:14px 0;background:transparent;border:none;outline:none;font-size:14px;font-weight:500;font-family:inherit;transition:all 0.3s}
+        .sw .in input::placeholder{font-weight:400;color:var(--ph);transition:all 0.3s}
+        .sw .in .cl{width:26px;height:26px;border-radius:50%;border:none;font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:inherit;flex-shrink:0;transition:all 0.2s}
+        .sw .in .cl.sh{display:flex}
+        .sw .in .cl:active{transform:scale(0.85)}
+        .sw .in .cl.sh{display:flex}
+        .sw .in input:focus{outline:none}
+        input::-webkit-search-decoration,input::-webkit-search-cancel-button{display:none}
+        [contenteditable]:focus{outline:none}
 
-        .logo-icon {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
-        }
+        .ct{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
+        .ct::-webkit-scrollbar{display:none}
+        .ct .cp{flex-shrink:0;padding:9px 18px;border-radius:100px;font-size:11px;font-weight:600;cursor:pointer;user-select:none;transition:all 0.2s;font-family:inherit;white-space:nowrap;border:1.5px solid transparent;letter-spacing:0.3px}
+        .ct .cp:active{transform:scale(0.93)}
 
-        .header-text h1 {
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            background: linear-gradient(90deg, #38bdf8, #a855f7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .sh{display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-bottom:12px;transition:all 0.3s}
+        .sh h3{font-size:17px;font-weight:700;transition:all 0.3s;letter-spacing:-0.3px}
+        .sh .co{font-size:12px;font-weight:500;transition:all 0.3s}
 
-        .badge-version {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+        .cd{padding:14px 16px;border-radius:var(--r1);display:flex;align-items:center;gap:14px;transition:all 0.25s}
+        .cd{animation:fadeUp 0.35s ease backwards}
+        .cd:nth-child(1){animation-delay:0.02s}.cd:nth-child(2){animation-delay:0.04s}.cd:nth-child(3){animation-delay:0.06s}
+        .cd:nth-child(4){animation-delay:0.08s}.cd:nth-child(5){animation-delay:0.10s}.cd:nth-child(6){animation-delay:0.12s}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .cd:active{transform:scale(0.98)}
+        .cd .ib{width:52px;height:52px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;overflow:hidden;transition:all 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.04)}
+        .cd .ib .ex{position:absolute;bottom:3px;right:4px;font-size:6px;font-weight:800;padding:1px 4px;border-radius:4px;transition:all 0.3s;letter-spacing:0}
+        .cd .if{flex:1;min-width:0;overflow:hidden}
+        .cd .if .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:all 0.3s;letter-spacing:-0.2px}
+        .cd .if .mt{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:11px;flex-wrap:wrap;transition:all 0.3s}
+        .cd .if .mt .sp{font-size:8px;opacity:0.4}
+        .cd .if .mt .sz{padding:2px 10px;border-radius:6px;font-size:10px;font-weight:500;transition:all 0.3s;letter-spacing:0}
+        .cd .ac{display:flex;align-items:center;gap:4px;flex-shrink:0}
+        .cd .ac .sh{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;font-family:inherit;transition:all 0.15s}
+        .cd .ac .sh:active{transform:scale(0.9)}
+        .cd .ac .dl{padding:9px 16px;border-radius:10px;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px;transition:all 0.2s;font-family:inherit;white-space:nowrap;letter-spacing:0.3px}
+        .cd .ac .dl:active{transform:scale(0.93)}
+        .cd .ib .shimmer{position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);animation:shimmer 3s ease-in-out infinite}
+        @keyframes shimmer{0%{left:-100%}100%{left:200%}}
 
-        /* সার্চ বার */
-        .search-wrapper {
-            position: relative;
-            margin-bottom: 20px;
-        }
+        .st{text-align:center;padding:70px 20px}
+        .st .spn{display:inline-block;width:34px;height:34px;border-radius:50%;animation:spin 0.6s linear infinite;margin-bottom:14px}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .st .er{font-size:15px;font-weight:600;margin-bottom:6px}
+        .st .sb{font-size:13px;margin-bottom:12px;font-weight:400}
+        .st .rty{padding:12px 30px;border-radius:var(--r2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;border:none;letter-spacing:0.5px}
+        .st .rty:active{transform:scale(0.94)}
+        .st .ei{font-size:48px;margin-bottom:10px;opacity:0.5}
+        .st .et{font-size:17px;font-weight:700;margin-bottom:4px}
+        .st .ed{font-size:13px;font-weight:400}
 
-        .search-input {
-            width: 100%;
-            padding: 14px 16px 14px 45px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
+        .tt{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);padding:12px 24px;border-radius:var(--r2);font-size:13px;font-weight:500;z-index:99999;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s;max-width:90%;text-align:center;font-family:inherit;pointer-events:none;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+        .tt.sh{transform:translateX(-50%) translateY(0)}
+        .bt{height:24px}
+        .fi{text-align:center;padding:20px 0 10px;font-size:9px;letter-spacing:0.8px;text-transform:uppercase;transition:all 0.3s}
+        .fi sp{opacity:0.3}
 
-        .search-input:focus {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
-        }
+        .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;transition:all 0.8s ease;filter:blur(60px)}
 
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px;
-            opacity: 0.6;
-        }
-
-        /* অ্যাপ কার্ড লিস্ট */
-        .app-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .app-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-
-        .app-card:active {
-            transform: scale(0.98);
-        }
-
-        .app-info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            overflow: hidden;
-        }
-
-        .app-icon {
-            width: 42px;
-            height: 42px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            flex-shrink: 0;
-        }
-
-        .app-details {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            overflow: hidden;
-        }
-
-        .app-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-main);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .app-meta {
-            font-size: 12px;
-            color: var(--text-sub);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-download {
-            background: var(--btn-grad);
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-            white-space: nowrap;
-            transition: all 0.2s ease;
-        }
-
-        .btn-download:hover {
-            background: var(--btn-hover);
-        }
-
-        /* স্ট্যাটাস */
-        .status-box {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-sub);
-        }
-
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top: 3px solid var(--accent-cyan);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 12px;
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
+        @media(max-width:380px){.ts .th{font-size:9px;padding:5px 10px}.hero h2{font-size:22px}.hero .sr .st .nm{font-size:15px}}
+        @media(min-width:500px){.app{padding:0 0 40px}.hero{padding:22px}.cd{padding:16px 18px}}
     </style>
 </head>
-<body>
+<body id="bodyRoot">
 
-    <div class="app-container">
-        <!-- হেডার -->
-        <div class="header-card">
-            <div class="header-title">
-                <div class="logo-icon">🚀</div>
-                <div class="header-text">
-                    <h1>Rashd App Store</h1>
-                    <span style="font-size: 11px; color: var(--text-sub);">Official APK Hub</span>
-                </div>
-            </div>
-            <span class="badge-version" id="tagDisplay">v1.0</span>
+<div class="tt" id="toast"></div>
+
+<div class="app">
+
+    <div class="ts" id="themeSwitcher">
+        <span class="th" data-theme="1" onclick="setTheme(1)">🌸 1 Minimal</span>
+        <span class="th" data-theme="2" onclick="setTheme(2)">🫧 2 Glass</span>
+        <span class="th" data-theme="3" onclick="setTheme(3)">🎮 3 Neon</span>
+        <span class="th" data-theme="4" onclick="setTheme(4)">🌴 4 Retro</span>
+        <span class="th" data-theme="5" onclick="setTheme(5)">📱 5 iOS</span>
+        <span class="th" data-theme="6" onclick="setTheme(6)">🎨 6 Material</span>
+        <span class="th" data-theme="7" onclick="setTheme(7)">🌑 7 Gold</span>
+        <span class="th" data-theme="8" onclick="setTheme(8)">💎 8 Stone</span>
+        <span class="th" data-theme="9" onclick="setTheme(9)">🃏 9 Play</span>
+        <span class="th" data-theme="10" onclick="setTheme(10)">🌈 10 Iris</span>
+    </div>
+
+    <div class="bar" id="topBar">
+        <div class="l">
+            <div class="i" id="barIcon">🛒</div>
+            <div class="tx"><h1>Rashd <span id="barSuffix">Store</span></h1></div>
         </div>
+        <span class="badge" id="verBadge">v1.0 <span id="themeIndicator" style="font-weight:400;opacity:0.5">min</span></span>
+    </div>
 
-        <!-- সার্চ বার -->
-        <div class="search-wrapper">
-            <span class="search-icon">🔍</span>
-            <input type="text" class="search-input" id="searchInput" placeholder="Search APK files..." oninput="searchApp()">
-        </div>
-
-        <!-- অ্যাপ লিস্ট -->
-        <div id="appList" class="app-list">
-            <div class="status-box">
-                <div class="spinner"></div>
-                <p style="font-size: 13px;">Loading Store Assets...</p>
-            </div>
+    <div class="hero" id="heroBox">
+        <div class="tg" id="heroTag"><span class="dt" id="heroDot"></span> <span id="heroTagText">PREMIUM</span></div>
+        <h2 id="heroTitle">App Store</h2>
+        <p id="heroDesc">Browse and download the latest applications</p>
+        <div class="sr">
+            <div class="st"><div class="nm" id="statDl">0</div><div class="lb">Downloads</div></div>
+            <div class="st"><div class="nm" id="statViews">-</div><div class="lb">Views</div></div>
+            <div class="st"><div class="nm" id="statApk">0</div><div class="lb">APKs</div></div>
         </div>
     </div>
 
-    <script>
-        const GITHUB_API = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/latest';
-        let storeData = [];
+    <div class="ch" id="channelBox">
+        <span class="dt wt" id="channelDot"></span>
+        <span class="tx" id="channelText">Checking channel access...</span>
+    </div>
 
-        if (window.Telegram && Telegram.WebApp) {
-            Telegram.WebApp.ready();
-            Telegram.WebApp.expand();
+    <div class="sw">
+        <div class="in" id="searchBox">
+            <span class="ic">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search apps..." oninput="onSearch()" spellcheck="false" autocomplete="off">
+            <button class="cl" id="clearSearch" onclick="clearSearch()">✕</button>
+        </div>
+    </div>
+
+    <div class="ct" id="catRow"></div>
+
+    <div class="sh" id="sectHead" style="display:none">
+        <h3 id="sectTitle">All Apps</h3>
+        <span class="co" id="sectCount">0 items</span>
+    </div>
+
+    <div class="gr" id="appGrid">
+        <div class="st"><div class="spn"></div><div class="sb">Loading store...</div></div>
+    </div>
+
+    <div class="fi" id="footerInfo">
+        <sp>Tap theme numbers above &bull; 10 unique designs</sp>
+    </div>
+
+    <div class="bt"></div>
+</div>
+
+<div class="orb" id="orb1"></div>
+<div class="orb" id="orb2"></div>
+<div class="orb" id="orb3"></div>
+
+<script>
+(function(){
+    'use strict';
+
+    const GIT_REPO_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/latest';
+    let applicationData = [];
+    let activeFilter = 'all';
+    let currentTheme = 1;
+    let isDataLoaded = false;
+    let retryCount = 0;
+
+    if (window.Telegram && Telegram.WebApp) {
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+    }
+
+    const toastElement = document.getElementById('toast');
+    let toastTimeout = null;
+
+    function showToast(message) {
+        toastElement.textContent = message;
+        toastElement.classList.add('sh');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(function() {
+            toastElement.classList.remove('sh');
+        }, 2000);
+    }
+
+    const extensionColorMap = {
+        APK: '#4f46e5', PDF: '#f43f5e', ZIP: '#f97316', RAR: '#f97316',
+        DOC: '#06b6d4', DOCX: '#06b6d4', TXT: '#6b7280', PNG: '#10b981',
+        JPG: '#f59e0b', JPEG: '#f59e0b', MP4: '#8b5cf6', MP3: '#ec4899',
+        GIF: '#22d3a0', SVG: '#6366f1', JSON: '#14b8a6', XML: '#a855f7',
+        HTML: '#ef4444', CSS: '#3b82f6', JS: '#fbbf24', PHP: '#8b5cf6'
+    };
+
+    const extensionIconMap = {
+        APK: '\uD83D\uDCE6', PDF: '\uD83D\uDCC4', ZIP: '\uD83D\uDDDC\uFE0F', RAR: '\uD83D\uDEDC\uFE0F',
+        DOC: '\uD83D\uDCDD', DOCX: '\uD83D\uDCDD', TXT: '\uD83D\uDCC4', PNG: '\uD83D\uDDBC\uFE0F',
+        JPG: '\uD83D\uDDBC\uFE0F', JPEG: '\uD83D\uDDBC\uFE0F', MP4: '\uD83C\uDFAC', MP3: '\uD83C\uDFB5',
+        GIF: '\uD83C\uDFB0', SVG: '\uD83D\uDD8C\uFE0F', JSON: '\uD83D\uDCCB', XML: '\uD83D\uDCC4',
+        HTML: '\uD83C\uDF10', CSS: '\uD83C\uDFA8', JS: '\uD83D\uDCBB', PHP: '\uD83D\uDEE0\uFE0F'
+    };
+
+    function getExtensionDisplay(ext) {
+        var upper = ext.toUpperCase();
+        var color = extensionColorMap[upper] || '#6b7280';
+        var icon = extensionIconMap[upper] || '\uD83D\uDCC1';
+        return { color: color, icon: icon };
+    }
+
+    function checkChannelMembership() {
+        var dot = document.getElementById('channelDot');
+        var text = document.getElementById('channelText');
+        var user = null;
+
+        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe) {
+            user = Telegram.WebApp.initDataUnsafe.user;
         }
 
-        async function fetchApps() {
+        if (!user) {
+            dot.className = 'dt wt';
+            dot.style.background = '#fbbf24';
+            text.innerHTML = 'Open from Telegram bot to verify access';
+            return false;
+        }
+
+        dot.className = 'dt ok';
+        dot.style.background = '#22d3a0';
+        text.innerHTML = 'Channels verified <strong>Access granted</strong>';
+        return true;
+    }
+
+    async function loadViewCounter() {
+        try {
+            var response = await fetch('https://api.countapi.xyz/hit/v4zrashd-app-store/views');
+            var data = await response.json();
+            var count = (data.value || 1).toLocaleString();
+            document.getElementById('statViews').textContent = count;
+        } catch (error) {
+            document.getElementById('statViews').textContent = '1K+';
+        }
+    }
+
+    function buildCategoryFilters() {
+        var extensionSet = new Set();
+        applicationData.forEach(function(item) {
+            var ext = (item.name.split('.').pop() || 'apk').toUpperCase();
+            extensionSet.add(ext);
+        });
+
+        var extensions = ['all'].concat(Array.from(extensionSet).sort());
+        var iconHelper = { all: '\u2728' };
+        Object.keys(extensionIconMap).forEach(function(key) {
+            iconHelper[key] = extensionIconMap[key];
+        });
+
+        var container = document.getElementById('catRow');
+        container.innerHTML = extensions.map(function(ext) {
+            var isActive = ext === activeFilter ? ' act' : '';
+            var label = ext === 'all' ? 'All' : '.' + ext;
+            var icon = iconHelper[ext.toLowerCase()] || iconHelper[ext] || '\uD83D\uDCC1';
+            return '<span class="cp' + isActive + '" onclick="setFilter(\'' + ext + '\')">' + icon + ' ' + label + '</span>';
+        }).join('');
+    }
+
+    window.setFilter = function(ext) {
+        activeFilter = ext;
+        buildCategoryFilters();
+        renderAppList(getFilteredItems());
+        updateSectionHeader();
+    };
+
+    function getFilteredItems() {
+        var items = applicationData.slice();
+        var query = document.getElementById('searchInput').value.toLowerCase().trim();
+
+        if (query.length > 0) {
+            items = items.filter(function(item) {
+                return item.name.toLowerCase().includes(query);
+            });
+        }
+
+        if (activeFilter !== 'all') {
+            items = items.filter(function(item) {
+                var ext = (item.name.split('.').pop() || '').toUpperCase();
+                return ext === activeFilter;
+            });
+        }
+
+        return items;
+    }
+
+    window.onSearch = function() {
+        var input = document.getElementById('searchInput');
+        var clearBtn = document.getElementById('clearSearch');
+        var hasText = input.value.length > 0;
+        clearBtn.classList.toggle('sh', hasText);
+        renderAppList(getFilteredItems());
+        updateSectionHeader();
+    };
+
+    window.clearSearch = function() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('clearSearch').classList.remove('sh');
+        renderAppList(getFilteredItems());
+        updateSectionHeader();
+    };
+
+    function updateSectionHeader() {
+        var header = document.getElementById('sectHead');
+        if (!isDataLoaded || applicationData.length === 0) {
+            header.style.display = 'none';
+            return;
+        }
+        header.style.display = 'flex';
+
+        var items = getFilteredItems();
+        var query = document.getElementById('searchInput').value.trim();
+
+        var titleEl = document.getElementById('sectTitle');
+        if (query.length > 0) {
+            titleEl.textContent = '\uD83D\uDD0D "' + query + '"';
+        } else if (activeFilter !== 'all') {
+            titleEl.textContent = '\uD83D\uDCC1 .' + activeFilter + ' Files';
+        } else {
+            titleEl.textContent = '\uD83D\uDCF1 All Apps';
+        }
+
+        var suffix = items.length !== 1 ? 's' : '';
+        document.getElementById('sectCount').textContent = items.length + ' item' + suffix;
+    }
+
+    window.shareApp = async function(item) {
+        var fileSize = (item.size / (1024 * 1024)).toFixed(1);
+        var downloadCount = (item.download_count || 0).toLocaleString();
+        var shareText = '\uD83D\uDCE6 ' + item.name + '\n\uD83D\uDCE5 ' + downloadCount + ' downloads\n\uD83D\uDCBE ' + fileSize + ' MB\n\uD83D\uDD17 ' + item.browser_download_url + '\n\n\u2014 Rashd Store';
+
+        if (navigator.share) {
             try {
-                const res = await fetch(GITHUB_API);
-                if (!res.ok) throw new Error();
-                const data = await res.json();
-                
-                if (data.tag_name) {
-                    document.getElementById('tagDisplay').innerText = data.tag_name;
-                }
-
-                storeData = data.assets || [];
-                renderStore(storeData);
+                await navigator.share({ title: item.name, text: shareText });
             } catch (err) {
-                document.getElementById('appList').innerHTML = `
-                    <div class="status-box">
-                        <p style="color: #ef4444; font-size: 14px;">❌ Failed to load store!</p>
-                    </div>
-                `;
+                // user cancelled
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(shareText);
+                showToast('\uD83D\uDCCB Copied to clipboard');
+            } catch (err) {
+                showToast('Failed to copy');
             }
         }
+    };
 
-        function renderStore(items) {
-            const container = document.getElementById('appList');
+    function renderAppList(items) {
+        var container = document.getElementById('appGrid');
 
-            if (items.length === 0) {
-                container.innerHTML = `
-                    <div class="status-box">
-                        <p style="font-size: 13px;">No APK files found.</p>
-                    </div>
-                `;
-                return;
+        if (!isDataLoaded || applicationData.length === 0) {
+            container.innerHTML = '<div class="st"><div class="spn"></div><div class="sb">Loading store...</div></div>';
+            return;
+        }
+
+        if (items.length === 0) {
+            container.innerHTML = '<div class="st"><div class="ei">\uD83D\uDD0D</div><div class="et">No Results Found</div><div class="ed">Try a different search term or filter</div></div>';
+            return;
+        }
+
+        var html = '';
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var sizeMB = (item.size / (1024 * 1024)).toFixed(1);
+            var downloadCount = item.download_count || 0;
+            var ext = (item.name.split('.').pop() || 'apk').toUpperCase();
+            var extInfo = getExtensionDisplay(ext);
+            var dateStr = '';
+            if (item.updated_at) {
+                var d = new Date(item.updated_at);
+                dateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+            }
+            var escapedName = item.name.replace(/'/g, "\\'");
+            var serialNum = (i + 1).toString().padStart(3, '0');
+
+            html += '<div class="cd">';
+            html += '<div class="ib" style="background:linear-gradient(135deg,' + extInfo.color + ',' + extInfo.color + '88)">' + extInfo.icon + '<span class="ex">' + ext + '</span></div>';
+            html += '<div class="if">';
+            html += '<div class="nm">' + item.name + '</div>';
+            html += '<div class="mt">';
+            html += '<span class="sz">\uD83D\uDCBE ' + sizeMB + ' MB</span>';
+            html += '<span class="sp">|</span>';
+            html += '<span style="font-weight:600">\uD83D\uDCE5 ' + downloadCount.toLocaleString() + '</span>';
+            if (dateStr) {
+                html += '<span class="sp">|</span><span>\uD83D\uDCC5 ' + dateStr + '</span>';
+            }
+            html += '<span class="sp">|</span><span>#' + serialNum + '</span>';
+            html += '</div></div>';
+            html += '<div class="ac">';
+            html += '<button class="sh" onclick="shareApp(applicationData.find(function(a){return a.name===\'' + escapedName + '\'}))">\u2197</button>';
+            html += '<a href="' + item.browser_download_url + '" class="dl" target="_blank" onclick="showToast(\'\u2B07\uFE0F Downloading ' + item.name + '\')">Get \u2193</a>';
+            html += '</div></div>';
+        }
+
+        container.innerHTML = html;
+        applyCardThemeStyles();
+    }
+
+    function applyCardThemeStyles() {
+        var t = themeDefinitions[currentTheme];
+        if (!t) return;
+
+        document.querySelectorAll('.cd').forEach(function(el) {
+            el.style.background = t.cardBg;
+            el.style.border = '1px solid ' + t.cardBorder;
+            el.style.boxShadow = t.cardShadow;
+
+            var nameEl = el.querySelector('.nm');
+            if (nameEl) nameEl.style.color = t.cardName;
+
+            var metaEl = el.querySelector('.mt');
+            if (metaEl) metaEl.style.color = t.cardMeta;
+
+            var sizeEl = el.querySelector('.sz');
+            if (sizeEl) {
+                sizeEl.style.background = t.cardSize;
+                sizeEl.style.color = t.cardMeta;
             }
 
-            let html = '';
-            items.forEach(item => {
-                const size = (item.size / (1024 * 1024)).toFixed(1) + ' MB';
-                html += `
-                    <div class="app-card">
-                        <div class="app-info">
-                            <div class="app-icon">📦</div>
-                            <div class="app-details">
-                                <span class="app-name">${item.name}</span>
-                                <div class="app-meta">
-                                    <span>💾 ${size}</span>
-                                    <span>•</span>
-                                    <span style="color: var(--accent-green);">Verified</span>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="${item.browser_download_url}" class="btn-download" target="_blank">
-                            <span>Get</span>
-                            <span>⬇️</span>
-                        </a>
-                    </div>
-                `;
+            var shareBtn = el.querySelector('.ac .sh');
+            if (shareBtn) {
+                shareBtn.style.background = t.shareBg;
+                shareBtn.style.color = t.shareText;
+                shareBtn.style.border = '1px solid ' + t.cardBorder;
+            }
+
+            var dlBtn = el.querySelector('.ac .dl');
+            if (dlBtn) {
+                dlBtn.style.background = t.dlBg;
+                dlBtn.style.color = t.dlText;
+                dlBtn.style.boxShadow = t.dlShadow;
+                if (t.dlBg.includes('gradient')) {
+                    dlBtn.style.border = 'none';
+                } else {
+                    dlBtn.style.border = '1px solid ' + t.dlBg;
+                }
+            }
+        });
+    }
+
+    window.fetchAppData = async function() {
+        var container = document.getElementById('appGrid');
+        try {
+            var response = await fetch(GIT_REPO_URL + '?t=' + Date.now());
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+            var data = await response.json();
+
+            if (data.tag_name) {
+                document.getElementById('verBadge').innerHTML = data.tag_name + ' <span style="font-weight:400;opacity:0.5">' + themeDefinitions[currentTheme].name.toLowerCase() + '</span>';
+            }
+
+            applicationData = data.assets || [];
+            isDataLoaded = true;
+            retryCount = 0;
+
+            var totalDownloads = 0;
+            applicationData.forEach(function(item) {
+                totalDownloads += item.download_count || 0;
             });
 
-            container.innerHTML = html;
+            var formattedTotal = totalDownloads.toLocaleString();
+            document.getElementById('statDl').textContent = formattedTotal;
+            document.getElementById('statApk').textContent = applicationData.length;
+
+            buildCategoryFilters();
+            renderAppList(getFilteredItems());
+            updateSectionHeader();
+            checkChannelMembership();
+
+        } catch (error) {
+            retryCount++;
+            var retryText = retryCount > 1 ? 'Retry (' + retryCount + ')' : 'Retry';
+            container.innerHTML = '<div class="st"><div class="er">\u26A0 Connection Error</div><div class="sb">' + error.message + '</div><button class="rty" onclick="fetchAppData()">' + retryText + '</button></div>';
+        }
+    };
+
+    var themeDefinitions = {
+        1: {
+            bg: '#f8f9fa', text: '#1a1a2e', sub: '#6b7280', cardBg: '#ffffff',
+            cardBorder: '#e5e7eb', cardShadow: '0 1px 4px rgba(0,0,0,0.04)',
+            cardName: '#1a1a2e', cardMeta: '#6b7280', cardSize: '#f3f4f6',
+            shareBg: '#f3f4f6', shareText: '#6b7280',
+            dlBg: '#4f46e5', dlText: '#ffffff', dlShadow: '0 4px 12px rgba(79,70,229,0.2)',
+            r1: '16px', r2: '12px', font: "'Inter',sans-serif",
+            topBg: '#ffffff', topText: '#1a1a2e', topBorder: '#e5e7eb',
+            heroBg: '#ffffff', heroText: '#1a1a2e', heroSub: '#6b7280',
+            heroTag: '#f3f4f6', heroTagText: '#6b7280', heroTagDot: '#22d3a0',
+            statBg: '#f9fafb', statBorder: '#e5e7eb', statNum: '#1a1a2e', statLbl: '#6b7280',
+            chBg: '#ffffff', chBorder: '#e5e7eb', chText: '#6b7280', chStrong: '#1a1a2e',
+            searchBg: '#ffffff', searchBorder: '#e5e7eb', searchText: '#1a1a2e', searchPlace: '#9ca3af',
+            catBg: '#ffffff', catText: '#6b7280', catBorder: '#e5e7eb', catActBg: '#4f46e5', catActText: '#ffffff',
+            sectText: '#1a1a2e', sectCount: '#9ca3af',
+            toastBg: '#ffffff', toastText: '#1a1a2e', toastBorder: '#e5e7eb', toastShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            spnBorder: '#e5e7eb', spnTop: '#4f46e5', errText: '#ef4444', retryBg: '#4f46e5', retryText: '#ffffff',
+            tsBg: '#ffffff', tsBorder: '#e5e7eb', tsText: '#6b7280', tsActBg: '#4f46e5', tsActText: '#ffffff',
+            emoji: '\uD83C\uDF38', name: 'Minimal', title: 'Clean Store', desc: 'Simple, clean and minimal',
+            tag: 'MINIMAL EDITION'
+        },
+        2: {
+            bg: 'linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%)', text: '#ffffff', sub: 'rgba(255,255,255,0.5)',
+            cardBg: 'rgba(255,255,255,0.06)', cardBorder: 'rgba(255,255,255,0.08)',
+            cardShadow: '0 8px 32px rgba(0,0,0,0.06)', cardName: '#ffffff', cardMeta: 'rgba(255,255,255,0.45)',
+            cardSize: 'rgba(255,255,255,0.04)', shareBg: 'rgba(255,255,255,0.04)', shareText: 'rgba(255,255,255,0.4)',
+            dlBg: 'rgba(255,255,255,0.1)', dlText: '#ffffff', dlShadow: '0 4px 16px rgba(0,0,0,0.05)',
+            r1: '20px', r2: '14px', font: "'Inter',sans-serif",
+            topBg: 'rgba(255,255,255,0.08)', topText: '#ffffff', topBorder: 'rgba(255,255,255,0.1)',
+            heroBg: 'rgba(255,255,255,0.06)', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.5)',
+            heroTag: 'rgba(255,255,255,0.08)', heroTagText: 'rgba(255,255,255,0.7)', heroTagDot: '#22d3a0',
+            statBg: 'rgba(255,255,255,0.04)', statBorder: 'rgba(255,255,255,0.06)', statNum: '#ffffff', statLbl: 'rgba(255,255,255,0.45)',
+            chBg: 'rgba(255,255,255,0.06)', chBorder: 'rgba(255,255,255,0.08)', chText: 'rgba(255,255,255,0.5)', chStrong: '#ffffff',
+            searchBg: 'rgba(255,255,255,0.06)', searchBorder: 'rgba(255,255,255,0.08)', searchText: '#ffffff', searchPlace: 'rgba(255,255,255,0.3)',
+            catBg: 'rgba(255,255,255,0.06)', catText: 'rgba(255,255,255,0.5)', catBorder: 'rgba(255,255,255,0.08)', catActBg: 'rgba(255,255,255,0.15)', catActText: '#ffffff',
+            sectText: '#ffffff', sectCount: 'rgba(255,255,255,0.4)',
+            toastBg: 'rgba(255,255,255,0.1)', toastText: '#ffffff', toastBorder: 'rgba(255,255,255,0.12)', toastShadow: '0 8px 40px rgba(0,0,0,0.1)',
+            spnBorder: 'rgba(255,255,255,0.06)', spnTop: '#ffffff', errText: '#f87171', retryBg: 'rgba(255,255,255,0.1)', retryText: '#ffffff',
+            tsBg: 'rgba(255,255,255,0.08)', tsBorder: 'rgba(255,255,255,0.1)', tsText: 'rgba(255,255,255,0.5)', tsActBg: 'rgba(255,255,255,0.15)', tsActText: '#ffffff',
+            emoji: '\uD83E\uDEE7', name: 'Glass', title: 'Glass Store', desc: 'Frosted glass aesthetic',
+            tag: 'GLASS EDITION'
+        },
+        3: {
+            bg: '#0a0a14', text: '#ffffff', sub: 'rgba(255,255,255,0.4)',
+            cardBg: 'rgba(255,41,117,0.02)', cardBorder: 'rgba(255,41,117,0.06)',
+            cardShadow: '0 0 30px rgba(255,41,117,0.03)', cardName: '#ffffff', cardMeta: 'rgba(255,255,255,0.35)',
+            cardSize: 'rgba(255,255,255,0.02)', shareBg: 'rgba(255,41,117,0.05)', shareText: 'rgba(255,255,255,0.3)',
+            dlBg: '#ff2975', dlText: '#ffffff', dlShadow: '0 4px 20px rgba(255,41,117,0.25)',
+            r1: '12px', r2: '8px', font: "'Space Grotesk',sans-serif",
+            topBg: 'rgba(255,41,117,0.04)', topText: '#ffffff', topBorder: 'rgba(255,41,117,0.1)',
+            heroBg: 'linear-gradient(135deg,rgba(255,41,117,0.06),rgba(0,240,255,0.02))', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.4)',
+            heroTag: 'rgba(255,41,117,0.1)', heroTagText: '#ff2975', heroTagDot: '#ff2975',
+            statBg: 'rgba(255,41,117,0.03)', statBorder: 'rgba(255,41,117,0.08)', statNum: '#00f0ff', statLbl: 'rgba(255,255,255,0.35)',
+            chBg: 'rgba(255,41,117,0.03)', chBorder: 'rgba(255,41,117,0.08)', chText: 'rgba(255,255,255,0.4)', chStrong: '#00f0ff',
+            searchBg: 'rgba(255,41,117,0.03)', searchBorder: 'rgba(255,41,117,0.08)', searchText: '#ffffff', searchPlace: 'rgba(255,255,255,0.2)',
+            catBg: 'rgba(255,41,117,0.03)', catText: 'rgba(255,255,255,0.3)', catBorder: 'rgba(255,41,117,0.08)', catActBg: '#ff2975', catActText: '#ffffff',
+            sectText: '#ffffff', sectCount: 'rgba(255,255,255,0.3)',
+            toastBg: 'rgba(10,10,20,0.95)', toastText: '#ffffff', toastBorder: 'rgba(255,41,117,0.15)', toastShadow: '0 0 30px rgba(255,41,117,0.04)',
+            spnBorder: 'rgba(255,41,117,0.1)', spnTop: '#00f0ff', errText: '#ff2975', retryBg: '#ff2975', retryText: '#ffffff',
+            tsBg: 'rgba(255,41,117,0.03)', tsBorder: 'rgba(255,41,117,0.08)', tsText: 'rgba(255,255,255,0.3)', tsActBg: '#ff2975', tsActText: '#ffffff',
+            emoji: '\uD83C\uDFAE', name: 'Neon', title: 'Neon Store', desc: 'Cyberpunk neon vibe',
+            tag: 'NEON EDITION'
+        },
+        4: {
+            bg: 'linear-gradient(180deg,#0d0221 0%,#1a0533 30%,#2d1b69 60%,#ff6b35 100%)', text: '#ffffff',
+            sub: 'rgba(255,255,255,0.4)', cardBg: 'rgba(255,255,255,0.02)', cardBorder: 'rgba(255,107,53,0.06)',
+            cardShadow: '0 0 0 1px rgba(255,107,53,0.03)', cardName: '#ffffff', cardMeta: 'rgba(255,255,255,0.35)',
+            cardSize: 'rgba(255,107,53,0.03)', shareBg: 'rgba(255,107,53,0.05)', shareText: 'rgba(255,255,255,0.3)',
+            dlBg: 'transparent', dlText: '#ff6b35', dlShadow: 'none',
+            r1: '0px', r2: '0px', font: "'Courier Prime',monospace",
+            topBg: 'rgba(255,107,53,0.04)', topText: '#ff6b35', topBorder: 'rgba(255,107,53,0.1)',
+            heroBg: 'rgba(255,107,53,0.03)', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.4)',
+            heroTag: 'rgba(255,107,53,0.08)', heroTagText: '#ff6b35', heroTagDot: '#ff6b35',
+            statBg: 'rgba(255,107,53,0.03)', statBorder: 'rgba(255,107,53,0.06)', statNum: '#ff6b35', statLbl: 'rgba(255,255,255,0.35)',
+            chBg: 'rgba(255,107,53,0.03)', chBorder: 'rgba(255,107,53,0.08)', chText: 'rgba(255,255,255,0.4)', chStrong: '#ff6b35',
+            searchBg: 'rgba(255,107,53,0.03)', searchBorder: 'rgba(255,107,53,0.08)', searchText: '#ffffff', searchPlace: 'rgba(255,255,255,0.2)',
+            catBg: 'rgba(255,107,53,0.03)', catText: 'rgba(255,255,255,0.3)', catBorder: 'rgba(255,107,53,0.08)', catActBg: 'rgba(255,107,53,0.15)', catActText: '#ff6b35',
+            sectText: '#ff6b35', sectCount: 'rgba(255,255,255,0.3)',
+            toastBg: 'rgba(13,2,33,0.95)', toastText: '#ff6b35', toastBorder: 'rgba(255,107,53,0.15)', toastShadow: '0 0 30px rgba(255,107,53,0.04)',
+            spnBorder: 'rgba(255,107,53,0.1)', spnTop: '#ff6b35', errText: '#ff6b35', retryBg: 'transparent', retryText: '#ff6b35',
+            tsBg: 'rgba(255,107,53,0.03)', tsBorder: 'rgba(255,107,53,0.08)', tsText: 'rgba(255,255,255,0.3)', tsActBg: 'rgba(255,107,53,0.15)', tsActText: '#ff6b35',
+            emoji: '\uD83C\uDF34', name: 'Retro', title: 'Retro Store', desc: 'Synthwave retro wave 80s',
+            tag: 'RETRO EDITION'
+        },
+        5: {
+            bg: '#f2f2f6', text: '#1c1c1e', sub: '#8e8e93',
+            cardBg: '#ffffff', cardBorder: '#e5e5ea', cardShadow: '0 0 0 0.5px rgba(0,0,0,0.04)',
+            cardName: '#1c1c1e', cardMeta: '#8e8e93', cardSize: '#f2f2f6',
+            shareBg: '#f2f2f6', shareText: '#007aff', dlBg: '#007aff', dlText: '#ffffff',
+            dlShadow: '0 4px 12px rgba(0,122,255,0.2)',
+            r1: '14px', r2: '10px', font: "'Inter',sans-serif",
+            topBg: 'rgba(255,255,255,0.7)', topText: '#1c1c1e', topBorder: 'none',
+            heroBg: '#ffffff', heroText: '#1c1c1e', heroSub: '#8e8e93',
+            heroTag: '#f2f2f6', heroTagText: '#8e8e93', heroTagDot: '#007aff',
+            statBg: '#f2f2f6', statBorder: 'none', statNum: '#007aff', statLbl: '#8e8e93',
+            chBg: '#ffffff', chBorder: 'none', chText: '#8e8e93', chStrong: '#1c1c1e',
+            searchBg: '#e5e5ea', searchBorder: 'none', searchText: '#1c1c1e', searchPlace: '#8e8e93',
+            catBg: '#e5e5ea', catText: '#8e8e93', catBorder: 'none', catActBg: '#007aff', catActText: '#ffffff',
+            sectText: '#1c1c1e', sectCount: '#8e8e93',
+            toastBg: 'rgba(28,28,30,0.9)', toastText: '#ffffff', toastBorder: 'none', toastShadow: '0 8px 40px rgba(0,0,0,0.15)',
+            spnBorder: '#e5e5ea', spnTop: '#007aff', errText: '#ff3b30', retryBg: '#007aff', retryText: '#ffffff',
+            tsBg: 'rgba(255,255,255,0.7)', tsBorder: 'none', tsText: '#8e8e93', tsActBg: '#007aff', tsActText: '#ffffff',
+            emoji: '\uD83D\uDCF1', name: 'iOS', title: 'Rashd Store', desc: 'Native iOS aesthetic',
+            tag: 'iOS EDITION'
+        },
+        6: {
+            bg: '#fff8f0', text: '#1c1b1f', sub: '#6e6b72',
+            cardBg: '#ffffff', cardBorder: '#e7e0ec', cardShadow: '0 1px 4px rgba(0,0,0,0.02)',
+            cardName: '#1c1b1f', cardMeta: '#6e6b72', cardSize: '#f4efff',
+            shareBg: '#f4efff', shareText: '#6e6b72', dlBg: '#6750a4', dlText: '#ffffff',
+            dlShadow: '0 4px 16px rgba(103,80,164,0.2)',
+            r1: '28px', r2: '20px', font: "'Plus Jakarta Sans',sans-serif",
+            topBg: '#ffffff', topText: '#1c1b1f', topBorder: '#e7e0ec',
+            heroBg: 'linear-gradient(135deg,#f4efff,#ffe8e8,#e8f4ff)', heroText: '#1c1b1f', heroSub: '#6e6b72',
+            heroTag: '#ffffff', heroTagText: '#6750a4', heroTagDot: '#6750a4',
+            statBg: '#ffffff', statBorder: '#e7e0ec', statNum: '#6750a4', statLbl: '#6e6b72',
+            chBg: '#ffffff', chBorder: '#e7e0ec', chText: '#6e6b72', chStrong: '#1c1b1f',
+            searchBg: '#ffffff', searchBorder: '#e7e0ec', searchText: '#1c1b1f', searchPlace: '#6e6b72',
+            catBg: '#ffffff', catText: '#6e6b72', catBorder: '#e7e0ec', catActBg: '#6750a4', catActText: '#ffffff',
+            sectText: '#1c1b1f', sectCount: '#6e6b72',
+            toastBg: '#ffffff', toastText: '#1c1b1f', toastBorder: '#e7e0ec', toastShadow: '0 4px 20px rgba(0,0,0,0.06)',
+            spnBorder: '#e7e0ec', spnTop: '#6750a4', errText: '#b3261e', retryBg: '#6750a4', retryText: '#ffffff',
+            tsBg: '#ffffff', tsBorder: '#e7e0ec', tsText: '#6e6b72', tsActBg: '#6750a4', tsActText: '#ffffff',
+            emoji: '\uD83C\uDFA8', name: 'Material', title: 'Material Store', desc: 'Dynamic Material You design',
+            tag: 'MATERIAL EDITION'
+        },
+        7: {
+            bg: '#0a0a0a', text: '#f5f5f0', sub: 'rgba(255,255,240,0.3)',
+            cardBg: 'rgba(212,175,55,0.02)', cardBorder: 'rgba(212,175,55,0.04)',
+            cardShadow: '0 0 20px rgba(212,175,55,0.02)', cardName: '#f5f5f0', cardMeta: 'rgba(255,255,240,0.3)',
+            cardSize: 'rgba(212,175,55,0.02)', shareBg: 'rgba(212,175,55,0.04)', shareText: 'rgba(255,255,240,0.25)',
+            dlBg: '#d4af37', dlText: '#0a0a0a', dlShadow: '0 4px 20px rgba(212,175,55,0.2)',
+            r1: '16px', r2: '12px', font: "'Outfit',sans-serif",
+            topBg: 'rgba(212,175,55,0.03)', topText: '#d4af37', topBorder: 'rgba(212,175,55,0.08)',
+            heroBg: 'linear-gradient(135deg,rgba(212,175,55,0.04),rgba(10,10,10,1))', heroText: '#f5f5f0', heroSub: 'rgba(255,255,240,0.3)',
+            heroTag: 'rgba(212,175,55,0.06)', heroTagText: '#d4af37', heroTagDot: '#d4af37',
+            statBg: 'rgba(212,175,55,0.02)', statBorder: 'rgba(212,175,55,0.04)', statNum: '#d4af37', statLbl: 'rgba(255,255,240,0.25)',
+            chBg: 'rgba(212,175,55,0.02)', chBorder: 'rgba(212,175,55,0.06)', chText: 'rgba(255,255,240,0.3)', chStrong: '#d4af37',
+            searchBg: 'rgba(212,175,55,0.02)', searchBorder: 'rgba(212,175,55,0.06)', searchText: '#f5f5f0', searchPlace: 'rgba(255,255,240,0.15)',
+            catBg: 'rgba(212,175,55,0.02)', catText: 'rgba(255,255,240,0.25)', catBorder: 'rgba(212,175,55,0.06)', catActBg: '#d4af37', catActText: '#0a0a0a',
+            sectText: '#d4af37', sectCount: 'rgba(255,255,240,0.25)',
+            toastBg: 'rgba(10,10,10,0.95)', toastText: '#d4af37', toastBorder: 'rgba(212,175,55,0.12)', toastShadow: '0 0 30px rgba(212,175,55,0.03)',
+            spnBorder: 'rgba(212,175,55,0.08)', spnTop: '#d4af37', errText: '#d4af37', retryBg: '#d4af37', retryText: '#0a0a0a',
+            tsBg: 'rgba(212,175,55,0.02)', tsBorder: 'rgba(212,175,55,0.06)', tsText: 'rgba(255,255,240,0.25)', tsActBg: '#d4af37', tsActText: '#0a0a0a',
+            emoji: '\uD83C\uDF11', name: 'Gold', title: 'Gold Store', desc: 'Luxury gold on dark',
+            tag: 'GOLD EDITION'
+        },
+        8: {
+            bg: '#e8e4df', text: '#2d2a26', sub: '#7d7670',
+            cardBg: '#f5f3f0', cardBorder: '#d4cfc9', cardShadow: '0 1px 2px rgba(0,0,0,0.02)',
+            cardName: '#2d2a26', cardMeta: '#7d7670', cardSize: '#e8e4df',
+            shareBg: '#e8e4df', shareText: '#7d7670', dlBg: '#2d2a26', dlText: '#ffffff',
+            dlShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            r1: '12px', r2: '8px', font: "'Inter',sans-serif",
+            topBg: '#f5f3f0', topText: '#2d2a26', topBorder: '#d4cfc9',
+            heroBg: '#f5f3f0', heroText: '#2d2a26', heroSub: '#7d7670',
+            heroTag: '#e8e4df', heroTagText: '#7d7670', heroTagDot: '#2d2a26',
+            statBg: '#e8e4df', statBorder: '#d4cfc9', statNum: '#2d2a26', statLbl: '#7d7670',
+            chBg: '#f5f3f0', chBorder: '#d4cfc9', chText: '#7d7670', chStrong: '#2d2a26',
+            searchBg: '#f5f3f0', searchBorder: '#d4cfc9', searchText: '#2d2a26', searchPlace: '#7d7670',
+            catBg: '#f5f3f0', catText: '#7d7670', catBorder: '#d4cfc9', catActBg: '#2d2a26', catActText: '#ffffff',
+            sectText: '#2d2a26', sectCount: '#7d7670',
+            toastBg: 'rgba(45,42,38,0.95)', toastText: '#ffffff', toastBorder: 'none', toastShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            spnBorder: '#d4cfc9', spnTop: '#2d2a26', errText: '#7d7670', retryBg: '#2d2a26', retryText: '#ffffff',
+            tsBg: '#f5f3f0', tsBorder: '#d4cfc9', tsText: '#7d7670', tsActBg: '#2d2a26', tsActText: '#ffffff',
+            emoji: '\uD83D\uDC8E', name: 'Stone', title: 'Stone Store', desc: 'Natural stone texture matte',
+            tag: 'STONE EDITION'
+        },
+        9: {
+            bg: '#ffffff', text: '#1c1c1c', sub: '#5f6368',
+            cardBg: '#ffffff', cardBorder: '#e8eaed', cardShadow: '0 1px 3px rgba(0,0,0,0.04)',
+            cardName: '#1c1c1c', cardMeta: '#5f6368', cardSize: '#f1f3f4',
+            shareBg: '#f1f3f4', shareText: '#5f6368', dlBg: '#1a73e8', dlText: '#ffffff',
+            dlShadow: '0 4px 12px rgba(26,115,232,0.2)',
+            r1: '16px', r2: '12px', font: "'Inter',sans-serif",
+            topBg: '#ffffff', topText: '#1c1c1c', topBorder: 'none',
+            heroBg: 'linear-gradient(135deg,#1a73e8,#0d47a1)', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.7)',
+            heroTag: 'rgba(255,255,255,0.1)', heroTagText: 'rgba(255,255,255,0.8)', heroTagDot: '#ffffff',
+            statBg: 'rgba(255,255,255,0.08)', statBorder: 'rgba(255,255,255,0.05)', statNum: '#ffffff', statLbl: 'rgba(255,255,255,0.5)',
+            chBg: '#f8f9fa', chBorder: '#e8eaed', chText: '#5f6368', chStrong: '#1c1c1c',
+            searchBg: '#f1f3f4', searchBorder: 'none', searchText: '#1c1c1c', searchPlace: '#5f6368',
+            catBg: '#ffffff', catText: '#5f6368', catBorder: '#e8eaed', catActBg: '#ffffff', catActText: '#1a73e8',
+            sectText: '#1c1c1c', sectCount: '#5f6368',
+            toastBg: 'rgba(28,28,28,0.9)', toastText: '#ffffff', toastBorder: 'none', toastShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            spnBorder: '#e8eaed', spnTop: '#1a73e8', errText: '#5f6368', retryBg: '#1a73e8', retryText: '#ffffff',
+            tsBg: '#ffffff', tsBorder: '#e8eaed', tsText: '#5f6368', tsActBg: '#1a73e8', tsActText: '#ffffff',
+            emoji: '\uD83C\uDCCF', name: 'Play', title: 'Play Store', desc: 'Google Play Store inspired',
+            tag: 'PLAY EDITION'
+        },
+        10: {
+            bg: '#0f0b1a', text: '#ffffff', sub: 'rgba(255,255,255,0.4)',
+            cardBg: 'rgba(255,255,255,0.02)', cardBorder: 'rgba(255,255,255,0.04)',
+            cardShadow: '0 0 40px rgba(255,0,170,0.02)', cardName: '#ffffff', cardMeta: 'rgba(255,255,255,0.3)',
+            cardSize: 'rgba(255,255,255,0.02)', shareBg: 'rgba(255,255,255,0.02)', shareText: 'rgba(255,255,255,0.3)',
+            dlBg: 'linear-gradient(135deg,#ff00aa,#00ffc8)', dlText: '#ffffff', dlShadow: '0 4px 24px rgba(255,0,170,0.2)',
+            r1: '24px', r2: '18px', font: "'Plus Jakarta Sans',sans-serif",
+            topBg: 'rgba(255,255,255,0.03)', topText: '#ffffff', topBorder: 'rgba(255,255,255,0.04)',
+            heroBg: 'linear-gradient(135deg,rgba(255,0,170,0.08),rgba(0,255,200,0.04),rgba(100,50,255,0.08))', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.4)',
+            heroTag: 'rgba(255,255,255,0.04)', heroTagText: 'rgba(255,255,255,0.5)', heroTagDot: '#ff00aa',
+            statBg: 'rgba(255,255,255,0.02)', statBorder: 'rgba(255,255,255,0.04)', statNum: '#ff00aa', statLbl: 'rgba(255,255,255,0.3)',
+            chBg: 'rgba(255,255,255,0.03)', chBorder: 'rgba(255,255,255,0.04)', chText: 'rgba(255,255,255,0.4)', chStrong: '#ffffff',
+            searchBg: 'rgba(255,255,255,0.03)', searchBorder: 'rgba(255,255,255,0.04)', searchText: '#ffffff', searchPlace: 'rgba(255,255,255,0.2)',
+            catBg: 'rgba(255,255,255,0.02)', catText: 'rgba(255,255,255,0.3)', catBorder: 'rgba(255,255,255,0.04)', catActBg: '#ff00aa', catActText: '#ffffff',
+            sectText: '#ffffff', sectCount: 'rgba(255,255,255,0.3)',
+            toastBg: 'rgba(15,11,26,0.95)', toastText: '#ffffff', toastBorder: 'rgba(255,255,255,0.06)', toastShadow: '0 0 40px rgba(255,0,170,0.03)',
+            spnBorder: 'rgba(255,255,255,0.04)', spnTop: '#ff00aa', errText: '#ff00aa', retryBg: 'linear-gradient(135deg,#ff00aa,#00ffc8)', retryText: '#ffffff',
+            tsBg: 'rgba(255,255,255,0.03)', tsBorder: 'rgba(255,255,255,0.04)', tsText: 'rgba(255,255,255,0.3)', tsActBg: '#ff00aa', tsActText: '#ffffff',
+            emoji: '\uD83C\uDF08', name: 'Iris', title: 'Iris Store', desc: 'Iridescent gradient dream',
+            tag: 'IRIDESCENT EDITION'
+        }
+    };
+
+    window.setTheme = function(themeNumber) {
+        currentTheme = themeNumber;
+        var t = themeDefinitions[themeNumber];
+        if (!t) return;
+
+        var root = document.getElementById('bodyRoot');
+
+        var isDarkOrGlass = themeNumber === 2 || themeNumber === 3 || themeNumber === 4 || themeNumber === 7 || themeNumber === 10;
+
+        root.style.background = t.bg;
+        root.style.color = t.text;
+        root.style.fontFamily = t.font;
+        root.style.setProperty('--r1', t.r1);
+        root.style.setProperty('--r2', t.r2);
+
+        var themeSwitchers = document.querySelectorAll('.ts .th');
+        themeSwitchers.forEach(function(el) {
+            var num = parseInt(el.dataset.theme);
+            if (num === themeNumber) {
+                el.style.background = t.tsActBg;
+                el.style.borderColor = t.tsActBg;
+                el.style.color = t.tsActText;
+            } else {
+                el.style.background = t.tsBg;
+                el.style.borderColor = t.tsBorder;
+                el.style.color = t.tsText;
+            }
+        });
+
+        var tsContainer = document.getElementById('themeSwitcher');
+        tsContainer.style.background = isDarkOrGlass ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.7)';
+        tsContainer.style.borderBottom = isDarkOrGlass ? '1px solid ' + t.cardBorder : 'none';
+
+        var bar = document.getElementById('topBar');
+        bar.style.background = t.topBg;
+        bar.style.border = t.topBorder !== 'none' ? '1px solid ' + t.topBorder : 'none';
+        bar.style.boxShadow = isDarkOrGlass ? '0 0 0 1px ' + t.cardBorder : '0 1px 3px rgba(0,0,0,0.02)';
+
+        var iconEl = document.getElementById('barIcon');
+        iconEl.style.background = isDarkOrGlass ? 'rgba(255,255,255,0.06)' : '#f3f4f6';
+
+        document.getElementById('topBar').querySelector('.tx h1').style.color = t.topText;
+
+        var badge = document.getElementById('verBadge');
+        badge.style.background = isDarkOrGlass ? 'rgba(255,255,255,0.06)' : '#f3f4f6';
+        badge.style.color = isDarkOrGlass ? 'rgba(255,255,255,0.5)' : '#6b7280';
+        badge.style.border = t.topBorder !== 'none' ? '1px solid ' + t.topBorder : 'none';
+        badge.innerHTML = document.getElementById('verBadge').textContent.split(' ')[0] + ' <span style="font-weight:400;opacity:0.5">' + t.name.toLowerCase() + '</span>';
+
+        var hero = document.getElementById('heroBox');
+        hero.style.background = t.heroBg;
+        hero.style.border = '1px solid ' + t.cardBorder;
+        hero.style.boxShadow = isDarkOrGlass ? '0 0 30px rgba(0,0,0,0.1)' : '0 1px 3px rgba(0,0,0,0.02)';
+
+        document.getElementById('heroTitle').style.color = t.heroText;
+        document.getElementById('heroTitle').textContent = t.title;
+        document.getElementById('heroDesc').style.color = t.heroSub;
+        document.getElementById('heroDesc').textContent = t.desc;
+
+        var heroTag = document.getElementById('heroTag');
+        heroTag.style.background = t.heroTag;
+        heroTag.style.border = '1px solid ' + t.cardBorder;
+        heroTag.style.color = t.heroTagText;
+        document.getElementById('heroTagText').textContent = t.tag;
+        document.getElementById('heroDot').style.background = t.heroTagDot;
+
+        document.querySelectorAll('.hero .sr .st').forEach(function(el) {
+            el.style.background = t.statBg;
+            el.style.border = '1px solid ' + t.statBorder;
+            el.querySelector('.nm').style.color = t.statNum;
+            el.querySelector('.lb').style.color = t.statLbl;
+        });
+
+        var ch = document.getElementById('channelBox');
+        ch.style.background = t.chBg;
+        ch.style.border = '1px solid ' + t.chBorder;
+        ch.style.boxShadow = isDarkOrGlass ? '0 0 0 1px ' + t.cardBorder : 'none';
+        var chText = document.getElementById('channelText');
+        chText.style.color = t.chText;
+        var strongs = chText.querySelectorAll('strong');
+        strongs.forEach(function(el) { el.style.color = t.chStrong; });
+
+        var searchBox = document.getElementById('searchBox');
+        searchBox.style.background = t.searchBg;
+        searchBox.style.border = '1px solid ' + t.searchBorder;
+        searchBox.style.boxShadow = isDarkOrGlass ? '0 0 0 1px ' + t.cardBorder : (t.searchBorder !== 'none' ? '0 0 0 1px ' + t.searchBorder : 'none');
+        var searchInput = document.getElementById('searchInput');
+        searchInput.style.color = t.searchText;
+        searchInput.style.fontFamily = t.font;
+        searchInput.style.setProperty('--ph', t.searchPlace);
+        searchInput.style.setProperty('--placeholder', t.searchPlace);
+
+        var clearBtn = document.getElementById('clearSearch');
+        clearBtn.style.background = isDarkOrGlass ? 'rgba(255,255,255,0.06)' : '#f3f4f6';
+        clearBtn.style.color = isDarkOrGlass ? 'rgba(255,255,255,0.3)' : '#9ca3af';
+
+        document.querySelectorAll('.ct .cp').forEach(function(el) {
+            if (el.classList.contains('act')) {
+                el.style.background = t.catActBg;
+                el.style.color = t.catActText;
+                el.style.borderColor = t.catActBg;
+            } else {
+                el.style.background = t.catBg;
+                el.style.color = t.catText;
+                el.style.borderColor = t.catBorder;
+            }
+        });
+
+        document.getElementById('sectTitle').style.color = t.sectText;
+        document.getElementById('sectCount').style.color = t.sectCount;
+
+        document.getElementById('barSuffix').textContent = t.name;
+
+        var toast = document.getElementById('toast');
+        toast.style.background = t.toastBg;
+        toast.style.color = t.toastText;
+        toast.style.border = '1px solid ' + t.toastBorder;
+        toast.style.boxShadow = t.toastShadow;
+
+        var stateErrs = document.querySelectorAll('.st .er');
+        stateErrs.forEach(function(el) { el.style.color = t.errText; });
+        var stateRtys = document.querySelectorAll('.st .rty');
+        stateRtys.forEach(function(el) {
+            el.style.background = t.retryBg;
+            el.style.color = t.retryText;
+        });
+
+        document.querySelectorAll('.st .spn').forEach(function(el) {
+            el.style.border = '2px solid ' + t.spnBorder;
+            el.style.borderTopColor = t.spnTop;
+            el.style.borderRightColor = t.spnTop;
+        });
+
+        var orb1 = document.getElementById('orb1');
+        var orb2 = document.getElementById('orb2');
+        var orb3 = document.getElementById('orb3');
+
+        var orbMap = {
+            1: { none: true }, 2: { o1: '250px 250px rgba(102,126,234,0.2) -60px -40px', o2: '200px 200px rgba(240,147,251,0.15) -40px 60%', o3: '180px 180px rgba(118,75,162,0.15) -30px 30%' },
+            3: { o1: '200px 200px rgba(255,41,117,0.04) 80% -20px', o2: '180px 180px rgba(0,240,255,0.03) -40px 60%', o3: '150px 150px rgba(255,41,117,0.03) 60% 80%' },
+            4: { o1: '250px 250px rgba(255,107,53,0.03) -60px -40px', o2: '200px 200px rgba(45,27,105,0.2) -40px 60%', o3: '180px 180px rgba(255,107,53,0.03) -30px 30%' },
+            5: { none: true }, 6: { o1: '200px 200px rgba(103,80,164,0.04) 80% -30px', o2: '180px 180px rgba(255,232,232,0.1) -30px 60%', o3: '150px 150px rgba(232,244,255,0.1) 50% 80%' },
+            7: { o1: '200px 200px rgba(212,175,55,0.03) 80% -20px', o2: '180px 180px rgba(212,175,55,0.02) -30px 60%', o3: '150px 150px rgba(212,175,55,0.02) 50% 80%' },
+            8: { none: true }, 9: { none: true },
+            10: { o1: '250px 250px rgba(255,0,170,0.04) -40px -30px', o2: '200px 200px rgba(0,255,200,0.03) -30px 60%', o3: '180px 180px rgba(100,50,255,0.03) 70% 80%' }
+        };
+
+        var om = orbMap[themeNumber] || { none: true };
+        if (om.none) {
+            orb1.style.display = 'none';
+            orb2.style.display = 'none';
+            orb3.style.display = 'none';
+        } else {
+            var orbs = [orb1, orb2, orb3];
+            var keys = ['o1', 'o2', 'o3'];
+            keys.forEach(function(key, idx) {
+                if (om[key]) {
+                    orbs[idx].style.display = 'block';
+                    var parts = om[key].split(' ');
+                    orbs[idx].style.width = parts[0];
+                    orbs[idx].style.height = parts[1];
+                    orbs[idx].style.background = parts[2];
+                    orbs[idx].style.left = '';
+                    orbs[idx].style.right = '';
+                    orbs[idx].style.top = '';
+                    if (parts[3]) {
+                        if (parts[3].startsWith('-') || parts[3].includes('%')) {
+                            orbs[idx].style.left = parts[3];
+                        } else {
+                            orbs[idx].style.right = parts[3];
+                        }
+                    }
+                    if (parts[4]) orbs[idx].style.top = parts[4];
+                } else {
+                    orbs[idx].style.display = 'none';
+                }
+            });
         }
 
-        function searchApp() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = storeData.filter(item => item.name.toLowerCase().includes(query));
-            renderStore(filtered);
-        }
+        applyCardThemeStyles();
+    };
 
-        fetchApps();
-    </script>
+    var pullStartY = 0;
+    var isPulling = false;
+
+    document.addEventListener('touchstart', function(e) {
+        pullStartY = e.touches[0].clientY;
+        isPulling = false;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', function(e) {
+        var delta = e.touches[0].clientY - pullStartY;
+        if (delta > 100 && window.scrollY === 0) {
+            isPulling = true;
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchend', function() {
+        if (isPulling) {
+            isPulling = false;
+            fetchAppData();
+            loadViewCounter();
+            showToast('\uD83D\uDD04 Refreshed!');
+        }
+    }, { passive: true });
+
+    setTheme(1);
+    fetchAppData();
+    loadViewCounter();
+
+    // handle visibility change for real-time updates
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            loadViewCounter();
+        }
+    });
+
+    // handle online/offline
+    window.addEventListener('online', function() {
+        showToast('\uD83C\uDF10 Back online');
+        fetchAppData();
+    });
+
+    window.addEventListener('offline', function() {
+        showToast('\uD26A0 Offline mode');
+    });
+
+    // log theme switch to console in dev mode
+    console.log('%c\uD83C\uDF89 Rashd Store v1.0', 'color:#4f46e5;font-size:16px;font-weight:bold');
+    console.log('%cSwitch themes using the top bar!', 'color:#6b7280;font-size:12px');
+    console.log('%c10 Unique Themes Available', 'color:#ff2975;font-size:12px');
+
+    // Helper: get file extension breakdown
+    function getExtensionBreakdown() {
+        var counts = {};
+        applicationData.forEach(function(item) {
+            var ext = (item.name.split('.').pop() || 'UNK').toUpperCase();
+            counts[ext] = (counts[ext] || 0) + 1;
+        });
+        return counts;
+    }
+
+    // Helper: get total file size
+    function getTotalSizeBytes() {
+        var total = 0;
+        applicationData.forEach(function(item) {
+            total += item.size || 0;
+        });
+        return total;
+    }
+
+    // Helper: format bytes to human readable
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 B';
+        var units = ['B', 'KB', 'MB', 'GB'];
+        var i = Math.floor(Math.log(bytes) / Math.log(1024));
+        return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + units[i];
+    }
+
+    // Expose helpers globally for dev console
+    window.__store = {
+        data: applicationData,
+        getExtensionBreakdown: getExtensionBreakdown,
+        getTotalSize: function() { return formatBytes(getTotalSizeBytes()); },
+        totalApps: function() { return applicationData.length; },
+        totalDownloads: function() {
+            var t = 0;
+            applicationData.forEach(function(a) { t += a.download_count || 0; });
+            return t.toLocaleString();
+        },
+        refresh: fetchAppData,
+        theme: function(n) { setTheme(n); }
+    };
+})();
+</script>
 </body>
 </html>
-
