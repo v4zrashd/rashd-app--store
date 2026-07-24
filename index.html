@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://quge5.com/88/tag.min.js" data-zone="262222" async data-cfasync="false"></script>
-    <meta name="monetag" content="b3a0bad47159adbdc1fef5b9a4cce7e2">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rashd Store — 10 Design Themes</title>
@@ -54,6 +52,7 @@
         .sw .in .cl{width:26px;height:26px;border-radius:50%;border:none;font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:inherit;flex-shrink:0;transition:all 0.2s}
         .sw .in .cl.sh{display:flex}
         .sw .in .cl:active{transform:scale(0.85)}
+        .sw .in .cl.sh{display:flex}
         .sw .in input:focus{outline:none}
         input::-webkit-search-decoration,input::-webkit-search-cancel-button{display:none}
         [contenteditable]:focus{outline:none}
@@ -259,7 +258,10 @@
 
     async function loadViewCounter() {
         try {
-            document.getElementById('statViews').textContent = '1.2K+';
+            var response = await fetch('https://api.countapi.xyz/hit/v4zrashd-app-store/views');
+            var data = await response.json();
+            var count = (data.value || 1).toLocaleString();
+            document.getElementById('statViews').textContent = count;
         } catch (error) {
             document.getElementById('statViews').textContent = '1K+';
         }
@@ -929,12 +931,14 @@
     fetchAppData();
     loadViewCounter();
 
+    // handle visibility change for real-time updates
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
             loadViewCounter();
         }
     });
 
+    // handle online/offline
     window.addEventListener('online', function() {
         showToast('\uD83C\uDF10 Back online');
         fetchAppData();
@@ -944,8 +948,12 @@
         showToast('\uD26A0 Offline mode');
     });
 
+    // log theme switch to console in dev mode
     console.log('%c\uD83C\uDF89 Rashd Store v1.0', 'color:#4f46e5;font-size:16px;font-weight:bold');
+    console.log('%cSwitch themes using the top bar!', 'color:#6b7280;font-size:12px');
+    console.log('%c10 Unique Themes Available', 'color:#ff2975;font-size:12px');
 
+    // Helper: get file extension breakdown
     function getExtensionBreakdown() {
         var counts = {};
         applicationData.forEach(function(item) {
@@ -955,6 +963,7 @@
         return counts;
     }
 
+    // Helper: get total file size
     function getTotalSizeBytes() {
         var total = 0;
         applicationData.forEach(function(item) {
@@ -963,6 +972,7 @@
         return total;
     }
 
+    // Helper: format bytes to human readable
     function formatBytes(bytes) {
         if (bytes === 0) return '0 B';
         var units = ['B', 'KB', 'MB', 'GB'];
@@ -970,6 +980,7 @@
         return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + units[i];
     }
 
+    // Expose helpers globally for dev console
     window.__store = {
         data: applicationData,
         getExtensionBreakdown: getExtensionBreakdown,
