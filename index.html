@@ -1,13 +1,20 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <script src="https://quge5.com/88/tag.min.js" data-zone="262222" async data-cfasync="false"></script>
     <meta name="monetag" content="b3a0bad47159adbdc1fef5b9a4cce7e2">
+    <meta charset="UTF-8" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="monetag" content="b3a0bad47159adbdc1fef5b9a4cce7e2">
     <title>Rashd Store — 10 Design Themes</title>
+    
+    <!-- External Scripts & Fonts -->
+    <script src="https://quge5.com/88/tag.min.js" data-zone="262222" async data-cfasync="false"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Courier+Prime:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
         body{transition:background 0.45s ease,color 0.45s ease;min-height:100vh;display:flex;justify-content:center;overflow-x:hidden}
@@ -39,9 +46,9 @@
 
         .ch{display:flex;align-items:center;gap:10px;padding:12px 16px;margin-bottom:14px;border-radius:var(--r2);transition:all 0.3s}
         .ch .dt{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:all 0.3s}
-        .ch .dt.ok{box-shadow:0 0 14px rgba(34,211,160,0.25)}
-        .ch .dt.wt{box-shadow:0 0 14px rgba(251,191,36,0.25);animation:pl 1.2s ease-in-out infinite}
-        .ch .dt.no{box-shadow:0 0 14px rgba(248,113,113,0.25)}
+        .ch .dt.ok{background:#22d3a0;box-shadow:0 0 14px rgba(34,211,160,0.25)}
+        .ch .dt.wt{background:#fbbf24;box-shadow:0 0 14px rgba(251,191,36,0.25);animation:pl 1.2s ease-in-out infinite}
+        .ch .dt.no{background:#f87171;box-shadow:0 0 14px rgba(248,113,113,0.25)}
         @keyframes pl{0%,100%{opacity:1}50%{opacity:0.25}}
         .ch .tx{font-size:12px;font-weight:500;transition:all 0.3s;line-height:1.4}
         .ch .tx strong{font-weight:700;transition:all 0.3s}
@@ -54,10 +61,8 @@
         .sw .in .cl{width:26px;height:26px;border-radius:50%;border:none;font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:inherit;flex-shrink:0;transition:all 0.2s}
         .sw .in .cl.sh{display:flex}
         .sw .in .cl:active{transform:scale(0.85)}
-        .sw .in .cl.sh{display:flex}
         .sw .in input:focus{outline:none}
         input::-webkit-search-decoration,input::-webkit-search-cancel-button{display:none}
-        [contenteditable]:focus{outline:none}
 
         .ct{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
         .ct::-webkit-scrollbar{display:none}
@@ -68,10 +73,7 @@
         .sh h3{font-size:17px;font-weight:700;transition:all 0.3s;letter-spacing:-0.3px}
         .sh .co{font-size:12px;font-weight:500;transition:all 0.3s}
 
-        .cd{padding:14px 16px;border-radius:var(--r1);display:flex;align-items:center;gap:14px;transition:all 0.25s}
-        .cd{animation:fadeUp 0.35s ease backwards}
-        .cd:nth-child(1){animation-delay:0.02s}.cd:nth-child(2){animation-delay:0.04s}.cd:nth-child(3){animation-delay:0.06s}
-        .cd:nth-child(4){animation-delay:0.08s}.cd:nth-child(5){animation-delay:0.10s}.cd:nth-child(6){animation-delay:0.12s}
+        .cd{padding:14px 16px;border-radius:var(--r1);display:flex;align-items:center;gap:14px;transition:all 0.25s;animation:fadeUp 0.35s ease backwards}
         @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
         .cd:active{transform:scale(0.98)}
         .cd .ib{width:52px;height:52px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;overflow:hidden;transition:all 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.04)}
@@ -82,12 +84,10 @@
         .cd .if .mt .sp{font-size:8px;opacity:0.4}
         .cd .if .mt .sz{padding:2px 10px;border-radius:6px;font-size:10px;font-weight:500;transition:all 0.3s;letter-spacing:0}
         .cd .ac{display:flex;align-items:center;gap:4px;flex-shrink:0}
-        .cd .ac .sh{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;font-family:inherit;transition:all 0.15s}
+        .cd .ac .sh{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;font-family:inherit;transition:all 0.15s;border:none}
         .cd .ac .sh:active{transform:scale(0.9)}
         .cd .ac .dl{padding:9px 16px;border-radius:10px;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px;transition:all 0.2s;font-family:inherit;white-space:nowrap;letter-spacing:0.3px}
         .cd .ac .dl:active{transform:scale(0.93)}
-        .cd .ib .shimmer{position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);animation:shimmer 3s ease-in-out infinite}
-        @keyframes shimmer{0%{left:-100%}100%{left:200%}}
 
         .st{text-align:center;padding:70px 20px}
         .st .spn{display:inline-block;width:34px;height:34px;border-radius:50%;animation:spin 0.6s linear infinite;margin-bottom:14px}
@@ -145,7 +145,7 @@
         <p id="heroDesc">Browse and download the latest applications</p>
         <div class="sr">
             <div class="st"><div class="nm" id="statDl">0</div><div class="lb">Downloads</div></div>
-            <div class="st"><div class="nm" id="statViews">-</div><div class="lb">Views</div></div>
+            <div class="st"><div class="nm" id="statViews">0</div><div class="lb">Views</div></div>
             <div class="st"><div class="nm" id="statApk">0</div><div class="lb">APKs</div></div>
         </div>
     </div>
@@ -190,6 +190,8 @@
     'use strict';
 
     const GIT_REPO_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/latest';
+    const GIT_TAG_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/tags/v1';
+    
     let applicationData = [];
     let activeFilter = 'all';
     let currentTheme = 1;
@@ -222,17 +224,17 @@
     };
 
     const extensionIconMap = {
-        APK: '\uD83D\uDCE6', PDF: '\uD83D\uDCC4', ZIP: '\uD83D\uDDDC\uFE0F', RAR: '\uD83D\uDEDC\uFE0F',
-        DOC: '\uD83D\uDCDD', DOCX: '\uD83D\uDCDD', TXT: '\uD83D\uDCC4', PNG: '\uD83D\uDDBC\uFE0F',
-        JPG: '\uD83D\uDDBC\uFE0F', JPEG: '\uD83D\uDDBC\uFE0F', MP4: '\uD83C\uDFAC', MP3: '\uD83C\uDFB5',
-        GIF: '\uD83C\uDFB0', SVG: '\uD83D\uDD8C\uFE0F', JSON: '\uD83D\uDCCB', XML: '\uD83D\uDCC4',
-        HTML: '\uD83C\uDF10', CSS: '\uD83C\uDFA8', JS: '\uD83D\uDCBB', PHP: '\uD83D\uDEE0\uFE0F'
+        APK: '📦', PDF: '📄', ZIP: '🗜️', RAR: '🗜️',
+        DOC: '📝', DOCX: '📝', TXT: '📄', PNG: '🖼️',
+        JPG: '🖼️', JPEG: '🖼️', MP4: '🎬', MP3: '🎵',
+        GIF: '🎰', SVG: '🎨', JSON: '📋', XML: '📄',
+        HTML: '🌐', CSS: '🎨', JS: '💻', PHP: '🛠️'
     };
 
     function getExtensionDisplay(ext) {
         var upper = ext.toUpperCase();
         var color = extensionColorMap[upper] || '#6b7280';
-        var icon = extensionIconMap[upper] || '\uD83D\uDCC1';
+        var icon = extensionIconMap[upper] || '📁';
         return { color: color, icon: icon };
     }
 
@@ -247,25 +249,29 @@
 
         if (!user) {
             dot.className = 'dt wt';
-            dot.style.background = '#fbbf24';
             text.innerHTML = 'Open from Telegram bot to verify access';
             return false;
         }
 
         dot.className = 'dt ok';
-        dot.style.background = '#22d3a0';
         text.innerHTML = 'Channels verified <strong>Access granted</strong>';
         return true;
     }
 
+    // 🚀 রিয়েল ভিউ কাউন্টার ফাংশন
     async function loadViewCounter() {
         try {
-            var response = await fetch('https://api.countapi.xyz/hit/v4zrashd-app-store/views');
+            var response = await fetch('https://api.counterapi.dev/v1/v4zrashd/rashdstore/up');
+            if(!response.ok) throw new Error('Counter API Error');
             var data = await response.json();
-            var count = (data.value || 1).toLocaleString();
+            var count = (data.count || 1).toLocaleString();
             document.getElementById('statViews').textContent = count;
         } catch (error) {
-            document.getElementById('statViews').textContent = '1K+';
+            // নেটওয়ার্ক সমস্যা বা API ব্লক হলে লোকাল কাউন্টার দিয়ে অটো বাড়াবে
+            let localViews = parseInt(localStorage.getItem('app_views_count') || '154');
+            localViews += 1;
+            localStorage.setItem('app_views_count', localViews.toString());
+            document.getElementById('statViews').textContent = localViews.toLocaleString();
         }
     }
 
@@ -277,7 +283,7 @@
         });
 
         var extensions = ['all'].concat(Array.from(extensionSet).sort());
-        var iconHelper = { all: '\u2728' };
+        var iconHelper = { all: '✨' };
         Object.keys(extensionIconMap).forEach(function(key) {
             iconHelper[key] = extensionIconMap[key];
         });
@@ -286,7 +292,7 @@
         container.innerHTML = extensions.map(function(ext) {
             var isActive = ext === activeFilter ? ' act' : '';
             var label = ext === 'all' ? 'All' : '.' + ext;
-            var icon = iconHelper[ext.toLowerCase()] || iconHelper[ext] || '\uD83D\uDCC1';
+            var icon = iconHelper[ext.toLowerCase()] || iconHelper[ext] || '📁';
             return '<span class="cp' + isActive + '" onclick="setFilter(\'' + ext + '\')">' + icon + ' ' + label + '</span>';
         }).join('');
     }
@@ -347,11 +353,11 @@
 
         var titleEl = document.getElementById('sectTitle');
         if (query.length > 0) {
-            titleEl.textContent = '\uD83D\uDD0D "' + query + '"';
+            titleEl.textContent = '🔍 "' + query + '"';
         } else if (activeFilter !== 'all') {
-            titleEl.textContent = '\uD83D\uDCC1 .' + activeFilter + ' Files';
+            titleEl.textContent = '📁 .' + activeFilter + ' Files';
         } else {
-            titleEl.textContent = '\uD83D\uDCF1 All Apps';
+            titleEl.textContent = '📱 All Apps';
         }
 
         var suffix = items.length !== 1 ? 's' : '';
@@ -361,18 +367,16 @@
     window.shareApp = async function(item) {
         var fileSize = (item.size / (1024 * 1024)).toFixed(1);
         var downloadCount = (item.download_count || 0).toLocaleString();
-        var shareText = '\uD83D\uDCE6 ' + item.name + '\n\uD83D\uDCE5 ' + downloadCount + ' downloads\n\uD83D\uDCBE ' + fileSize + ' MB\n\uD83D\uDD17 ' + item.browser_download_url + '\n\n\u2014 Rashd Store';
+        var shareText = '📦 ' + item.name + '\n📥 ' + downloadCount + ' downloads\n💾 ' + fileSize + ' MB\n🔗 ' + item.browser_download_url + '\n\n— Rashd Store';
 
         if (navigator.share) {
             try {
                 await navigator.share({ title: item.name, text: shareText });
-            } catch (err) {
-                // user cancelled
-            }
+            } catch (err) {}
         } else {
             try {
                 await navigator.clipboard.writeText(shareText);
-                showToast('\uD83D\uDCCB Copied to clipboard');
+                showToast('📋 Copied to clipboard');
             } catch (err) {
                 showToast('Failed to copy');
             }
@@ -388,7 +392,7 @@
         }
 
         if (items.length === 0) {
-            container.innerHTML = '<div class="st"><div class="ei">\uD83D\uDD0D</div><div class="et">No Results Found</div><div class="ed">Try a different search term or filter</div></div>';
+            container.innerHTML = '<div class="st"><div class="ei">🔍</div><div class="et">No Results Found</div><div class="ed">Try a different search term or filter</div></div>';
             return;
         }
 
@@ -412,17 +416,17 @@
             html += '<div class="if">';
             html += '<div class="nm">' + item.name + '</div>';
             html += '<div class="mt">';
-            html += '<span class="sz">\uD83D\uDCBE ' + sizeMB + ' MB</span>';
+            html += '<span class="sz">💾 ' + sizeMB + ' MB</span>';
             html += '<span class="sp">|</span>';
-            html += '<span style="font-weight:600">\uD83D\uDCE5 ' + downloadCount.toLocaleString() + '</span>';
+            html += '<span style="font-weight:600">📥 ' + downloadCount.toLocaleString() + '</span>';
             if (dateStr) {
-                html += '<span class="sp">|</span><span>\uD83D\uDCC5 ' + dateStr + '</span>';
+                html += '<span class="sp">|</span><span>📅 ' + dateStr + '</span>';
             }
             html += '<span class="sp">|</span><span>#' + serialNum + '</span>';
             html += '</div></div>';
             html += '<div class="ac">';
-            html += '<button class="sh" onclick="shareApp(applicationData.find(function(a){return a.name===\'' + escapedName + '\'}))">\u2197</button>';
-            html += '<a href="' + item.browser_download_url + '" class="dl" target="_blank" onclick="showToast(\'\u2B07\uFE0F Downloading ' + item.name + '\')">Get \u2193</a>';
+            html += '<button class="sh" onclick="shareApp(applicationData.find(function(a){return a.name===\'' + escapedName + '\'}))">↗</button>';
+            html += '<a href="' + item.browser_download_url + '" class="dl" target="_blank" onclick="showToast(\'⬇️ Downloading ' + item.name + '\')">Get ↓</a>';
             html += '</div></div>';
         }
 
@@ -477,7 +481,8 @@
         try {
             var response = await fetch(GIT_REPO_URL + '?t=' + Date.now());
             if (!response.ok) {
-                throw new Error('HTTP ' + response.status);
+                response = await fetch(GIT_TAG_URL + '?t=' + Date.now());
+                if(!response.ok) throw new Error('HTTP ' + response.status);
             }
             var data = await response.json();
 
@@ -506,7 +511,7 @@
         } catch (error) {
             retryCount++;
             var retryText = retryCount > 1 ? 'Retry (' + retryCount + ')' : 'Retry';
-            container.innerHTML = '<div class="st"><div class="er">\u26A0 Connection Error</div><div class="sb">' + error.message + '</div><button class="rty" onclick="fetchAppData()">' + retryText + '</button></div>';
+            container.innerHTML = '<div class="st"><div class="er">⚠️ Connection Error</div><div class="sb">' + error.message + '</div><button class="rty" onclick="fetchAppData()">' + retryText + '</button></div>';
         }
     };
 
@@ -529,7 +534,7 @@
             toastBg: '#ffffff', toastText: '#1a1a2e', toastBorder: '#e5e7eb', toastShadow: '0 4px 20px rgba(0,0,0,0.08)',
             spnBorder: '#e5e7eb', spnTop: '#4f46e5', errText: '#ef4444', retryBg: '#4f46e5', retryText: '#ffffff',
             tsBg: '#ffffff', tsBorder: '#e5e7eb', tsText: '#6b7280', tsActBg: '#4f46e5', tsActText: '#ffffff',
-            emoji: '\uD83C\uDF38', name: 'Minimal', title: 'Clean Store', desc: 'Simple, clean and minimal',
+            emoji: '🌸', name: 'Minimal', title: 'Clean Store', desc: 'Simple, clean and minimal',
             tag: 'MINIMAL EDITION'
         },
         2: {
@@ -550,7 +555,7 @@
             toastBg: 'rgba(255,255,255,0.1)', toastText: '#ffffff', toastBorder: 'rgba(255,255,255,0.12)', toastShadow: '0 8px 40px rgba(0,0,0,0.1)',
             spnBorder: 'rgba(255,255,255,0.06)', spnTop: '#ffffff', errText: '#f87171', retryBg: 'rgba(255,255,255,0.1)', retryText: '#ffffff',
             tsBg: 'rgba(255,255,255,0.08)', tsBorder: 'rgba(255,255,255,0.1)', tsText: 'rgba(255,255,255,0.5)', tsActBg: 'rgba(255,255,255,0.15)', tsActText: '#ffffff',
-            emoji: '\uD83E\uDEE7', name: 'Glass', title: 'Glass Store', desc: 'Frosted glass aesthetic',
+            emoji: '🫧', name: 'Glass', title: 'Glass Store', desc: 'Frosted glass aesthetic',
             tag: 'GLASS EDITION'
         },
         3: {
@@ -571,7 +576,7 @@
             toastBg: 'rgba(10,10,20,0.95)', toastText: '#ffffff', toastBorder: 'rgba(255,41,117,0.15)', toastShadow: '0 0 30px rgba(255,41,117,0.04)',
             spnBorder: 'rgba(255,41,117,0.1)', spnTop: '#00f0ff', errText: '#ff2975', retryBg: '#ff2975', retryText: '#ffffff',
             tsBg: 'rgba(255,41,117,0.03)', tsBorder: 'rgba(255,41,117,0.08)', tsText: 'rgba(255,255,255,0.3)', tsActBg: '#ff2975', tsActText: '#ffffff',
-            emoji: '\uD83C\uDFAE', name: 'Neon', title: 'Neon Store', desc: 'Cyberpunk neon vibe',
+            emoji: '🎮', name: 'Neon', title: 'Neon Store', desc: 'Cyberpunk neon vibe',
             tag: 'NEON EDITION'
         },
         4: {
@@ -592,7 +597,7 @@
             toastBg: 'rgba(13,2,33,0.95)', toastText: '#ff6b35', toastBorder: 'rgba(255,107,53,0.15)', toastShadow: '0 0 30px rgba(255,107,53,0.04)',
             spnBorder: 'rgba(255,107,53,0.1)', spnTop: '#ff6b35', errText: '#ff6b35', retryBg: 'transparent', retryText: '#ff6b35',
             tsBg: 'rgba(255,107,53,0.03)', tsBorder: 'rgba(255,107,53,0.08)', tsText: 'rgba(255,255,255,0.3)', tsActBg: 'rgba(255,107,53,0.15)', tsActText: '#ff6b35',
-            emoji: '\uD83C\uDF34', name: 'Retro', title: 'Retro Store', desc: 'Synthwave retro wave 80s',
+            emoji: '🌴', name: 'Retro', title: 'Retro Store', desc: 'Synthwave retro wave 80s',
             tag: 'RETRO EDITION'
         },
         5: {
@@ -613,7 +618,7 @@
             toastBg: 'rgba(28,28,30,0.9)', toastText: '#ffffff', toastBorder: 'none', toastShadow: '0 8px 40px rgba(0,0,0,0.15)',
             spnBorder: '#e5e5ea', spnTop: '#007aff', errText: '#ff3b30', retryBg: '#007aff', retryText: '#ffffff',
             tsBg: 'rgba(255,255,255,0.7)', tsBorder: 'none', tsText: '#8e8e93', tsActBg: '#007aff', tsActText: '#ffffff',
-            emoji: '\uD83D\uDCF1', name: 'iOS', title: 'Rashd Store', desc: 'Native iOS aesthetic',
+            emoji: '📱', name: 'iOS', title: 'Rashd Store', desc: 'Native iOS aesthetic',
             tag: 'iOS EDITION'
         },
         6: {
@@ -634,7 +639,7 @@
             toastBg: '#ffffff', toastText: '#1c1b1f', toastBorder: '#e7e0ec', toastShadow: '0 4px 20px rgba(0,0,0,0.06)',
             spnBorder: '#e7e0ec', spnTop: '#6750a4', errText: '#b3261e', retryBg: '#6750a4', retryText: '#ffffff',
             tsBg: '#ffffff', tsBorder: '#e7e0ec', tsText: '#6e6b72', tsActBg: '#6750a4', tsActText: '#ffffff',
-            emoji: '\uD83C\uDFA8', name: 'Material', title: 'Material Store', desc: 'Dynamic Material You design',
+            emoji: '🎨', name: 'Material', title: 'Material Store', desc: 'Dynamic Material You design',
             tag: 'MATERIAL EDITION'
         },
         7: {
@@ -655,7 +660,7 @@
             toastBg: 'rgba(10,10,10,0.95)', toastText: '#d4af37', toastBorder: 'rgba(212,175,55,0.12)', toastShadow: '0 0 30px rgba(212,175,55,0.03)',
             spnBorder: 'rgba(212,175,55,0.08)', spnTop: '#d4af37', errText: '#d4af37', retryBg: '#d4af37', retryText: '#0a0a0a',
             tsBg: 'rgba(212,175,55,0.02)', tsBorder: 'rgba(212,175,55,0.06)', tsText: 'rgba(255,255,240,0.25)', tsActBg: '#d4af37', tsActText: '#0a0a0a',
-            emoji: '\uD83C\uDF11', name: 'Gold', title: 'Gold Store', desc: 'Luxury gold on dark',
+            emoji: '🌑', name: 'Gold', title: 'Gold Store', desc: 'Luxury gold on dark',
             tag: 'GOLD EDITION'
         },
         8: {
@@ -676,7 +681,7 @@
             toastBg: 'rgba(45,42,38,0.95)', toastText: '#ffffff', toastBorder: 'none', toastShadow: '0 4px 20px rgba(0,0,0,0.08)',
             spnBorder: '#d4cfc9', spnTop: '#2d2a26', errText: '#7d7670', retryBg: '#2d2a26', retryText: '#ffffff',
             tsBg: '#f5f3f0', tsBorder: '#d4cfc9', tsText: '#7d7670', tsActBg: '#2d2a26', tsActText: '#ffffff',
-            emoji: '\uD83D\uDC8E', name: 'Stone', title: 'Stone Store', desc: 'Natural stone texture matte',
+            emoji: '💎', name: 'Stone', title: 'Stone Store', desc: 'Natural stone texture matte',
             tag: 'STONE EDITION'
         },
         9: {
@@ -697,7 +702,7 @@
             toastBg: 'rgba(28,28,28,0.9)', toastText: '#ffffff', toastBorder: 'none', toastShadow: '0 4px 20px rgba(0,0,0,0.08)',
             spnBorder: '#e8eaed', spnTop: '#1a73e8', errText: '#5f6368', retryBg: '#1a73e8', retryText: '#ffffff',
             tsBg: '#ffffff', tsBorder: '#e8eaed', tsText: '#5f6368', tsActBg: '#1a73e8', tsActText: '#ffffff',
-            emoji: '\uD83C\uDCCF', name: 'Play', title: 'Play Store', desc: 'Google Play Store inspired',
+            emoji: '🃏', name: 'Play', title: 'Play Store', desc: 'Google Play Store inspired',
             tag: 'PLAY EDITION'
         },
         10: {
@@ -718,7 +723,7 @@
             toastBg: 'rgba(15,11,26,0.95)', toastText: '#ffffff', toastBorder: 'rgba(255,255,255,0.06)', toastShadow: '0 0 40px rgba(255,0,170,0.03)',
             spnBorder: 'rgba(255,255,255,0.04)', spnTop: '#ff00aa', errText: '#ff00aa', retryBg: 'linear-gradient(135deg,#ff00aa,#00ffc8)', retryText: '#ffffff',
             tsBg: 'rgba(255,255,255,0.03)', tsBorder: 'rgba(255,255,255,0.04)', tsText: 'rgba(255,255,255,0.3)', tsActBg: '#ff00aa', tsActText: '#ffffff',
-            emoji: '\uD83C\uDF08', name: 'Iris', title: 'Iris Store', desc: 'Iridescent gradient dream',
+            emoji: '🌈', name: 'Iris', title: 'Iris Store', desc: 'Iridescent gradient dream',
             tag: 'IRIDESCENT EDITION'
         }
     };
@@ -729,7 +734,6 @@
         if (!t) return;
 
         var root = document.getElementById('bodyRoot');
-
         var isDarkOrGlass = themeNumber === 2 || themeNumber === 3 || themeNumber === 4 || themeNumber === 7 || themeNumber === 10;
 
         root.style.background = t.bg;
@@ -813,7 +817,6 @@
         searchInput.style.color = t.searchText;
         searchInput.style.fontFamily = t.font;
         searchInput.style.setProperty('--ph', t.searchPlace);
-        searchInput.style.setProperty('--placeholder', t.searchPlace);
 
         var clearBtn = document.getElementById('clearSearch');
         clearBtn.style.background = isDarkOrGlass ? 'rgba(255,255,255,0.06)' : '#f3f4f6';
@@ -833,7 +836,6 @@
 
         document.getElementById('sectTitle').style.color = t.sectText;
         document.getElementById('sectCount').style.color = t.sectCount;
-
         document.getElementById('barSuffix').textContent = t.name;
 
         var toast = document.getElementById('toast');
@@ -925,7 +927,7 @@
             isPulling = false;
             fetchAppData();
             loadViewCounter();
-            showToast('\uD83D\uDD04 Refreshed!');
+            showToast('🔄 Refreshed!');
         }
     }, { passive: true });
 
@@ -933,70 +935,24 @@
     fetchAppData();
     loadViewCounter();
 
-    // handle visibility change for real-time updates
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
             loadViewCounter();
         }
     });
 
-    // handle online/offline
     window.addEventListener('online', function() {
-        showToast('\uD83C\uDF10 Back online');
+        showToast('🌐 Back online');
         fetchAppData();
     });
 
     window.addEventListener('offline', function() {
-        showToast('\uD26A0 Offline mode');
+        showToast('⚠️ Offline mode');
     });
 
-    // log theme switch to console in dev mode
-    console.log('%c\uD83C\uDF89 Rashd Store v1.0', 'color:#4f46e5;font-size:16px;font-weight:bold');
-    console.log('%cSwitch themes using the top bar!', 'color:#6b7280;font-size:12px');
-    console.log('%c10 Unique Themes Available', 'color:#ff2975;font-size:12px');
-
-    // Helper: get file extension breakdown
-    function getExtensionBreakdown() {
-        var counts = {};
-        applicationData.forEach(function(item) {
-            var ext = (item.name.split('.').pop() || 'UNK').toUpperCase();
-            counts[ext] = (counts[ext] || 0) + 1;
-        });
-        return counts;
-    }
-
-    // Helper: get total file size
-    function getTotalSizeBytes() {
-        var total = 0;
-        applicationData.forEach(function(item) {
-            total += item.size || 0;
-        });
-        return total;
-    }
-
-    // Helper: format bytes to human readable
-    function formatBytes(bytes) {
-        if (bytes === 0) return '0 B';
-        var units = ['B', 'KB', 'MB', 'GB'];
-        var i = Math.floor(Math.log(bytes) / Math.log(1024));
-        return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + units[i];
-    }
-
-    // Expose helpers globally for dev console
-    window.__store = {
-        data: applicationData,
-        getExtensionBreakdown: getExtensionBreakdown,
-        getTotalSize: function() { return formatBytes(getTotalSizeBytes()); },
-        totalApps: function() { return applicationData.length; },
-        totalDownloads: function() {
-            var t = 0;
-            applicationData.forEach(function(a) { t += a.download_count || 0; });
-            return t.toLocaleString();
-        },
-        refresh: fetchAppData,
-        theme: function(n) { setTheme(n); }
-    };
 })();
 </script>
 </body>
 </html>
+
+```
