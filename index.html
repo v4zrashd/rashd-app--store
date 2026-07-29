@@ -5,11 +5,11 @@
     <meta name="monetag" content="b3a0bad47159adbdc1fef5b9a4cce7e2">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rashd Store — Hacker Edition</title>
+    <title>Rashd Store — APK Store</title>
     
     <script src="https://quge5.com/88/tag.min.js" data-zone="262222" async data-cfasync="false"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -42,9 +42,9 @@
 
         .ch{display:flex;align-items:center;gap:10px;padding:12px 16px;margin-bottom:14px;border-radius:var(--r2);transition:all 0.3s}
         .ch .dt{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:all 0.3s}
-        .ch .dt.ok{background:#7aa2f7;box-shadow:0 0 14px rgba(122,162,247,0.25)}
-        .ch .dt.wt{background:#bb9af7;box-shadow:0 0 14px rgba(187,154,247,0.25);animation:pl 1.2s ease-in-out infinite}
-        .ch .dt.no{background:#f7768e;box-shadow:0 0 14px rgba(247,118,142,0.25)}
+        .ch .dt.ok{background:#22d3a0;box-shadow:0 0 14px rgba(34,211,160,0.25)}
+        .ch .dt.wt{background:#fbbf24;box-shadow:0 0 14px rgba(251,191,36,0.25);animation:pl 1.2s ease-in-out infinite}
+        .ch .dt.no{background:#f87171;box-shadow:0 0 14px rgba(248,113,113,0.25)}
         @keyframes pl{0%,100%{opacity:1}50%{opacity:0.25}}
         .ch .tx{font-size:12px;font-weight:500;transition:all 0.3s;line-height:1.4}
         .ch .tx strong{font-weight:700;transition:all 0.3s}
@@ -104,12 +104,12 @@
 
         .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;transition:all 0.8s ease;filter:blur(60px)}
 
-        @keyframes glitch{0%,100%{text-shadow:0 0 4px #7aa2f7,0 0 8px #bb9af7}50%{text-shadow:0 0 8px #7aa2f7,0 0 16px #bb9af7,2px 2px 0 rgba(122,162,247,0.3)}}
-        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-        @keyframes scan{0%{top:-100%}100%{top:100%}}
-        .glitch{animation:glitch 2s ease-in-out infinite}
-        .cursor::after{content:'_';animation:blink 1s step-end infinite;color:#bb9af7;font-weight:700}
-        .scanline{position:fixed;left:0;width:100%;height:4px;background:linear-gradient(to bottom,transparent,rgba(122,162,247,0.03),transparent);pointer-events:none;z-index:9999;animation:scan 4s linear infinite}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+        .glitch{animation:float 3s ease-in-out infinite}
+        .pulse{animation:pulse 2s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+        .scanline{display:none}
+        .cursor::after{content:'';display:none}
         @media(max-width:380px){.ts .th{font-size:9px;padding:5px 10px}.hero h2{font-size:22px}.hero .sr .st .nm{font-size:15px}}
         @media(min-width:500px){.app{padding:0 0 40px}.hero{padding:22px}.cd{padding:16px 18px}}
     </style>
@@ -121,20 +121,20 @@
 <div class="app">
 
     <div class="ts" id="themeSwitcher">
-        <span class="th" data-theme="1" onclick="setTheme(1)">💀 Hacker</span>
+        <span class="th" data-theme="1" onclick="setTheme(1)">📦 APK Store</span>
     </div>
 
     <div class="bar" id="topBar">
         <div class="l">
-            <div class="i" id="barIcon">💀</div>
-            <div class="tx"><h1>Rashd <span id="barSuffix" class="cursor">Store</span></h1></div>
+            <div class="i" id="barIcon">📦</div>
+            <div class="tx"><h1>Rashd <span id="barSuffix">Store</span></h1></div>
         </div>
         <span class="badge" id="verBadge">v1.0 <span id="themeIndicator" style="font-weight:400;opacity:0.5">min</span></span>
     </div>
 
     <div class="hero" id="heroBox">
         <div class="tg" id="heroTag"><span class="dt" id="heroDot"></span> <span id="heroTagText">PREMIUM</span></div>
-        <h2 id="heroTitle" class="glitch">App Store</h2>
+        <h2 id="heroTitle" class="glitch">APK Store</h2>
         <p id="heroDesc">Browse and download the latest applications</p>
         <div class="sr">
             <div class="st"><div class="nm" id="statDl">0</div><div class="lb">Downloads</div></div>
@@ -168,13 +168,12 @@
     </div>
 
     <div class="fi" id="footerInfo">
-        <sp>🔒 Hacker Edition &bull; rashd</sp>
+        <sp>📱 Rashd APK Store &bull; Download Android Apps</sp>
     </div>
 
     <div class="bt"></div>
 </div>
 
-<div class="scanline"></div>
 <div class="orb" id="orb1"></div>
 <div class="orb" id="orb2"></div>
 <div class="orb" id="orb3"></div>
@@ -210,11 +209,11 @@
     }
 
     const extensionColorMap = {
-        APK: '#7aa2f7', PDF: '#f7768e', ZIP: '#e0af68', RAR: '#e0af68',
-        DOC: '#7dcfff', DOCX: '#7dcfff', TXT: '#565f89', PNG: '#73daca',
-        JPG: '#e0af68', JPEG: '#e0af68', MP4: '#bb9af7', MP3: '#ff9e64',
-        GIF: '#73daca', SVG: '#7aa2f7', JSON: '#7dcfff', XML: '#bb9af7',
-        HTML: '#f7768e', CSS: '#7aa2f7', JS: '#e0af68', PHP: '#bb9af7'
+        APK: '#6366f1', PDF: '#ef4444', ZIP: '#f97316', RAR: '#f97316',
+        DOC: '#06b6d4', DOCX: '#06b6d4', TXT: '#6b7280', PNG: '#10b981',
+        JPG: '#f59e0b', JPEG: '#f59e0b', MP4: '#8b5cf6', MP3: '#ec4899',
+        GIF: '#22d3a0', SVG: '#6366f1', JSON: '#14b8a6', XML: '#a855f7',
+        HTML: '#ef4444', CSS: '#3b82f6', JS: '#fbbf24', PHP: '#8b5cf6'
     };
 
     const extensionIconMap = {
@@ -511,25 +510,25 @@
 
     var themeDefinitions = {
         1: {
-            bg: '#0b0710', text: '#c0caf5', sub: 'rgba(192,202,245,0.35)',
-            cardBg: 'rgba(122,162,247,0.03)', cardBorder: 'rgba(122,162,247,0.06)',
-            cardShadow: '0 0 30px rgba(122,162,247,0.02)', cardName: '#c0caf5', cardMeta: 'rgba(192,202,245,0.35)',
-            cardSize: 'rgba(122,162,247,0.03)', shareBg: 'rgba(122,162,247,0.04)', shareText: 'rgba(192,202,245,0.25)',
-            dlBg: 'linear-gradient(135deg,#7aa2f7,#bb9af7)', dlText: '#ffffff', dlShadow: '0 4px 20px rgba(122,162,247,0.25)',
-            r1: '14px', r2: '10px', font: "'Courier Prime',monospace",
-            topBg: 'rgba(122,162,247,0.03)', topText: '#7aa2f7', topBorder: 'rgba(122,162,247,0.08)',
-            heroBg: 'linear-gradient(135deg,rgba(122,162,247,0.04),rgba(187,154,247,0.02))', heroText: '#c0caf5', heroSub: 'rgba(192,202,245,0.35)',
-            heroTag: 'rgba(122,162,247,0.06)', heroTagText: '#7aa2f7', heroTagDot: '#7aa2f7',
-            statBg: 'rgba(122,162,247,0.02)', statBorder: 'rgba(122,162,247,0.05)', statNum: '#bb9af7', statLbl: 'rgba(192,202,245,0.3)',
-            chBg: 'rgba(122,162,247,0.02)', chBorder: 'rgba(122,162,247,0.06)', chText: 'rgba(192,202,245,0.35)', chStrong: '#7aa2f7',
-            searchBg: 'rgba(122,162,247,0.02)', searchBorder: 'rgba(122,162,247,0.06)', searchText: '#c0caf5', searchPlace: 'rgba(192,202,245,0.15)',
-            catBg: 'rgba(122,162,247,0.02)', catText: 'rgba(192,202,245,0.25)', catBorder: 'rgba(122,162,247,0.06)', catActBg: '#7aa2f7', catActText: '#0b0710',
-            sectText: '#7aa2f7', sectCount: 'rgba(192,202,245,0.25)',
-            toastBg: 'rgba(11,7,16,0.95)', toastText: '#c0caf5', toastBorder: 'rgba(122,162,247,0.08)', toastShadow: '0 0 30px rgba(122,162,247,0.02)',
-            spnBorder: 'rgba(122,162,247,0.08)', spnTop: '#bb9af7', errText: '#f7768e', retryBg: 'linear-gradient(135deg,#7aa2f7,#bb9af7)', retryText: '#ffffff',
-            tsBg: 'rgba(122,162,247,0.02)', tsBorder: 'rgba(122,162,247,0.06)', tsText: 'rgba(192,202,245,0.25)', tsActBg: '#7aa2f7', tsActText: '#0b0710',
-            emoji: '💀', name: 'Hacker', title: 'Hack Store', desc: 'root@rashd:~# cyberpunk-5t0r3',
-            tag: 'ROOT ACCESS'
+            bg: '#f5f7fa', text: '#1e293b', sub: '#64748b',
+            cardBg: '#ffffff', cardBorder: '#e2e8f0',
+            cardShadow: '0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.02)', cardName: '#0f172a', cardMeta: '#64748b',
+            cardSize: '#f1f5f9', shareBg: '#f1f5f9', shareText: '#64748b',
+            dlBg: 'linear-gradient(135deg,#6366f1,#8b5cf6)', dlText: '#ffffff', dlShadow: '0 4px 16px rgba(99,102,241,0.3)',
+            r1: '16px', r2: '12px', font: "'Inter',sans-serif",
+            topBg: '#ffffff', topText: '#0f172a', topBorder: '#e2e8f0',
+            heroBg: 'linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa)', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.75)',
+            heroTag: 'rgba(255,255,255,0.12)', heroTagText: '#ffffff', heroTagDot: '#ffffff',
+            statBg: 'rgba(255,255,255,0.1)', statBorder: 'rgba(255,255,255,0.08)', statNum: '#ffffff', statLbl: 'rgba(255,255,255,0.6)',
+            chBg: '#ffffff', chBorder: '#e2e8f0', chText: '#64748b', chStrong: '#0f172a',
+            searchBg: '#ffffff', searchBorder: '#e2e8f0', searchText: '#0f172a', searchPlace: '#94a3b8',
+            catBg: '#ffffff', catText: '#64748b', catBorder: '#e2e8f0', catActBg: 'linear-gradient(135deg,#6366f1,#8b5cf6)', catActText: '#ffffff',
+            sectText: '#0f172a', sectCount: '#64748b',
+            toastBg: '#ffffff', toastText: '#0f172a', toastBorder: '#e2e8f0', toastShadow: '0 4px 24px rgba(0,0,0,0.08)',
+            spnBorder: '#e2e8f0', spnTop: '#6366f1', errText: '#ef4444', retryBg: 'linear-gradient(135deg,#6366f1,#8b5cf6)', retryText: '#ffffff',
+            tsBg: '#ffffff', tsBorder: '#e2e8f0', tsText: '#64748b', tsActBg: 'linear-gradient(135deg,#6366f1,#8b5cf6)', tsActText: '#ffffff',
+            emoji: '📦', name: 'Store', title: 'APK Store', desc: 'Browse & download latest Android apps',
+            tag: 'RASHD STORE'
         }
     };
 
@@ -539,7 +538,7 @@
         if (!t) return;
 
         var root = document.getElementById('bodyRoot');
-        var isDarkOrGlass = true;
+        var isDarkOrGlass = false;
 
         root.style.background = t.bg;
         root.style.color = t.text;
@@ -668,7 +667,7 @@
         var orb3 = document.getElementById('orb3');
 
         var orbMap = {
-            1: { o1: '250px 250px rgba(122,162,247,0.03) -40px -30px', o2: '200px 200px rgba(187,154,247,0.02) -30px 60%', o3: '180px 180px rgba(122,162,247,0.02) 70% 80%' }
+            1: { none: true }
         };
 
         var om = orbMap[themeNumber] || { none: true };
