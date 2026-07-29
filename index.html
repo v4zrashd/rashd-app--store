@@ -104,12 +104,19 @@
 
         .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;transition:all 0.8s ease;filter:blur(60px)}
 
+        @keyframes glitch{0%,100%{text-shadow:0 0 4px #7aa2f7,0 0 8px #bb9af7}50%{text-shadow:0 0 8px #7aa2f7,0 0 16px #bb9af7,2px 2px 0 rgba(122,162,247,0.3)}}
+        .glitch{animation:glitch 2s ease-in-out infinite}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        .cursor::after{content:'_';animation:blink 1s step-end infinite;color:#bb9af7;font-weight:700}
+        @keyframes scan{0%{top:-100%}100%{top:100%}}
+        .scanline{position:fixed;left:0;width:100%;height:4px;background:linear-gradient(to bottom,transparent,rgba(122,162,247,0.03),transparent);pointer-events:none;z-index:9999;animation:scan 4s linear infinite}
+        @keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(122,162,247,0.1)}50%{box-shadow:0 0 20px rgba(122,162,247,0.2)}}
         @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-        .glitch{animation:float 3s ease-in-out infinite}
-        .pulse{animation:pulse 2s ease-in-out infinite}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
-        .scanline{display:none}
-        .cursor::after{content:'';display:none}
+        @keyframes glow{0%,100%{opacity:0.6}50%{opacity:1}}
+        .tg-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:12px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.3s;animation:float 3s ease-in-out infinite;border:1px solid rgba(122,162,247,0.15);font-family:inherit;cursor:pointer}
+        .tg-btn:active{transform:scale(0.95)}
+        .tg-btn img{width:20px;height:20px;border-radius:50%;flex-shrink:0}
+        .tg-wrap{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:16px 0 8px}
         @media(max-width:380px){.ts .th{font-size:9px;padding:5px 10px}.hero h2{font-size:22px}.hero .sr .st .nm{font-size:15px}}
         @media(min-width:500px){.app{padding:0 0 40px}.hero{padding:22px}.cd{padding:16px 18px}}
     </style>
@@ -167,13 +174,23 @@
         <div class="st"><div class="spn"></div><div class="sb">Loading store...</div></div>
     </div>
 
+    <div class="tg-wrap">
+        <a class="tg-btn" href="https://t.me/v4zrasehd" target="_blank" rel="noopener" style="background:rgba(122,162,247,0.04);color:#7aa2f7">
+            <span style="font-size:18px">✈️</span> @v4zrasehd
+        </a>
+        <a class="tg-btn" href="https://t.me/cybersohag121" target="_blank" rel="noopener" style="background:rgba(187,154,247,0.04);color:#bb9af7">
+            <span style="font-size:18px">✈️</span> @cybersohag121
+        </a>
+    </div>
+
     <div class="fi" id="footerInfo">
-        <sp>📱 Rashd APK Store &bull; Download Android Apps</sp>
+        <sp>📱 Rashd APK Store &bull; @v4zrasehd</sp>
     </div>
 
     <div class="bt"></div>
 </div>
 
+<div class="scanline"></div>
 <div class="orb" id="orb1"></div>
 <div class="orb" id="orb2"></div>
 <div class="orb" id="orb3"></div>
@@ -510,23 +527,23 @@
 
     var themeDefinitions = {
         1: {
-            bg: '#f5f7fa', text: '#1e293b', sub: '#64748b',
-            cardBg: '#ffffff', cardBorder: '#e2e8f0',
-            cardShadow: '0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.02)', cardName: '#0f172a', cardMeta: '#64748b',
-            cardSize: '#f1f5f9', shareBg: '#f1f5f9', shareText: '#64748b',
-            dlBg: 'linear-gradient(135deg,#6366f1,#8b5cf6)', dlText: '#ffffff', dlShadow: '0 4px 16px rgba(99,102,241,0.3)',
+            bg: '#0b0710', text: '#c0caf5', sub: 'rgba(192,202,245,0.35)',
+            cardBg: 'rgba(122,162,247,0.03)', cardBorder: 'rgba(122,162,247,0.06)',
+            cardShadow: '0 0 30px rgba(122,162,247,0.02)', cardName: '#c0caf5', cardMeta: 'rgba(192,202,245,0.35)',
+            cardSize: 'rgba(122,162,247,0.03)', shareBg: 'rgba(122,162,247,0.04)', shareText: 'rgba(192,202,245,0.25)',
+            dlBg: 'linear-gradient(135deg,#7aa2f7,#bb9af7)', dlText: '#ffffff', dlShadow: '0 4px 20px rgba(122,162,247,0.25)',
             r1: '16px', r2: '12px', font: "'Inter',sans-serif",
-            topBg: '#ffffff', topText: '#0f172a', topBorder: '#e2e8f0',
-            heroBg: 'linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa)', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.75)',
+            topBg: 'rgba(122,162,247,0.03)', topText: '#7aa2f7', topBorder: 'rgba(122,162,247,0.08)',
+            heroBg: 'linear-gradient(135deg,#7aa2f7,#bb9af7)', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.75)',
             heroTag: 'rgba(255,255,255,0.12)', heroTagText: '#ffffff', heroTagDot: '#ffffff',
             statBg: 'rgba(255,255,255,0.1)', statBorder: 'rgba(255,255,255,0.08)', statNum: '#ffffff', statLbl: 'rgba(255,255,255,0.6)',
-            chBg: '#ffffff', chBorder: '#e2e8f0', chText: '#64748b', chStrong: '#0f172a',
-            searchBg: '#ffffff', searchBorder: '#e2e8f0', searchText: '#0f172a', searchPlace: '#94a3b8',
-            catBg: '#ffffff', catText: '#64748b', catBorder: '#e2e8f0', catActBg: 'linear-gradient(135deg,#6366f1,#8b5cf6)', catActText: '#ffffff',
-            sectText: '#0f172a', sectCount: '#64748b',
-            toastBg: '#ffffff', toastText: '#0f172a', toastBorder: '#e2e8f0', toastShadow: '0 4px 24px rgba(0,0,0,0.08)',
-            spnBorder: '#e2e8f0', spnTop: '#6366f1', errText: '#ef4444', retryBg: 'linear-gradient(135deg,#6366f1,#8b5cf6)', retryText: '#ffffff',
-            tsBg: '#ffffff', tsBorder: '#e2e8f0', tsText: '#64748b', tsActBg: 'linear-gradient(135deg,#6366f1,#8b5cf6)', tsActText: '#ffffff',
+            chBg: 'rgba(122,162,247,0.03)', chBorder: 'rgba(122,162,247,0.06)', chText: 'rgba(192,202,245,0.35)', chStrong: '#7aa2f7',
+            searchBg: 'rgba(122,162,247,0.03)', searchBorder: 'rgba(122,162,247,0.06)', searchText: '#c0caf5', searchPlace: 'rgba(192,202,245,0.15)',
+            catBg: 'rgba(122,162,247,0.02)', catText: 'rgba(192,202,245,0.25)', catBorder: 'rgba(122,162,247,0.06)', catActBg: '#7aa2f7', catActText: '#0b0710',
+            sectText: '#c0caf5', sectCount: 'rgba(192,202,245,0.25)',
+            toastBg: 'rgba(11,7,16,0.95)', toastText: '#c0caf5', toastBorder: 'rgba(122,162,247,0.08)', toastShadow: '0 0 30px rgba(122,162,247,0.02)',
+            spnBorder: 'rgba(122,162,247,0.08)', spnTop: '#bb9af7', errText: '#f7768e', retryBg: 'linear-gradient(135deg,#7aa2f7,#bb9af7)', retryText: '#ffffff',
+            tsBg: 'rgba(122,162,247,0.02)', tsBorder: 'rgba(122,162,247,0.06)', tsText: 'rgba(192,202,245,0.25)', tsActBg: '#7aa2f7', tsActText: '#0b0710',
             emoji: '📦', name: 'Store', title: 'APK Store', desc: 'Browse & download latest Android apps',
             tag: 'RASHD STORE'
         }
@@ -538,7 +555,7 @@
         if (!t) return;
 
         var root = document.getElementById('bodyRoot');
-        var isDarkOrGlass = false;
+        var isDarkOrGlass = true;
 
         root.style.background = t.bg;
         root.style.color = t.text;
@@ -667,7 +684,7 @@
         var orb3 = document.getElementById('orb3');
 
         var orbMap = {
-            1: { none: true }
+            1: { o1: '250px 250px rgba(122,162,247,0.03) -40px -30px', o2: '200px 200px rgba(187,154,247,0.02) -30px 60%', o3: '180px 180px rgba(122,162,247,0.02) 70% 80%' }
         };
 
         var om = orbMap[themeNumber] || { none: true };
