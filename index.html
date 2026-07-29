@@ -1,19 +1,15 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <script src="https://quge5.com/88/tag.min.js" data-zone="262222" async data-cfasync="false"></script>
     <meta name="monetag" content="b3a0bad47159adbdc1fef5b9a4cce7e2">
     <meta charset="UTF-8" />
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="monetag" content="b3a0bad47159adbdc1fef5b9a4cce7e2">
-    <title>Rashd Store — 10 Design Themes</title>
+    <title>Rashd Store — Hacker Edition</title>
     
-    <!-- External Scripts & Fonts -->
     <script src="https://quge5.com/88/tag.min.js" data-zone="262222" async data-cfasync="false"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Courier+Prime:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital@0;1&display=swap" rel="stylesheet">
     
     <style>
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -108,6 +104,12 @@
 
         .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;transition:all 0.8s ease;filter:blur(60px)}
 
+        @keyframes glitch{0%,100%{text-shadow:0 0 4px #00ff41,0 0 8px #00ff41}50%{text-shadow:0 0 8px #00ff41,0 0 16px #00ff41,2px 2px 0 rgba(0,255,65,0.3)}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        @keyframes scan{0%{top:-100%}100%{top:100%}}
+        .glitch{animation:glitch 2s ease-in-out infinite}
+        .cursor::after{content:'_';animation:blink 1s step-end infinite;color:#00ff41;font-weight:700}
+        .scanline{position:fixed;left:0;width:100%;height:4px;background:linear-gradient(to bottom,transparent,rgba(0,255,65,0.04),transparent);pointer-events:none;z-index:9999;animation:scan 4s linear infinite}
         @media(max-width:380px){.ts .th{font-size:9px;padding:5px 10px}.hero h2{font-size:22px}.hero .sr .st .nm{font-size:15px}}
         @media(min-width:500px){.app{padding:0 0 40px}.hero{padding:22px}.cd{padding:16px 18px}}
     </style>
@@ -119,29 +121,20 @@
 <div class="app">
 
     <div class="ts" id="themeSwitcher">
-        <span class="th" data-theme="1" onclick="setTheme(1)">🌸 1 Minimal</span>
-        <span class="th" data-theme="2" onclick="setTheme(2)">🫧 2 Glass</span>
-        <span class="th" data-theme="3" onclick="setTheme(3)">🎮 3 Neon</span>
-        <span class="th" data-theme="4" onclick="setTheme(4)">🌴 4 Retro</span>
-        <span class="th" data-theme="5" onclick="setTheme(5)">📱 5 iOS</span>
-        <span class="th" data-theme="6" onclick="setTheme(6)">🎨 6 Material</span>
-        <span class="th" data-theme="7" onclick="setTheme(7)">🌑 7 Gold</span>
-        <span class="th" data-theme="8" onclick="setTheme(8)">💎 8 Stone</span>
-        <span class="th" data-theme="9" onclick="setTheme(9)">🃏 9 Play</span>
-        <span class="th" data-theme="10" onclick="setTheme(10)">🌈 10 Iris</span>
+        <span class="th" data-theme="1" onclick="setTheme(1)">💀 Hacker</span>
     </div>
 
     <div class="bar" id="topBar">
         <div class="l">
-            <div class="i" id="barIcon">🛒</div>
-            <div class="tx"><h1>Rashd <span id="barSuffix">Store</span></h1></div>
+            <div class="i" id="barIcon">💀</div>
+            <div class="tx"><h1>Rashd <span id="barSuffix" class="cursor">Store</span></h1></div>
         </div>
         <span class="badge" id="verBadge">v1.0 <span id="themeIndicator" style="font-weight:400;opacity:0.5">min</span></span>
     </div>
 
     <div class="hero" id="heroBox">
         <div class="tg" id="heroTag"><span class="dt" id="heroDot"></span> <span id="heroTagText">PREMIUM</span></div>
-        <h2 id="heroTitle">App Store</h2>
+        <h2 id="heroTitle" class="glitch">App Store</h2>
         <p id="heroDesc">Browse and download the latest applications</p>
         <div class="sr">
             <div class="st"><div class="nm" id="statDl">0</div><div class="lb">Downloads</div></div>
@@ -175,12 +168,13 @@
     </div>
 
     <div class="fi" id="footerInfo">
-        <sp>Tap theme numbers above &bull; 10 unique designs</sp>
+        <sp>🔒 Hacker Edition &bull; rashd</sp>
     </div>
 
     <div class="bt"></div>
 </div>
 
+<div class="scanline"></div>
 <div class="orb" id="orb1"></div>
 <div class="orb" id="orb2"></div>
 <div class="orb" id="orb3"></div>
@@ -517,214 +511,25 @@
 
     var themeDefinitions = {
         1: {
-            bg: '#f8f9fa', text: '#1a1a2e', sub: '#6b7280', cardBg: '#ffffff',
-            cardBorder: '#e5e7eb', cardShadow: '0 1px 4px rgba(0,0,0,0.04)',
-            cardName: '#1a1a2e', cardMeta: '#6b7280', cardSize: '#f3f4f6',
-            shareBg: '#f3f4f6', shareText: '#6b7280',
-            dlBg: '#4f46e5', dlText: '#ffffff', dlShadow: '0 4px 12px rgba(79,70,229,0.2)',
-            r1: '16px', r2: '12px', font: "'Inter',sans-serif",
-            topBg: '#ffffff', topText: '#1a1a2e', topBorder: '#e5e7eb',
-            heroBg: '#ffffff', heroText: '#1a1a2e', heroSub: '#6b7280',
-            heroTag: '#f3f4f6', heroTagText: '#6b7280', heroTagDot: '#22d3a0',
-            statBg: '#f9fafb', statBorder: '#e5e7eb', statNum: '#1a1a2e', statLbl: '#6b7280',
-            chBg: '#ffffff', chBorder: '#e5e7eb', chText: '#6b7280', chStrong: '#1a1a2e',
-            searchBg: '#ffffff', searchBorder: '#e5e7eb', searchText: '#1a1a2e', searchPlace: '#9ca3af',
-            catBg: '#ffffff', catText: '#6b7280', catBorder: '#e5e7eb', catActBg: '#4f46e5', catActText: '#ffffff',
-            sectText: '#1a1a2e', sectCount: '#9ca3af',
-            toastBg: '#ffffff', toastText: '#1a1a2e', toastBorder: '#e5e7eb', toastShadow: '0 4px 20px rgba(0,0,0,0.08)',
-            spnBorder: '#e5e7eb', spnTop: '#4f46e5', errText: '#ef4444', retryBg: '#4f46e5', retryText: '#ffffff',
-            tsBg: '#ffffff', tsBorder: '#e5e7eb', tsText: '#6b7280', tsActBg: '#4f46e5', tsActText: '#ffffff',
-            emoji: '🌸', name: 'Minimal', title: 'Clean Store', desc: 'Simple, clean and minimal',
-            tag: 'MINIMAL EDITION'
-        },
-        2: {
-            bg: 'linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%)', text: '#ffffff', sub: 'rgba(255,255,255,0.5)',
-            cardBg: 'rgba(255,255,255,0.06)', cardBorder: 'rgba(255,255,255,0.08)',
-            cardShadow: '0 8px 32px rgba(0,0,0,0.06)', cardName: '#ffffff', cardMeta: 'rgba(255,255,255,0.45)',
-            cardSize: 'rgba(255,255,255,0.04)', shareBg: 'rgba(255,255,255,0.04)', shareText: 'rgba(255,255,255,0.4)',
-            dlBg: 'rgba(255,255,255,0.1)', dlText: '#ffffff', dlShadow: '0 4px 16px rgba(0,0,0,0.05)',
-            r1: '20px', r2: '14px', font: "'Inter',sans-serif",
-            topBg: 'rgba(255,255,255,0.08)', topText: '#ffffff', topBorder: 'rgba(255,255,255,0.1)',
-            heroBg: 'rgba(255,255,255,0.06)', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.5)',
-            heroTag: 'rgba(255,255,255,0.08)', heroTagText: 'rgba(255,255,255,0.7)', heroTagDot: '#22d3a0',
-            statBg: 'rgba(255,255,255,0.04)', statBorder: 'rgba(255,255,255,0.06)', statNum: '#ffffff', statLbl: 'rgba(255,255,255,0.45)',
-            chBg: 'rgba(255,255,255,0.06)', chBorder: 'rgba(255,255,255,0.08)', chText: 'rgba(255,255,255,0.5)', chStrong: '#ffffff',
-            searchBg: 'rgba(255,255,255,0.06)', searchBorder: 'rgba(255,255,255,0.08)', searchText: '#ffffff', searchPlace: 'rgba(255,255,255,0.3)',
-            catBg: 'rgba(255,255,255,0.06)', catText: 'rgba(255,255,255,0.5)', catBorder: 'rgba(255,255,255,0.08)', catActBg: 'rgba(255,255,255,0.15)', catActText: '#ffffff',
-            sectText: '#ffffff', sectCount: 'rgba(255,255,255,0.4)',
-            toastBg: 'rgba(255,255,255,0.1)', toastText: '#ffffff', toastBorder: 'rgba(255,255,255,0.12)', toastShadow: '0 8px 40px rgba(0,0,0,0.1)',
-            spnBorder: 'rgba(255,255,255,0.06)', spnTop: '#ffffff', errText: '#f87171', retryBg: 'rgba(255,255,255,0.1)', retryText: '#ffffff',
-            tsBg: 'rgba(255,255,255,0.08)', tsBorder: 'rgba(255,255,255,0.1)', tsText: 'rgba(255,255,255,0.5)', tsActBg: 'rgba(255,255,255,0.15)', tsActText: '#ffffff',
-            emoji: '🫧', name: 'Glass', title: 'Glass Store', desc: 'Frosted glass aesthetic',
-            tag: 'GLASS EDITION'
-        },
-        3: {
-            bg: '#0a0a14', text: '#ffffff', sub: 'rgba(255,255,255,0.4)',
-            cardBg: 'rgba(255,41,117,0.02)', cardBorder: 'rgba(255,41,117,0.06)',
-            cardShadow: '0 0 30px rgba(255,41,117,0.03)', cardName: '#ffffff', cardMeta: 'rgba(255,255,255,0.35)',
-            cardSize: 'rgba(255,255,255,0.02)', shareBg: 'rgba(255,41,117,0.05)', shareText: 'rgba(255,255,255,0.3)',
-            dlBg: '#ff2975', dlText: '#ffffff', dlShadow: '0 4px 20px rgba(255,41,117,0.25)',
-            r1: '12px', r2: '8px', font: "'Space Grotesk',sans-serif",
-            topBg: 'rgba(255,41,117,0.04)', topText: '#ffffff', topBorder: 'rgba(255,41,117,0.1)',
-            heroBg: 'linear-gradient(135deg,rgba(255,41,117,0.06),rgba(0,240,255,0.02))', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.4)',
-            heroTag: 'rgba(255,41,117,0.1)', heroTagText: '#ff2975', heroTagDot: '#ff2975',
-            statBg: 'rgba(255,41,117,0.03)', statBorder: 'rgba(255,41,117,0.08)', statNum: '#00f0ff', statLbl: 'rgba(255,255,255,0.35)',
-            chBg: 'rgba(255,41,117,0.03)', chBorder: 'rgba(255,41,117,0.08)', chText: 'rgba(255,255,255,0.4)', chStrong: '#00f0ff',
-            searchBg: 'rgba(255,41,117,0.03)', searchBorder: 'rgba(255,41,117,0.08)', searchText: '#ffffff', searchPlace: 'rgba(255,255,255,0.2)',
-            catBg: 'rgba(255,41,117,0.03)', catText: 'rgba(255,255,255,0.3)', catBorder: 'rgba(255,41,117,0.08)', catActBg: '#ff2975', catActText: '#ffffff',
-            sectText: '#ffffff', sectCount: 'rgba(255,255,255,0.3)',
-            toastBg: 'rgba(10,10,20,0.95)', toastText: '#ffffff', toastBorder: 'rgba(255,41,117,0.15)', toastShadow: '0 0 30px rgba(255,41,117,0.04)',
-            spnBorder: 'rgba(255,41,117,0.1)', spnTop: '#00f0ff', errText: '#ff2975', retryBg: '#ff2975', retryText: '#ffffff',
-            tsBg: 'rgba(255,41,117,0.03)', tsBorder: 'rgba(255,41,117,0.08)', tsText: 'rgba(255,255,255,0.3)', tsActBg: '#ff2975', tsActText: '#ffffff',
-            emoji: '🎮', name: 'Neon', title: 'Neon Store', desc: 'Cyberpunk neon vibe',
-            tag: 'NEON EDITION'
-        },
-        4: {
-            bg: 'linear-gradient(180deg,#0d0221 0%,#1a0533 30%,#2d1b69 60%,#ff6b35 100%)', text: '#ffffff',
-            sub: 'rgba(255,255,255,0.4)', cardBg: 'rgba(255,255,255,0.02)', cardBorder: 'rgba(255,107,53,0.06)',
-            cardShadow: '0 0 0 1px rgba(255,107,53,0.03)', cardName: '#ffffff', cardMeta: 'rgba(255,255,255,0.35)',
-            cardSize: 'rgba(255,107,53,0.03)', shareBg: 'rgba(255,107,53,0.05)', shareText: 'rgba(255,255,255,0.3)',
-            dlBg: 'transparent', dlText: '#ff6b35', dlShadow: 'none',
-            r1: '0px', r2: '0px', font: "'Courier Prime',monospace",
-            topBg: 'rgba(255,107,53,0.04)', topText: '#ff6b35', topBorder: 'rgba(255,107,53,0.1)',
-            heroBg: 'rgba(255,107,53,0.03)', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.4)',
-            heroTag: 'rgba(255,107,53,0.08)', heroTagText: '#ff6b35', heroTagDot: '#ff6b35',
-            statBg: 'rgba(255,107,53,0.03)', statBorder: 'rgba(255,107,53,0.06)', statNum: '#ff6b35', statLbl: 'rgba(255,255,255,0.35)',
-            chBg: 'rgba(255,107,53,0.03)', chBorder: 'rgba(255,107,53,0.08)', chText: 'rgba(255,255,255,0.4)', chStrong: '#ff6b35',
-            searchBg: 'rgba(255,107,53,0.03)', searchBorder: 'rgba(255,107,53,0.08)', searchText: '#ffffff', searchPlace: 'rgba(255,255,255,0.2)',
-            catBg: 'rgba(255,107,53,0.03)', catText: 'rgba(255,255,255,0.3)', catBorder: 'rgba(255,107,53,0.08)', catActBg: 'rgba(255,107,53,0.15)', catActText: '#ff6b35',
-            sectText: '#ff6b35', sectCount: 'rgba(255,255,255,0.3)',
-            toastBg: 'rgba(13,2,33,0.95)', toastText: '#ff6b35', toastBorder: 'rgba(255,107,53,0.15)', toastShadow: '0 0 30px rgba(255,107,53,0.04)',
-            spnBorder: 'rgba(255,107,53,0.1)', spnTop: '#ff6b35', errText: '#ff6b35', retryBg: 'transparent', retryText: '#ff6b35',
-            tsBg: 'rgba(255,107,53,0.03)', tsBorder: 'rgba(255,107,53,0.08)', tsText: 'rgba(255,255,255,0.3)', tsActBg: 'rgba(255,107,53,0.15)', tsActText: '#ff6b35',
-            emoji: '🌴', name: 'Retro', title: 'Retro Store', desc: 'Synthwave retro wave 80s',
-            tag: 'RETRO EDITION'
-        },
-        5: {
-            bg: '#f2f2f6', text: '#1c1c1e', sub: '#8e8e93',
-            cardBg: '#ffffff', cardBorder: '#e5e5ea', cardShadow: '0 0 0 0.5px rgba(0,0,0,0.04)',
-            cardName: '#1c1c1e', cardMeta: '#8e8e93', cardSize: '#f2f2f6',
-            shareBg: '#f2f2f6', shareText: '#007aff', dlBg: '#007aff', dlText: '#ffffff',
-            dlShadow: '0 4px 12px rgba(0,122,255,0.2)',
-            r1: '14px', r2: '10px', font: "'Inter',sans-serif",
-            topBg: 'rgba(255,255,255,0.7)', topText: '#1c1c1e', topBorder: 'none',
-            heroBg: '#ffffff', heroText: '#1c1c1e', heroSub: '#8e8e93',
-            heroTag: '#f2f2f6', heroTagText: '#8e8e93', heroTagDot: '#007aff',
-            statBg: '#f2f2f6', statBorder: 'none', statNum: '#007aff', statLbl: '#8e8e93',
-            chBg: '#ffffff', chBorder: 'none', chText: '#8e8e93', chStrong: '#1c1c1e',
-            searchBg: '#e5e5ea', searchBorder: 'none', searchText: '#1c1c1e', searchPlace: '#8e8e93',
-            catBg: '#e5e5ea', catText: '#8e8e93', catBorder: 'none', catActBg: '#007aff', catActText: '#ffffff',
-            sectText: '#1c1c1e', sectCount: '#8e8e93',
-            toastBg: 'rgba(28,28,30,0.9)', toastText: '#ffffff', toastBorder: 'none', toastShadow: '0 8px 40px rgba(0,0,0,0.15)',
-            spnBorder: '#e5e5ea', spnTop: '#007aff', errText: '#ff3b30', retryBg: '#007aff', retryText: '#ffffff',
-            tsBg: 'rgba(255,255,255,0.7)', tsBorder: 'none', tsText: '#8e8e93', tsActBg: '#007aff', tsActText: '#ffffff',
-            emoji: '📱', name: 'iOS', title: 'Rashd Store', desc: 'Native iOS aesthetic',
-            tag: 'iOS EDITION'
-        },
-        6: {
-            bg: '#fff8f0', text: '#1c1b1f', sub: '#6e6b72',
-            cardBg: '#ffffff', cardBorder: '#e7e0ec', cardShadow: '0 1px 4px rgba(0,0,0,0.02)',
-            cardName: '#1c1b1f', cardMeta: '#6e6b72', cardSize: '#f4efff',
-            shareBg: '#f4efff', shareText: '#6e6b72', dlBg: '#6750a4', dlText: '#ffffff',
-            dlShadow: '0 4px 16px rgba(103,80,164,0.2)',
-            r1: '28px', r2: '20px', font: "'Plus Jakarta Sans',sans-serif",
-            topBg: '#ffffff', topText: '#1c1b1f', topBorder: '#e7e0ec',
-            heroBg: 'linear-gradient(135deg,#f4efff,#ffe8e8,#e8f4ff)', heroText: '#1c1b1f', heroSub: '#6e6b72',
-            heroTag: '#ffffff', heroTagText: '#6750a4', heroTagDot: '#6750a4',
-            statBg: '#ffffff', statBorder: '#e7e0ec', statNum: '#6750a4', statLbl: '#6e6b72',
-            chBg: '#ffffff', chBorder: '#e7e0ec', chText: '#6e6b72', chStrong: '#1c1b1f',
-            searchBg: '#ffffff', searchBorder: '#e7e0ec', searchText: '#1c1b1f', searchPlace: '#6e6b72',
-            catBg: '#ffffff', catText: '#6e6b72', catBorder: '#e7e0ec', catActBg: '#6750a4', catActText: '#ffffff',
-            sectText: '#1c1b1f', sectCount: '#6e6b72',
-            toastBg: '#ffffff', toastText: '#1c1b1f', toastBorder: '#e7e0ec', toastShadow: '0 4px 20px rgba(0,0,0,0.06)',
-            spnBorder: '#e7e0ec', spnTop: '#6750a4', errText: '#b3261e', retryBg: '#6750a4', retryText: '#ffffff',
-            tsBg: '#ffffff', tsBorder: '#e7e0ec', tsText: '#6e6b72', tsActBg: '#6750a4', tsActText: '#ffffff',
-            emoji: '🎨', name: 'Material', title: 'Material Store', desc: 'Dynamic Material You design',
-            tag: 'MATERIAL EDITION'
-        },
-        7: {
-            bg: '#0a0a0a', text: '#f5f5f0', sub: 'rgba(255,255,240,0.3)',
-            cardBg: 'rgba(212,175,55,0.02)', cardBorder: 'rgba(212,175,55,0.04)',
-            cardShadow: '0 0 20px rgba(212,175,55,0.02)', cardName: '#f5f5f0', cardMeta: 'rgba(255,255,240,0.3)',
-            cardSize: 'rgba(212,175,55,0.02)', shareBg: 'rgba(212,175,55,0.04)', shareText: 'rgba(255,255,240,0.25)',
-            dlBg: '#d4af37', dlText: '#0a0a0a', dlShadow: '0 4px 20px rgba(212,175,55,0.2)',
-            r1: '16px', r2: '12px', font: "'Outfit',sans-serif",
-            topBg: 'rgba(212,175,55,0.03)', topText: '#d4af37', topBorder: 'rgba(212,175,55,0.08)',
-            heroBg: 'linear-gradient(135deg,rgba(212,175,55,0.04),rgba(10,10,10,1))', heroText: '#f5f5f0', heroSub: 'rgba(255,255,240,0.3)',
-            heroTag: 'rgba(212,175,55,0.06)', heroTagText: '#d4af37', heroTagDot: '#d4af37',
-            statBg: 'rgba(212,175,55,0.02)', statBorder: 'rgba(212,175,55,0.04)', statNum: '#d4af37', statLbl: 'rgba(255,255,240,0.25)',
-            chBg: 'rgba(212,175,55,0.02)', chBorder: 'rgba(212,175,55,0.06)', chText: 'rgba(255,255,240,0.3)', chStrong: '#d4af37',
-            searchBg: 'rgba(212,175,55,0.02)', searchBorder: 'rgba(212,175,55,0.06)', searchText: '#f5f5f0', searchPlace: 'rgba(255,255,240,0.15)',
-            catBg: 'rgba(212,175,55,0.02)', catText: 'rgba(255,255,240,0.25)', catBorder: 'rgba(212,175,55,0.06)', catActBg: '#d4af37', catActText: '#0a0a0a',
-            sectText: '#d4af37', sectCount: 'rgba(255,255,240,0.25)',
-            toastBg: 'rgba(10,10,10,0.95)', toastText: '#d4af37', toastBorder: 'rgba(212,175,55,0.12)', toastShadow: '0 0 30px rgba(212,175,55,0.03)',
-            spnBorder: 'rgba(212,175,55,0.08)', spnTop: '#d4af37', errText: '#d4af37', retryBg: '#d4af37', retryText: '#0a0a0a',
-            tsBg: 'rgba(212,175,55,0.02)', tsBorder: 'rgba(212,175,55,0.06)', tsText: 'rgba(255,255,240,0.25)', tsActBg: '#d4af37', tsActText: '#0a0a0a',
-            emoji: '🌑', name: 'Gold', title: 'Gold Store', desc: 'Luxury gold on dark',
-            tag: 'GOLD EDITION'
-        },
-        8: {
-            bg: '#e8e4df', text: '#2d2a26', sub: '#7d7670',
-            cardBg: '#f5f3f0', cardBorder: '#d4cfc9', cardShadow: '0 1px 2px rgba(0,0,0,0.02)',
-            cardName: '#2d2a26', cardMeta: '#7d7670', cardSize: '#e8e4df',
-            shareBg: '#e8e4df', shareText: '#7d7670', dlBg: '#2d2a26', dlText: '#ffffff',
-            dlShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            r1: '12px', r2: '8px', font: "'Inter',sans-serif",
-            topBg: '#f5f3f0', topText: '#2d2a26', topBorder: '#d4cfc9',
-            heroBg: '#f5f3f0', heroText: '#2d2a26', heroSub: '#7d7670',
-            heroTag: '#e8e4df', heroTagText: '#7d7670', heroTagDot: '#2d2a26',
-            statBg: '#e8e4df', statBorder: '#d4cfc9', statNum: '#2d2a26', statLbl: '#7d7670',
-            chBg: '#f5f3f0', chBorder: '#d4cfc9', chText: '#7d7670', chStrong: '#2d2a26',
-            searchBg: '#f5f3f0', searchBorder: '#d4cfc9', searchText: '#2d2a26', searchPlace: '#7d7670',
-            catBg: '#f5f3f0', catText: '#7d7670', catBorder: '#d4cfc9', catActBg: '#2d2a26', catActText: '#ffffff',
-            sectText: '#2d2a26', sectCount: '#7d7670',
-            toastBg: 'rgba(45,42,38,0.95)', toastText: '#ffffff', toastBorder: 'none', toastShadow: '0 4px 20px rgba(0,0,0,0.08)',
-            spnBorder: '#d4cfc9', spnTop: '#2d2a26', errText: '#7d7670', retryBg: '#2d2a26', retryText: '#ffffff',
-            tsBg: '#f5f3f0', tsBorder: '#d4cfc9', tsText: '#7d7670', tsActBg: '#2d2a26', tsActText: '#ffffff',
-            emoji: '💎', name: 'Stone', title: 'Stone Store', desc: 'Natural stone texture matte',
-            tag: 'STONE EDITION'
-        },
-        9: {
-            bg: '#ffffff', text: '#1c1c1c', sub: '#5f6368',
-            cardBg: '#ffffff', cardBorder: '#e8eaed', cardShadow: '0 1px 3px rgba(0,0,0,0.04)',
-            cardName: '#1c1c1c', cardMeta: '#5f6368', cardSize: '#f1f3f4',
-            shareBg: '#f1f3f4', shareText: '#5f6368', dlBg: '#1a73e8', dlText: '#ffffff',
-            dlShadow: '0 4px 12px rgba(26,115,232,0.2)',
-            r1: '16px', r2: '12px', font: "'Inter',sans-serif",
-            topBg: '#ffffff', topText: '#1c1c1c', topBorder: 'none',
-            heroBg: 'linear-gradient(135deg,#1a73e8,#0d47a1)', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.7)',
-            heroTag: 'rgba(255,255,255,0.1)', heroTagText: 'rgba(255,255,255,0.8)', heroTagDot: '#ffffff',
-            statBg: 'rgba(255,255,255,0.08)', statBorder: 'rgba(255,255,255,0.05)', statNum: '#ffffff', statLbl: 'rgba(255,255,255,0.5)',
-            chBg: '#f8f9fa', chBorder: '#e8eaed', chText: '#5f6368', chStrong: '#1c1c1c',
-            searchBg: '#f1f3f4', searchBorder: 'none', searchText: '#1c1c1c', searchPlace: '#5f6368',
-            catBg: '#ffffff', catText: '#5f6368', catBorder: '#e8eaed', catActBg: '#ffffff', catActText: '#1a73e8',
-            sectText: '#1c1c1c', sectCount: '#5f6368',
-            toastBg: 'rgba(28,28,28,0.9)', toastText: '#ffffff', toastBorder: 'none', toastShadow: '0 4px 20px rgba(0,0,0,0.08)',
-            spnBorder: '#e8eaed', spnTop: '#1a73e8', errText: '#5f6368', retryBg: '#1a73e8', retryText: '#ffffff',
-            tsBg: '#ffffff', tsBorder: '#e8eaed', tsText: '#5f6368', tsActBg: '#1a73e8', tsActText: '#ffffff',
-            emoji: '🃏', name: 'Play', title: 'Play Store', desc: 'Google Play Store inspired',
-            tag: 'PLAY EDITION'
-        },
-        10: {
-            bg: '#0f0b1a', text: '#ffffff', sub: 'rgba(255,255,255,0.4)',
-            cardBg: 'rgba(255,255,255,0.02)', cardBorder: 'rgba(255,255,255,0.04)',
-            cardShadow: '0 0 40px rgba(255,0,170,0.02)', cardName: '#ffffff', cardMeta: 'rgba(255,255,255,0.3)',
-            cardSize: 'rgba(255,255,255,0.02)', shareBg: 'rgba(255,255,255,0.02)', shareText: 'rgba(255,255,255,0.3)',
-            dlBg: 'linear-gradient(135deg,#ff00aa,#00ffc8)', dlText: '#ffffff', dlShadow: '0 4px 24px rgba(255,0,170,0.2)',
-            r1: '24px', r2: '18px', font: "'Plus Jakarta Sans',sans-serif",
-            topBg: 'rgba(255,255,255,0.03)', topText: '#ffffff', topBorder: 'rgba(255,255,255,0.04)',
-            heroBg: 'linear-gradient(135deg,rgba(255,0,170,0.08),rgba(0,255,200,0.04),rgba(100,50,255,0.08))', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.4)',
-            heroTag: 'rgba(255,255,255,0.04)', heroTagText: 'rgba(255,255,255,0.5)', heroTagDot: '#ff00aa',
-            statBg: 'rgba(255,255,255,0.02)', statBorder: 'rgba(255,255,255,0.04)', statNum: '#ff00aa', statLbl: 'rgba(255,255,255,0.3)',
-            chBg: 'rgba(255,255,255,0.03)', chBorder: 'rgba(255,255,255,0.04)', chText: 'rgba(255,255,255,0.4)', chStrong: '#ffffff',
-            searchBg: 'rgba(255,255,255,0.03)', searchBorder: 'rgba(255,255,255,0.04)', searchText: '#ffffff', searchPlace: 'rgba(255,255,255,0.2)',
-            catBg: 'rgba(255,255,255,0.02)', catText: 'rgba(255,255,255,0.3)', catBorder: 'rgba(255,255,255,0.04)', catActBg: '#ff00aa', catActText: '#ffffff',
-            sectText: '#ffffff', sectCount: 'rgba(255,255,255,0.3)',
-            toastBg: 'rgba(15,11,26,0.95)', toastText: '#ffffff', toastBorder: 'rgba(255,255,255,0.06)', toastShadow: '0 0 40px rgba(255,0,170,0.03)',
-            spnBorder: 'rgba(255,255,255,0.04)', spnTop: '#ff00aa', errText: '#ff00aa', retryBg: 'linear-gradient(135deg,#ff00aa,#00ffc8)', retryText: '#ffffff',
-            tsBg: 'rgba(255,255,255,0.03)', tsBorder: 'rgba(255,255,255,0.04)', tsText: 'rgba(255,255,255,0.3)', tsActBg: '#ff00aa', tsActText: '#ffffff',
-            emoji: '🌈', name: 'Iris', title: 'Iris Store', desc: 'Iridescent gradient dream',
-            tag: 'IRIDESCENT EDITION'
+            bg: '#0a0a0a', text: '#00ff41', sub: 'rgba(0,255,65,0.4)',
+            cardBg: 'rgba(0,255,65,0.02)', cardBorder: 'rgba(0,255,65,0.08)',
+            cardShadow: '0 0 20px rgba(0,255,65,0.03)', cardName: '#00ff41', cardMeta: 'rgba(0,255,65,0.4)',
+            cardSize: 'rgba(0,255,65,0.04)', shareBg: 'rgba(0,255,65,0.04)', shareText: 'rgba(0,255,65,0.3)',
+            dlBg: '#00ff41', dlText: '#0a0a0a', dlShadow: '0 0 20px rgba(0,255,65,0.3)',
+            r1: '4px', r2: '2px', font: "'Courier Prime',monospace",
+            topBg: 'rgba(0,255,65,0.03)', topText: '#00ff41', topBorder: 'rgba(0,255,65,0.08)',
+            heroBg: 'linear-gradient(180deg,rgba(0,255,65,0.04),rgba(0,0,0,1))', heroText: '#00ff41', heroSub: 'rgba(0,255,65,0.4)',
+            heroTag: 'rgba(0,255,65,0.06)', heroTagText: '#00ff41', heroTagDot: '#00ff41',
+            statBg: 'rgba(0,255,65,0.02)', statBorder: 'rgba(0,255,65,0.06)', statNum: '#00ff41', statLbl: 'rgba(0,255,65,0.35)',
+            chBg: 'rgba(0,255,65,0.02)', chBorder: 'rgba(0,255,65,0.06)', chText: 'rgba(0,255,65,0.4)', chStrong: '#00ff41',
+            searchBg: 'rgba(0,255,65,0.02)', searchBorder: 'rgba(0,255,65,0.06)', searchText: '#00ff41', searchPlace: 'rgba(0,255,65,0.2)',
+            catBg: 'rgba(0,255,65,0.02)', catText: 'rgba(0,255,65,0.3)', catBorder: 'rgba(0,255,65,0.06)', catActBg: '#00ff41', catActText: '#0a0a0a',
+            sectText: '#00ff41', sectCount: 'rgba(0,255,65,0.3)',
+            toastBg: 'rgba(0,0,0,0.95)', toastText: '#00ff41', toastBorder: 'rgba(0,255,65,0.1)', toastShadow: '0 0 20px rgba(0,255,65,0.03)',
+            spnBorder: 'rgba(0,255,65,0.08)', spnTop: '#00ff41', errText: '#00ff41', retryBg: '#00ff41', retryText: '#0a0a0a',
+            tsBg: 'rgba(0,255,65,0.02)', tsBorder: 'rgba(0,255,65,0.06)', tsText: 'rgba(0,255,65,0.3)', tsActBg: '#00ff41', tsActText: '#0a0a0a',
+            emoji: '💀', name: 'Hacker', title: 'Hack Store', desc: 'root@rashd:~# Matrix-5T0R3',
+            tag: 'ROOT ACCESS'
         }
     };
 
@@ -734,7 +539,7 @@
         if (!t) return;
 
         var root = document.getElementById('bodyRoot');
-        var isDarkOrGlass = themeNumber === 2 || themeNumber === 3 || themeNumber === 4 || themeNumber === 7 || themeNumber === 10;
+        var isDarkOrGlass = true;
 
         root.style.background = t.bg;
         root.style.color = t.text;
@@ -863,13 +668,7 @@
         var orb3 = document.getElementById('orb3');
 
         var orbMap = {
-            1: { none: true }, 2: { o1: '250px 250px rgba(102,126,234,0.2) -60px -40px', o2: '200px 200px rgba(240,147,251,0.15) -40px 60%', o3: '180px 180px rgba(118,75,162,0.15) -30px 30%' },
-            3: { o1: '200px 200px rgba(255,41,117,0.04) 80% -20px', o2: '180px 180px rgba(0,240,255,0.03) -40px 60%', o3: '150px 150px rgba(255,41,117,0.03) 60% 80%' },
-            4: { o1: '250px 250px rgba(255,107,53,0.03) -60px -40px', o2: '200px 200px rgba(45,27,105,0.2) -40px 60%', o3: '180px 180px rgba(255,107,53,0.03) -30px 30%' },
-            5: { none: true }, 6: { o1: '200px 200px rgba(103,80,164,0.04) 80% -30px', o2: '180px 180px rgba(255,232,232,0.1) -30px 60%', o3: '150px 150px rgba(232,244,255,0.1) 50% 80%' },
-            7: { o1: '200px 200px rgba(212,175,55,0.03) 80% -20px', o2: '180px 180px rgba(212,175,55,0.02) -30px 60%', o3: '150px 150px rgba(212,175,55,0.02) 50% 80%' },
-            8: { none: true }, 9: { none: true },
-            10: { o1: '250px 250px rgba(255,0,170,0.04) -40px -30px', o2: '200px 200px rgba(0,255,200,0.03) -30px 60%', o3: '180px 180px rgba(100,50,255,0.03) 70% 80%' }
+            1: { o1: '250px 250px rgba(0,255,65,0.03) -40px -30px', o2: '200px 200px rgba(0,255,65,0.02) -30px 60%', o3: '180px 180px rgba(0,255,65,0.02) 70% 80%' }
         };
 
         var om = orbMap[themeNumber] || { none: true };
@@ -954,6 +753,3 @@
 </script>
 </body>
 </html>
-
-```test update
-test update
