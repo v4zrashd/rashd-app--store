@@ -42,9 +42,9 @@
 
         .ch{display:flex;align-items:center;gap:10px;padding:12px 16px;margin-bottom:14px;border-radius:var(--r2);transition:all 0.3s}
         .ch .dt{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:all 0.3s}
-        .ch .dt.ok{background:#22d3a0;box-shadow:0 0 14px rgba(34,211,160,0.25)}
-        .ch .dt.wt{background:#fbbf24;box-shadow:0 0 14px rgba(251,191,36,0.25);animation:pl 1.2s ease-in-out infinite}
-        .ch .dt.no{background:#f87171;box-shadow:0 0 14px rgba(248,113,113,0.25)}
+        .ch .dt.ok{background:#7aa2f7;box-shadow:0 0 14px rgba(122,162,247,0.25)}
+        .ch .dt.wt{background:#bb9af7;box-shadow:0 0 14px rgba(187,154,247,0.25);animation:pl 1.2s ease-in-out infinite}
+        .ch .dt.no{background:#f7768e;box-shadow:0 0 14px rgba(247,118,142,0.25)}
         @keyframes pl{0%,100%{opacity:1}50%{opacity:0.25}}
         .ch .tx{font-size:12px;font-weight:500;transition:all 0.3s;line-height:1.4}
         .ch .tx strong{font-weight:700;transition:all 0.3s}
@@ -104,12 +104,12 @@
 
         .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;transition:all 0.8s ease;filter:blur(60px)}
 
-        @keyframes glitch{0%,100%{text-shadow:0 0 4px #00ff41,0 0 8px #00ff41}50%{text-shadow:0 0 8px #00ff41,0 0 16px #00ff41,2px 2px 0 rgba(0,255,65,0.3)}}
+        @keyframes glitch{0%,100%{text-shadow:0 0 4px #7aa2f7,0 0 8px #bb9af7}50%{text-shadow:0 0 8px #7aa2f7,0 0 16px #bb9af7,2px 2px 0 rgba(122,162,247,0.3)}}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
         @keyframes scan{0%{top:-100%}100%{top:100%}}
         .glitch{animation:glitch 2s ease-in-out infinite}
-        .cursor::after{content:'_';animation:blink 1s step-end infinite;color:#00ff41;font-weight:700}
-        .scanline{position:fixed;left:0;width:100%;height:4px;background:linear-gradient(to bottom,transparent,rgba(0,255,65,0.04),transparent);pointer-events:none;z-index:9999;animation:scan 4s linear infinite}
+        .cursor::after{content:'_';animation:blink 1s step-end infinite;color:#bb9af7;font-weight:700}
+        .scanline{position:fixed;left:0;width:100%;height:4px;background:linear-gradient(to bottom,transparent,rgba(122,162,247,0.03),transparent);pointer-events:none;z-index:9999;animation:scan 4s linear infinite}
         @media(max-width:380px){.ts .th{font-size:9px;padding:5px 10px}.hero h2{font-size:22px}.hero .sr .st .nm{font-size:15px}}
         @media(min-width:500px){.app{padding:0 0 40px}.hero{padding:22px}.cd{padding:16px 18px}}
     </style>
@@ -184,7 +184,7 @@
     'use strict';
 
     const GIT_REPO_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/latest';
-    const GIT_TAG_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/tags/v1';
+    const GIT_TAG_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/tags/v1.0';
     
     let applicationData = [];
     let activeFilter = 'all';
@@ -210,11 +210,11 @@
     }
 
     const extensionColorMap = {
-        APK: '#4f46e5', PDF: '#f43f5e', ZIP: '#f97316', RAR: '#f97316',
-        DOC: '#06b6d4', DOCX: '#06b6d4', TXT: '#6b7280', PNG: '#10b981',
-        JPG: '#f59e0b', JPEG: '#f59e0b', MP4: '#8b5cf6', MP3: '#ec4899',
-        GIF: '#22d3a0', SVG: '#6366f1', JSON: '#14b8a6', XML: '#a855f7',
-        HTML: '#ef4444', CSS: '#3b82f6', JS: '#fbbf24', PHP: '#8b5cf6'
+        APK: '#7aa2f7', PDF: '#f7768e', ZIP: '#e0af68', RAR: '#e0af68',
+        DOC: '#7dcfff', DOCX: '#7dcfff', TXT: '#565f89', PNG: '#73daca',
+        JPG: '#e0af68', JPEG: '#e0af68', MP4: '#bb9af7', MP3: '#ff9e64',
+        GIF: '#73daca', SVG: '#7aa2f7', JSON: '#7dcfff', XML: '#bb9af7',
+        HTML: '#f7768e', CSS: '#7aa2f7', JS: '#e0af68', PHP: '#bb9af7'
     };
 
     const extensionIconMap = {
@@ -511,24 +511,24 @@
 
     var themeDefinitions = {
         1: {
-            bg: '#0a0a0a', text: '#00ff41', sub: 'rgba(0,255,65,0.4)',
-            cardBg: 'rgba(0,255,65,0.02)', cardBorder: 'rgba(0,255,65,0.08)',
-            cardShadow: '0 0 20px rgba(0,255,65,0.03)', cardName: '#00ff41', cardMeta: 'rgba(0,255,65,0.4)',
-            cardSize: 'rgba(0,255,65,0.04)', shareBg: 'rgba(0,255,65,0.04)', shareText: 'rgba(0,255,65,0.3)',
-            dlBg: '#00ff41', dlText: '#0a0a0a', dlShadow: '0 0 20px rgba(0,255,65,0.3)',
-            r1: '4px', r2: '2px', font: "'Courier Prime',monospace",
-            topBg: 'rgba(0,255,65,0.03)', topText: '#00ff41', topBorder: 'rgba(0,255,65,0.08)',
-            heroBg: 'linear-gradient(180deg,rgba(0,255,65,0.04),rgba(0,0,0,1))', heroText: '#00ff41', heroSub: 'rgba(0,255,65,0.4)',
-            heroTag: 'rgba(0,255,65,0.06)', heroTagText: '#00ff41', heroTagDot: '#00ff41',
-            statBg: 'rgba(0,255,65,0.02)', statBorder: 'rgba(0,255,65,0.06)', statNum: '#00ff41', statLbl: 'rgba(0,255,65,0.35)',
-            chBg: 'rgba(0,255,65,0.02)', chBorder: 'rgba(0,255,65,0.06)', chText: 'rgba(0,255,65,0.4)', chStrong: '#00ff41',
-            searchBg: 'rgba(0,255,65,0.02)', searchBorder: 'rgba(0,255,65,0.06)', searchText: '#00ff41', searchPlace: 'rgba(0,255,65,0.2)',
-            catBg: 'rgba(0,255,65,0.02)', catText: 'rgba(0,255,65,0.3)', catBorder: 'rgba(0,255,65,0.06)', catActBg: '#00ff41', catActText: '#0a0a0a',
-            sectText: '#00ff41', sectCount: 'rgba(0,255,65,0.3)',
-            toastBg: 'rgba(0,0,0,0.95)', toastText: '#00ff41', toastBorder: 'rgba(0,255,65,0.1)', toastShadow: '0 0 20px rgba(0,255,65,0.03)',
-            spnBorder: 'rgba(0,255,65,0.08)', spnTop: '#00ff41', errText: '#00ff41', retryBg: '#00ff41', retryText: '#0a0a0a',
-            tsBg: 'rgba(0,255,65,0.02)', tsBorder: 'rgba(0,255,65,0.06)', tsText: 'rgba(0,255,65,0.3)', tsActBg: '#00ff41', tsActText: '#0a0a0a',
-            emoji: '💀', name: 'Hacker', title: 'Hack Store', desc: 'root@rashd:~# Matrix-5T0R3',
+            bg: '#0b0710', text: '#c0caf5', sub: 'rgba(192,202,245,0.35)',
+            cardBg: 'rgba(122,162,247,0.03)', cardBorder: 'rgba(122,162,247,0.06)',
+            cardShadow: '0 0 30px rgba(122,162,247,0.02)', cardName: '#c0caf5', cardMeta: 'rgba(192,202,245,0.35)',
+            cardSize: 'rgba(122,162,247,0.03)', shareBg: 'rgba(122,162,247,0.04)', shareText: 'rgba(192,202,245,0.25)',
+            dlBg: 'linear-gradient(135deg,#7aa2f7,#bb9af7)', dlText: '#ffffff', dlShadow: '0 4px 20px rgba(122,162,247,0.25)',
+            r1: '14px', r2: '10px', font: "'Courier Prime',monospace",
+            topBg: 'rgba(122,162,247,0.03)', topText: '#7aa2f7', topBorder: 'rgba(122,162,247,0.08)',
+            heroBg: 'linear-gradient(135deg,rgba(122,162,247,0.04),rgba(187,154,247,0.02))', heroText: '#c0caf5', heroSub: 'rgba(192,202,245,0.35)',
+            heroTag: 'rgba(122,162,247,0.06)', heroTagText: '#7aa2f7', heroTagDot: '#7aa2f7',
+            statBg: 'rgba(122,162,247,0.02)', statBorder: 'rgba(122,162,247,0.05)', statNum: '#bb9af7', statLbl: 'rgba(192,202,245,0.3)',
+            chBg: 'rgba(122,162,247,0.02)', chBorder: 'rgba(122,162,247,0.06)', chText: 'rgba(192,202,245,0.35)', chStrong: '#7aa2f7',
+            searchBg: 'rgba(122,162,247,0.02)', searchBorder: 'rgba(122,162,247,0.06)', searchText: '#c0caf5', searchPlace: 'rgba(192,202,245,0.15)',
+            catBg: 'rgba(122,162,247,0.02)', catText: 'rgba(192,202,245,0.25)', catBorder: 'rgba(122,162,247,0.06)', catActBg: '#7aa2f7', catActText: '#0b0710',
+            sectText: '#7aa2f7', sectCount: 'rgba(192,202,245,0.25)',
+            toastBg: 'rgba(11,7,16,0.95)', toastText: '#c0caf5', toastBorder: 'rgba(122,162,247,0.08)', toastShadow: '0 0 30px rgba(122,162,247,0.02)',
+            spnBorder: 'rgba(122,162,247,0.08)', spnTop: '#bb9af7', errText: '#f7768e', retryBg: 'linear-gradient(135deg,#7aa2f7,#bb9af7)', retryText: '#ffffff',
+            tsBg: 'rgba(122,162,247,0.02)', tsBorder: 'rgba(122,162,247,0.06)', tsText: 'rgba(192,202,245,0.25)', tsActBg: '#7aa2f7', tsActText: '#0b0710',
+            emoji: '💀', name: 'Hacker', title: 'Hack Store', desc: 'root@rashd:~# cyberpunk-5t0r3',
             tag: 'ROOT ACCESS'
         }
     };
@@ -668,7 +668,7 @@
         var orb3 = document.getElementById('orb3');
 
         var orbMap = {
-            1: { o1: '250px 250px rgba(0,255,65,0.03) -40px -30px', o2: '200px 200px rgba(0,255,65,0.02) -30px 60%', o3: '180px 180px rgba(0,255,65,0.02) 70% 80%' }
+            1: { o1: '250px 250px rgba(122,162,247,0.03) -40px -30px', o2: '200px 200px rgba(187,154,247,0.02) -30px 60%', o3: '180px 180px rgba(122,162,247,0.02) 70% 80%' }
         };
 
         var om = orbMap[themeNumber] || { none: true };
