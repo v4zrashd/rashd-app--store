@@ -320,6 +320,11 @@ const extIconMap = {
         XML:'#8b5cf6', HTML:'#f87171', CSS:'#60bdf6', JS:'#fbbf24', PHP:'#8b5cf6'
     };
 
+    function extInfo(ext) {
+        const u = ext.toUpperCase();
+        return { color: extColor[u] || '#22d3ee', icon: extIconMap[u] || '📁' };
+    }
+
     async function loadViewCounter() {
         try {
             const r = await fetch('https://api.counterapi.dev/v1/v4zrashd/rashdstore/up');
