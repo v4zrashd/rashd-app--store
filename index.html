@@ -1,199 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://quge5.com/88/tag.min.js" data-zone="262222" async data-cfasync="false"></script>
-    <meta name="monetag" content="b3a0bad47159adbdc1fef5b9a4cce7e2">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rashd Store — APK Store</title>
-    
-    <script src="https://quge5.com/88/tag.min.js" data-zone="262222" async data-cfasync="false"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <title>RASHD APP STORE — Modded APKs</title>
+    <meta name="description" content="Download the latest modded APKs free. Premium mods, fast updates.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        body{transition:background 0.45s ease,color 0.45s ease;min-height:100vh;display:flex;justify-content:center;overflow-x:hidden}
-        .app{width:100%;max-width:500px;padding:0 16px 40px;position:relative;z-index:1}
-        .gr{display:flex;flex-direction:column;gap:10px}
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #0e0e16;
+            --cyan: #00f0ff;
+            --purple: #b026ff;
+            --text: #e6e6ff;
+            --sub: rgba(230,230,255,0.55);
+            --border: rgba(0,240,255,0.14);
+            --card-bg: rgba(14,14,22,0.85);
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Space Grotesk', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--bg); color: var(--text); font-family: var(--sans);
+            min-height: 100vh; overflow-x: hidden;
+        }
+        ::selection { background: var(--cyan); color: #000; }
+        a { text-decoration: none; color: inherit; }
 
-        .ts{display:flex;gap:4px;overflow-x:auto;padding:8px 0 6px;scrollbar-width:none;position:sticky;top:0;z-index:99;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding-top:10px;padding-bottom:10px;transition:all 0.3s}
-        .ts::-webkit-scrollbar{display:none}
-        .ts .th{flex-shrink:0;padding:7px 14px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.25s;font-family:inherit;border:1.5px solid;background:transparent;user-select:none;letter-spacing:0.3px}
-        .ts .th:active{transform:scale(0.92)}
-        .ts .th.act{color:#fff!important;transform:scale(1.02)}
+        /* background grid + glow */
+        .bg-grid {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
+        }
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; opacity: 0.5; }
+        #orb1 { top: -120px; left: -100px; width: 420px; height: 420px; background: rgba(0,240,255,0.18); }
+        #orb2 { top: 30%; right: -160px; width: 460px; height: 460px; background: rgba(176,38,255,0.16); }
 
-        .bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;margin-bottom:14px;border-radius:var(--r1);transition:all 0.35s;position:relative;overflow:hidden}
-        .bar .l{display:flex;align-items:center;gap:10px}
-        .bar .i{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all 0.3s;flex-shrink:0}
-        .bar .tx h1{font-size:17px;font-weight:700;transition:all 0.3s;letter-spacing:-0.3px}
-        .bar .tx h1 span{opacity:0.5;font-weight:400}
-        .bar .badge{padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;transition:all 0.3s;letter-spacing:0.3px}
+        .scanline {
+            position: fixed; left: 0; right: 0; height: 4px; z-index: 999;
+            background: linear-gradient(to bottom, transparent, rgba(0,240,255,0.06), transparent);
+            pointer-events: none; animation: scan 5s linear infinite;
+        }
+        @keyframes scan { 0% { top: -5%; } 100% { top: 105%; } }
 
-        .hero{border-radius:var(--r1);padding:18px;margin-bottom:14px;transition:all 0.35s;position:relative;overflow:hidden}
-        .hero .tg{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;font-size:10px;font-weight:600;margin-bottom:10px;transition:all 0.3s;letter-spacing:0.8px;text-transform:uppercase}
-        .hero .tg .dt{width:6px;height:6px;border-radius:50%;transition:all 0.3s;flex-shrink:0}
-        .hero h2{font-size:26px;font-weight:800;margin-bottom:3px;letter-spacing:-0.8px;transition:all 0.3s;line-height:1.1}
-        .hero p{font-size:13px;font-weight:400;margin-bottom:16px;transition:all 0.3s;line-height:1.4}
-        .hero .sr{display:flex;gap:6px}
-        .hero .sr .st{flex:1;padding:12px 6px;text-align:center;border-radius:var(--r2);transition:all 0.3s}
-        .hero .sr .st .nm{font-size:18px;font-weight:800;transition:all 0.3s;letter-spacing:-0.5px}
-        .hero .sr .st .lb{font-size:8px;text-transform:uppercase;letter-spacing:0.8px;margin-top:3px;transition:all 0.3s;font-weight:600}
+        .wrap { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 0 18px 60px; }
 
-        .ch{display:flex;align-items:center;gap:10px;padding:12px 16px;margin-bottom:14px;border-radius:var(--r2);transition:all 0.3s}
-        .ch .dt{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:all 0.3s}
-        .ch .dt.ok{background:#22d3a0;box-shadow:0 0 14px rgba(34,211,160,0.25)}
-        .ch .dt.wt{background:#fbbf24;box-shadow:0 0 14px rgba(251,191,36,0.25);animation:pl 1.2s ease-in-out infinite}
-        .ch .dt.no{background:#f87171;box-shadow:0 0 14px rgba(248,113,113,0.25)}
-        @keyframes pl{0%,100%{opacity:1}50%{opacity:0.25}}
-        .ch .tx{font-size:12px;font-weight:500;transition:all 0.3s;line-height:1.4}
-        .ch .tx strong{font-weight:700;transition:all 0.3s}
+        /* ===== NAVBAR ===== */
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 0; backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            background: rgba(10,10,15,0.6); border-bottom: 1px solid rgba(0,240,255,0.08);
+        }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 1px; }
+        .brand .logo {
+            width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            box-shadow: 0 0 16px rgba(0,240,255,0.45);
+            font-size: 17px; color: #000;
+        }
+        .brand .name { font-size: 15px; }
+        .brand .name em { font-style: normal; color: var(--cyan); text-shadow: 0 0 12px rgba(0,240,255,0.6); }
+        .btn-tg {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
+            color: #000; background: linear-gradient(135deg, var(--cyan), var(--purple));
+            box-shadow: 0 0 20px rgba(0,240,255,0.4); transition: all .2s;
+        }
+        .btn-tg:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(176,38,255,0.6); }
 
-        .sw{margin-bottom:14px;transition:all 0.3s}
-        .sw .in{display:flex;align-items:center;gap:8px;padding:0 16px;border-radius:var(--r1);transition:all 0.3s}
-        .sw .in .ic{font-size:16px;opacity:0.4;flex-shrink:0;transition:all 0.3s}
-        .sw .in input{flex:1;padding:14px 0;background:transparent;border:none;outline:none;font-size:14px;font-weight:500;font-family:inherit;transition:all 0.3s}
-        .sw .in input::placeholder{font-weight:400;color:var(--ph);transition:all 0.3s}
-        .sw .in .cl{width:26px;height:26px;border-radius:50%;border:none;font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;font-family:inherit;flex-shrink:0;transition:all 0.2s}
-        .sw .in .cl.sh{display:flex}
-        .sw .in .cl:active{transform:scale(0.85)}
-        .sw .in input:focus{outline:none}
-        input::-webkit-search-decoration,input::-webkit-search-cancel-button{display:none}
+        /* ===== HERO ===== */
+        .hero { text-align: center; padding: 78px 0 46px; }
+        .hero .tagline {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--mono); font-size: 11px; letter-spacing: 3px; color: var(--cyan);
+            border: 1px solid rgba(0,240,255,0.3); border-radius: 100px; padding: 7px 16px; margin-bottom: 22px;
+            box-shadow: 0 0 18px rgba(0,240,255,0.15);
+        }
+        .hero .tagline .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); animation: pulse 1.4s infinite; }
+        @keyframes pulse { 0%,100% {opacity:1;} 50% {opacity:.35;} }
+        .hero h1 {
+            font-size: clamp(30px, 6.5vw, 56px); line-height: 1.08; font-weight: 700; letter-spacing: -1px;
+        }
+        .grad {
+            background: linear-gradient(90deg, #00f0ff, #b026ff, #00f0ff);
+            background-size: 220% auto; -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; animation: shine 3.5s linear infinite;
+        }
+        @keyframes shine { to { background-position: 220% center; } }
+        .hero p { margin: 18px auto 0; max-width: 560px; color: var(--m); font-size: 16px; line-height: 1.6; }
+        .hero .stats { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
+        .hero .stat {
+            min-width: 110px; padding: 14px 20px; border-radius: 14px; text-align: center;
+            background: var(--card-bg); border: 1px solid var(--grid);
+        }
+        .hero .stat .n { font-size: 22px; font-weight: 700; font-family: var(--mono); color: var(--cyan); }
+        .hero .stat .l { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--m); margin-top: 2px; }
 
-        .ct{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
-        .ct::-webkit-scrollbar{display:none}
-        .ct .cp{flex-shrink:0;padding:9px 18px;border-radius:100px;font-size:11px;font-weight:600;cursor:pointer;user-select:none;transition:all 0.2s;font-family:inherit;white-space:nowrap;border:1.5px solid transparent;letter-spacing:0.3px}
-        .ct .cp:active{transform:scale(0.93)}
+        /* ===== FEATURES ===== */
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 10px 0 40px; }
+        .feature {
+            position: relative; overflow: hidden; padding: 26px 22px; border-radius: 18px;
+            background: var(--card-bg); border: 1px solid var(--grid); transition: all .25s;
+        }
+        .feature:hover { transform: translateY(-5px); border-color: rgba(176,38,255,0.5); box-shadow: 0 0 30px rgba(176,38,255,0.25); }
+        .feature .ic {
+            width: 48px; height: 48px; border-radius: 13px; display: grid; place-items: center; font-size: 22px; margin-bottom: 16px;
+            background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(176,38,255,0.15));
+            border: 1px solid rgba(0,240,255,0.25);
+        }
+        .feature h3 { font-size: 18px; font-weight: 700; margin-bottom: 7px; }
+        .feature p { font-size: 13.5px; color: var(--m); line-height: 1.5; }
+        .feature h3 span { color: var(--cyan); }
 
-        .sh{display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-bottom:12px;transition:all 0.3s}
-        .sh h3{font-size:17px;font-weight:700;transition:all 0.3s;letter-spacing:-0.3px}
-        .sh .co{font-size:12px;font-weight:500;transition:all 0.3s}
+        /* ===== SECTION HEAD ===== */
+        .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .section-head h2 { font-size: 22px; font-weight: 700; }
+        .section-head h2 .grad { text-transform: uppercase; font-size: 20px; }
+        .ct { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 18px; scrollbar-width: none; }
+        .ct::-webkit-scrollbar { display: none; }
+        .ct .cp {
+            flex-shrink: 0; padding: 9px 16px; border-radius: 100px; font-size: 12px; font-weight: 600; cursor: pointer;
+            font-family: var(--sans); color: var(--m); background: var(--card-bg); border: 1px solid var(--grid); transition: all .2s;
+        }
+        .ct .cp.act { color: #000; background: linear-gradient(135deg, var(--cyan), var(--purple)); border-color: transparent; box-shadow: 0 0 16px rgba(0,240,255,0.35); }
 
-        .cd{padding:14px 16px;border-radius:var(--r1);display:flex;align-items:center;gap:14px;transition:all 0.25s;animation:fadeUp 0.35s ease backwards}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-        .cd:active{transform:scale(0.98)}
-        .cd .ib{width:52px;height:52px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;overflow:hidden;transition:all 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.04)}
-        .cd .ib .ex{position:absolute;bottom:3px;right:4px;font-size:6px;font-weight:800;padding:1px 4px;border-radius:4px;transition:all 0.3s;letter-spacing:0}
-        .cd .if{flex:1;min-width:0;overflow:hidden}
-        .cd .if .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:all 0.3s;letter-spacing:-0.2px}
-        .cd .if .mt{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:11px;flex-wrap:wrap;transition:all 0.3s}
-        .cd .if .mt .sp{font-size:8px;opacity:0.4}
-        .cd .if .mt .sz{padding:2px 10px;border-radius:6px;font-size:10px;font-weight:500;transition:all 0.3s;letter-spacing:0}
-        .cd .ac{display:flex;align-items:center;gap:4px;flex-shrink:0}
-        .cd .ac .sh{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;font-family:inherit;transition:all 0.15s;border:none}
-        .cd .ac .sh:active{transform:scale(0.9)}
-        .cd .ac .dl{padding:9px 16px;border-radius:10px;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:4px;transition:all 0.2s;font-family:inherit;white-space:nowrap;letter-spacing:0.3px}
-        .cd .ac .dl:active{transform:scale(0.93)}
+        .search {
+            display: flex; align-items: center; gap: 10px; padding: 0 16px; height: 50px;
+            border-radius: 14px; background: var(--card-bg); border: 1px solid var(--grid); margin-bottom: 20px;
+        }
+        .search:focus-within { border-color: var(--cyan); box-shadow: 0 0 18px rgba(0,240,255,0.18); }
+        .search span { font-size: 16px; color: var(--cyan); }
+        .search input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--sans); font-size: 14px; }
+        .search input::placeholder { color: rgba(230,230,255,0.35); font-weight: 400; }
 
-        .st{text-align:center;padding:70px 20px}
-        .st .spn{display:inline-block;width:34px;height:34px;border-radius:50%;animation:spin 0.6s linear infinite;margin-bottom:14px}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        .st .er{font-size:15px;font-weight:600;margin-bottom:6px}
-        .st .sb{font-size:13px;margin-bottom:12px;font-weight:400}
-        .st .rty{padding:12px 30px;border-radius:var(--r2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;border:none;letter-spacing:0.5px}
-        .st .rty:active{transform:scale(0.94)}
-        .st .ei{font-size:48px;margin-bottom:10px;opacity:0.5}
-        .st .et{font-size:17px;font-weight:700;margin-bottom:4px}
-        .st .ed{font-size:13px;font-weight:400}
+        /* ===== APK GRID ===== */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 18px; } }
 
-        .tt{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);padding:12px 24px;border-radius:var(--r2);font-size:13px;font-weight:500;z-index:99999;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s;max-width:90%;text-align:center;font-family:inherit;pointer-events:none;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
-        .tt.sh{transform:translateX(-50%) translateY(0)}
-        .bt{height:24px}
-        .fi{text-align:center;padding:20px 0 10px;font-size:9px;letter-spacing:0.8px;text-transform:uppercase;transition:all 0.3s}
-        .fi sp{opacity:0.3}
+        .card {
+            position: relative; border-radius: 16px; overflow: hidden;
+            background: var(--card-bg); border: 1px solid var(--grid); transition: all .25s; animation: fadeUp .4s ease backwards;
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .card:hover { transform: translateY(-4px); border-color: var(--cyan); box-shadow: 0 0 26px rgba(0,240,255,0.22); }
+        .thumb {
+            position: relative; aspect-ratio: 16/10; display: grid; place-items: center; font-size: 40px;
+            background: linear-gradient(135deg, rgba(0,240,255,0.10), rgba(176,38,255,0.16));
+        }
+        .thumb .ext {
+            position: absolute; top: 10px; right: 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 1px; font-weight: 700;
+            color: #000; background: var(--cyan); border-radius: 5px; padding: 2px 6px;
+        }
+        .body { padding: 13px 14px 16px; }
+        .body h4 { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .meta { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 13px; font-size: 11px; color: var(--m); font-family: var(--mono); }
+        .btn-dl {
+            display: block; width: 100%; text-align: center; padding: 11px; border-radius: 10px;
+            font-size: 12px; font-weight: 700; font-family: var(--sans); cursor: pointer;
+            color: var(--cyan); background: rgba(0,240,255,0.06); border: 1px solid rgba(0,240,255,0.35);
+            transition: all .2s;
+        }
+        .btn-dl:hover { color: #000; background: linear-gradient(135deg, var(--cyan), var(--purple)); border-color: transparent; box-shadow: 0 0 20px rgba(0,240,255,0.5); }
+        .btn-dl:active { transform: scale(0.96); }
 
-        .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;transition:all 0.8s ease;filter:blur(60px)}
+        /* ===== STATES ===== */
+        .state { text-align: center; padding: 70px 20px; grid-column: 1 / -1; }
+        .spn { width: 36px; height: 36px; margin: 0 auto 16px; border-radius: 50%; border: 3px solid rgba(0,240,255,0.15); border-top-color: var(--cyan); border-right-color: var(--purple); animation: spin .6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .state .e { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+        .state .s { font-size: 13px; color: var(--m); margin-bottom: 16px; }
+        .btn-rty { padding: 12px 28px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-family: var(--sans); color: #000; background: linear-gradient(135deg, var(--cyan), var(--purple)); }
 
-        @keyframes glitch{0%,100%{text-shadow:0 0 4px #7aa2f7,0 0 8px #bb9af7}50%{text-shadow:0 0 8px #7aa2f7,0 0 16px #bb9af7,2px 2px 0 rgba(122,162,247,0.3)}}
-        .glitch{animation:glitch 2s ease-in-out infinite}
-        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-        .cursor::after{content:'_';animation:blink 1s step-end infinite;color:#bb9af7;font-weight:700}
-        @keyframes scan{0%{top:-100%}100%{top:100%}}
-        .scanline{position:fixed;left:0;width:100%;height:4px;background:linear-gradient(to bottom,transparent,rgba(122,162,247,0.03),transparent);pointer-events:none;z-index:9999;animation:scan 4s linear infinite}
-        @keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(122,162,247,0.1)}50%{box-shadow:0 0 20px rgba(122,162,247,0.2)}}
-        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-        @keyframes glow{0%,100%{opacity:0.6}50%{opacity:1}}
-        .tg-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:12px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.3s;animation:float 3s ease-in-out infinite;border:1px solid rgba(122,162,247,0.15);font-family:inherit;cursor:pointer}
-        .tg-btn:active{transform:scale(0.95)}
-        .tg-btn img{width:20px;height:20px;border-radius:50%;flex-shrink:0}
-        .tg-wrap{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:16px 0 8px}
-        @media(max-width:380px){.ts .th{font-size:9px;padding:5px 10px}.hero h2{font-size:22px}.hero .sr .st .nm{font-size:15px}}
-        @media(min-width:500px){.app{padding:0 0 40px}.hero{padding:22px}.cd{padding:16px 18px}}
+        /* ===== FOOTER ===== */
+        footer { margin-top: 56px; padding: 26px 0; text-align: center; border-top: 1px solid var(--grid); font-size: 13px; color: var(--m); }
+        footer b { color: var(--cyan); }
+        .tg-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+        .tg-btn {
+            display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 12px;
+            font-size: 12.5px; font-weight: 700; color: var(--cyan); border: 1px solid rgba(0,240,255,0.3); background: rgba(0,240,255,0.05); transition: all .2s;
+        }
+        .tg-btn:hover { color: #000; background: linear-gradient(135deg, var(--cyan), var(--purple)); box-shadow: 0 0 20px rgba(0,240,255,0.4); }
+
+        /* toast */
+        .toast {
+            position: fixed; top: 18px; left: 50%; transform: translateX(-50%) translateY(-90px);
+            padding: 12px 22px; border-radius: 12px; z-index: 9999; font-size: 13px; font-weight: 600;
+            background: rgba(10,10,15,0.94); border: 1px solid var(--cyan); color: var(--text);
+            box-shadow: 0 0 24px rgba(0,240,255,0.25); transition: transform .35s cubic-bezier(.34,1.56,.64,1); pointer-events: none;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 620px) {
+            .features { grid-template-columns: 1fr; }
+            .hero { padding: 56px 0 34px; }
+        }
     </style>
 </head>
-<body id="bodyRoot">
+<body>
 
-<div class="tt" id="toast"></div>
+<div class="bg-grid"></div>
+<div class="orb" id="orb1"></div>
+<div class="orb" id="orb2"></div>
+<div class="scanline"></div>
+<div class="toast" id="toast"></div>
 
-<div class="app">
+<div class="wrap">
 
-    <div class="ts" id="themeSwitcher">
-        <span class="th" data-theme="1" onclick="setTheme(1)">📦 APK Store</span>
-    </div>
-
-    <div class="bar" id="topBar">
-        <div class="l">
-            <div class="i" id="barIcon">📦</div>
-            <div class="tx"><h1>Rashd <span id="barSuffix">Store</span></h1></div>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="brand">
+            <div class="logo">⟠</div>
+            <div class="name">RASHD <em>APP STORE</em></div>
         </div>
-        <span class="badge" id="verBadge">v1.0 <span id="themeIndicator" style="font-weight:400;opacity:0.5">min</span></span>
-    </div>
+        <a class="btn-tg" href="https://t.me/v4zrasehd" target="_blank" rel="noopener">✈️ Join Telegram</a>
+    </nav>
 
-    <div class="hero" id="heroBox">
-        <div class="tg" id="heroTag"><span class="dt" id="heroDot"></span> <span id="heroTagText">PREMIUM</span></div>
-        <h2 id="heroTitle" class="glitch">APK Store</h2>
-        <p id="heroDesc">Browse and download the latest applications</p>
-        <div class="sr">
-            <div class="st"><div class="nm" id="statDl">0</div><div class="lb">Downloads</div></div>
-            <div class="st"><div class="nm" id="statViews">0</div><div class="lb">Views</div></div>
-            <div class="st"><div class="nm" id="statApk">0</div><div class="lb">APKs</div></div>
+    <!-- HERO -->
+    <header class="hero">
+        <span class="tagline"><span class="dot"></span> SYSTEM ONLINE · v4z</span>
+        <h1><span class="grad">Download Latest<br>Modded APKs</span></h1>
+        <p>Your #1 source for premium, unlocked and modded Android applications — updated daily and 100% free.</p>
+        <div class="stats">
+            <div class="stat"><div class="n" id="statDl">0</div><div class="l">Downloads</div></div>
+            <div class="stat"><div class="n" id="statViews">0</div><div class="l">Views</div></div>
+            <div class="stat"><div class="n" id="statApk">0</div><div class="l">APKs</div></div>
         </div>
-    </div>
+    </header>
 
-    <div class="ch" id="channelBox">
-        <span class="dt wt" id="channelDot"></span>
-        <span class="tx" id="channelText">Checking channel access...</span>
-    </div>
-
-    <div class="sw">
-        <div class="in" id="searchBox">
-            <span class="ic">🔍</span>
-            <input type="text" id="searchInput" placeholder="Search apps..." oninput="onSearch()" spellcheck="false" autocomplete="off">
-            <button class="cl" id="clearSearch" onclick="clearSearch()">✕</button>
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="feature">
+            <div class="ic">🆓</div>
+            <h3>100% <span>Free</span></h3>
+            <p>Every single mod APK on this store costs nothing. Download unlimited apps with zero paywalls.</p>
         </div>
+        <div class="feature">
+            <div class="ic">💎</div>
+            <h3>Premium <span>Mods</span></h3>
+            <p>Unlocked premium features, no ads inside, VIP access — all mods are tested and verified.</p>
+        </div>
+        <div class="feature">
+            <div class="ic">⚡</div>
+            <h3>Fast <span>Updates</span></h3>
+            <p>Latest versions pushed as soon as they're released. Stay ahead with rapid refresh updates.</p>
+        </div>
+    </section>
+
+    <!-- APPS -->
+    <div class="search">
+        <span>⌕</span>
+        <input type="search" id="searchInput" placeholder="Search apps..." oninput="onSearch()" spellcheck="false" autocomplete="off">
     </div>
 
     <div class="ct" id="catRow"></div>
 
-    <div class="sh" id="sectHead" style="display:none">
-        <h3 id="sectTitle">All Apps</h3>
-        <span class="co" id="sectCount">0 items</span>
+    <div class="section-head">
+        <h2 class="grad" id="sectTitle">📱 All Apps</h2>
+        <span id="sectCount" style="color:var(--m);font-size:13px;">0 items</span>
     </div>
 
-    <div class="gr" id="appGrid">
-        <div class="st"><div class="spn"></div><div class="sb">Loading store...</div></div>
+    <div class="grid" id="appGrid">
+<div class="state"><div class="spn"></div><div class="s">Loading store...</div></div>
     </div>
 
-    <div class="tg-wrap">
-        <a class="tg-btn" href="https://t.me/v4zrasehd" target="_blank" rel="noopener" style="background:rgba(122,162,247,0.04);color:#7aa2f7">
-            <span style="font-size:18px">✈️</span> @v4zrasehd
-        </a>
-        <a class="tg-btn" href="https://t.me/cybersohag121" target="_blank" rel="noopener" style="background:rgba(187,154,247,0.04);color:#bb9af7">
-            <span style="font-size:18px">✈️</span> @cybersohag121
-        </a>
-    </div>
+    <footer>
+        <b>© 2026 RASHD</b> | @v4zrasehd
+        <div class="tg-links">
+            <a class="tg-btn" href="https://t.me/v4zrasehd" target="_blank" rel="noopener">✈️ @v4zrasehd</a>
+            <a class="tg-btn" href="https://t.me/cybersohag121" target="_blank" rel="noopener">✈️ @cybersohag121</a>
+        </div>
+    </footer>
 
-    <div class="fi" id="footerInfo">
-        <sp>📱 Rashd APK Store &bull; @v4zrasehd</sp>
-    </div>
-
-    <div class="bt"></div>
 </div>
-
-<div class="scanline"></div>
-<div class="orb" id="orb1"></div>
-<div class="orb" id="orb2"></div>
-<div class="orb" id="orb3"></div>
 
 <script>
 (function(){
@@ -201,10 +288,9 @@
 
     const GIT_REPO_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/latest';
     const GIT_TAG_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/tags/v1.0';
-    
+
     let applicationData = [];
     let activeFilter = 'all';
-    let currentTheme = 1;
     let isDataLoaded = false;
     let retryCount = 0;
 
@@ -213,558 +299,159 @@
         Telegram.WebApp.expand();
     }
 
-    const toastElement = document.getElementById('toast');
-    let toastTimeout = null;
-
-    function showToast(message) {
-        toastElement.textContent = message;
-        toastElement.classList.add('sh');
-        clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(function() {
-            toastElement.classList.remove('sh');
-        }, 2000);
+    const toastEl = document.getElementById('toast');
+    let toastTimer = null;
+    function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
     }
 
-    const extensionColorMap = {
-        APK: '#6366f1', PDF: '#ef4444', ZIP: '#f97316', RAR: '#f97316',
-        DOC: '#06b6d4', DOCX: '#06b6d4', TXT: '#6b7280', PNG: '#10b981',
-        JPG: '#f59e0b', JPEG: '#f59e0b', MP4: '#8b5cf6', MP3: '#ec4899',
-        GIF: '#22d3a0', SVG: '#6366f1', JSON: '#14b8a6', XML: '#a855f7',
-        HTML: '#ef4444', CSS: '#3b82f6', JS: '#fbbf24', PHP: '#8b5cf6'
+const extIconMap = {
+        APK:'📦', PDF:'📄', ZIP:'🗜️', RAR:'🗜️', DOC:'📝', DOCX:'📝', TXT:'📄',
+        PNG:'🖼️', JPG:'🖼️', JPEG:'🖼️', MP4:'🎬', MP3:'🎵', GIF:'🎰', JSON:'📋',
+        XML:'📄', HTML:'🌐', CSS:'🎨', JS:'💻', PHP:'🛠️'
+    };
+    const extColor = {
+        APK:'#00f0ff', PDF:'#ff5555', ZIP:'#ff9e00', RAR:'#ff9e00', DOC:'#22d3ee',
+        DOCX:'#22d3ee', TXT:'#9aa3b2', PNG:'#22c55e', JPG:'#f59e0b', JPEG:'#f59e0b',
+        MP4:'#b026ff', MP3:'#ec4899', GIF:'#22d3a0', SVG:'#00f0ff', JSON:'#14b8a6',
+        XML:'#8b5cf6', HTML:'#f87171', CSS:'#60bdf6', JS:'#fbbf24', PHP:'#8b5cf6'
     };
 
-    const extensionIconMap = {
-        APK: '📦', PDF: '📄', ZIP: '🗜️', RAR: '🗜️',
-        DOC: '📝', DOCX: '📝', TXT: '📄', PNG: '🖼️',
-        JPG: '🖼️', JPEG: '🖼️', MP4: '🎬', MP3: '🎵',
-        GIF: '🎰', SVG: '🎨', JSON: '📋', XML: '📄',
-        HTML: '🌐', CSS: '🎨', JS: '💻', PHP: '🛠️'
-    };
-
-    function getExtensionDisplay(ext) {
-        var upper = ext.toUpperCase();
-        var color = extensionColorMap[upper] || '#6b7280';
-        var icon = extensionIconMap[upper] || '📁';
-        return { color: color, icon: icon };
-    }
-
-    function checkChannelMembership() {
-        var dot = document.getElementById('channelDot');
-        var text = document.getElementById('channelText');
-        var user = null;
-
-        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe) {
-            user = Telegram.WebApp.initDataUnsafe.user;
-        }
-
-        if (!user) {
-            dot.className = 'dt wt';
-            text.innerHTML = 'Open from Telegram bot to verify access';
-            return false;
-        }
-
-        dot.className = 'dt ok';
-        text.innerHTML = 'Channels verified <strong>Access granted</strong>';
-        return true;
-    }
-
-    // 🚀 রিয়েল ভিউ কাউন্টার ফাংশন
     async function loadViewCounter() {
         try {
-            var response = await fetch('https://api.counterapi.dev/v1/v4zrashd/rashdstore/up');
-            if(!response.ok) throw new Error('Counter API Error');
-            var data = await response.json();
-            var count = (data.count || 1).toLocaleString();
-            document.getElementById('statViews').textContent = count;
-        } catch (error) {
-            // নেটওয়ার্ক সমস্যা বা API ব্লক হলে লোকাল কাউন্টার দিয়ে অটো বাড়াবে
-            let localViews = parseInt(localStorage.getItem('app_views_count') || '154');
-            localViews += 1;
-            localStorage.setItem('app_views_count', localViews.toString());
-            document.getElementById('statViews').textContent = localViews.toLocaleString();
+            const r = await fetch('https://api.counterapi.dev/v1/v4zrashd/rashdstore/up');
+            if (!r.ok) throw new Error('off');
+            const d = await r.json();
+            document.getElementById('statViews').textContent = Number(d.count || 1).toLocaleString();
+        } catch (e) {
+            let v = parseInt(localStorage.getItem('views') || '154') + 1;
+            localStorage.setItem('views', v);
+            document.getElementById('statViews').textContent = v.toLocaleString();
         }
     }
 
-    function buildCategoryFilters() {
-        var extensionSet = new Set();
-        applicationData.forEach(function(item) {
-            var ext = (item.name.split('.').pop() || 'apk').toUpperCase();
-            extensionSet.add(ext);
-        });
-
-        var extensions = ['all'].concat(Array.from(extensionSet).sort());
-        var iconHelper = { all: '✨' };
-        Object.keys(extensionIconMap).forEach(function(key) {
-            iconHelper[key] = extensionIconMap[key];
-        });
-
-        var container = document.getElementById('catRow');
-        container.innerHTML = extensions.map(function(ext) {
-            var isActive = ext === activeFilter ? ' act' : '';
-            var label = ext === 'all' ? 'All' : '.' + ext;
-            var icon = iconHelper[ext.toLowerCase()] || iconHelper[ext] || '📁';
-            return '<span class="cp' + isActive + '" onclick="setFilter(\'' + ext + '\')">' + icon + ' ' + label + '</span>';
+    function buildCats() {
+        const set = new Set();
+        applicationData.forEach(it => set.add((it.name.split('.').pop() || 'apk').toUpperCase()));
+        const exts = ['all'].concat(Array.from(set).sort());
+        const icons = { all: '✨' };
+        Object.keys(extIconMap).forEach(k => icons[k] = extIconMap[k]);
+        document.getElementById('catRow').innerHTML = exts.map(e => {
+            const act = e === activeFilter ? ' act' : '';
+            const lb = e === 'all' ? 'All' : '.' + e;
+            const ic = icons[e] || icons[e.toLowerCase()] || '📁';
+            return '<span class="cp'+act+'" onclick="setFilter(\''+e+'\')">'+ic+' '+lb+'</span>';
         }).join('');
     }
 
-    window.setFilter = function(ext) {
-        activeFilter = ext;
-        buildCategoryFilters();
-        renderAppList(getFilteredItems());
-        updateSectionHeader();
+    window.setFilter = function(e) {
+        activeFilter = e;
+        buildCats();
+        render(getFiltered());
+        updateHead();
     };
 
-    function getFilteredItems() {
-        var items = applicationData.slice();
-        var query = document.getElementById('searchInput').value.toLowerCase().trim();
-
-        if (query.length > 0) {
-            items = items.filter(function(item) {
-                return item.name.toLowerCase().includes(query);
-            });
-        }
-
-        if (activeFilter !== 'all') {
-            items = items.filter(function(item) {
-                var ext = (item.name.split('.').pop() || '').toUpperCase();
-                return ext === activeFilter;
-            });
-        }
-
+    function getFiltered() {
+        let items = applicationData.slice();
+        const q = document.getElementById('searchInput').value.toLowerCase().trim();
+        if (q) items = items.filter(i => i.name.toLowerCase().includes(q));
+        if (activeFilter !== 'all') items = items.filter(i => (i.name.split('.').pop()||'').toUpperCase() === activeFilter);
         return items;
     }
 
-    window.onSearch = function() {
-        var input = document.getElementById('searchInput');
-        var clearBtn = document.getElementById('clearSearch');
-        var hasText = input.value.length > 0;
-        clearBtn.classList.toggle('sh', hasText);
-        renderAppList(getFilteredItems());
-        updateSectionHeader();
-    };
+    window.onSearch = () => { render(getFiltered()); updateHead(); };
 
-    window.clearSearch = function() {
-        document.getElementById('searchInput').value = '';
-        document.getElementById('clearSearch').classList.remove('sh');
-        renderAppList(getFilteredItems());
-        updateSectionHeader();
-    };
-
-    function updateSectionHeader() {
-        var header = document.getElementById('sectHead');
-        if (!isDataLoaded || applicationData.length === 0) {
-            header.style.display = 'none';
-            return;
-        }
-        header.style.display = 'flex';
-
-        var items = getFilteredItems();
-        var query = document.getElementById('searchInput').value.trim();
-
-        var titleEl = document.getElementById('sectTitle');
-        if (query.length > 0) {
-            titleEl.textContent = '🔍 "' + query + '"';
-        } else if (activeFilter !== 'all') {
-            titleEl.textContent = '📁 .' + activeFilter + ' Files';
-        } else {
-            titleEl.textContent = '📱 All Apps';
-        }
-
-        var suffix = items.length !== 1 ? 's' : '';
-        document.getElementById('sectCount').textContent = items.length + ' item' + suffix;
+    function updateHead() {
+        const h = document.getElementById('sectTitle');
+        const c = document.getElementById('sectCount');
+        const q = document.getElementById('searchInput').value.trim();
+        if (q) h.textContent = '🔍 "' + q + '"';
+        else if (activeFilter !== 'all') h.textContent = '📁 .' + activeFilter + ' Files';
+        else h.textContent = '📱 All Apps';
+        const n = getFiltered().length;
+        c.textContent = n + (n !== 1 ? ' items' : ' item');
     }
 
-    window.shareApp = async function(item) {
-        var fileSize = (item.size / (1024 * 1024)).toFixed(1);
-        var downloadCount = (item.download_count || 0).toLocaleString();
-        var shareText = '📦 ' + item.name + '\n📥 ' + downloadCount + ' downloads\n💾 ' + fileSize + ' MB\n🔗 ' + item.browser_download_url + '\n\n— Rashd Store';
-
-        if (navigator.share) {
-            try {
-                await navigator.share({ title: item.name, text: shareText });
-            } catch (err) {}
-        } else {
-            try {
-                await navigator.clipboard.writeText(shareText);
-                showToast('📋 Copied to clipboard');
-            } catch (err) {
-                showToast('Failed to copy');
-            }
-        }
-    };
-
-    function renderAppList(items) {
-        var container = document.getElementById('appGrid');
-
+    function render(items) {
+        const box = document.getElementById('appGrid');
         if (!isDataLoaded || applicationData.length === 0) {
-            container.innerHTML = '<div class="st"><div class="spn"></div><div class="sb">Loading store...</div></div>';
+            box.innerHTML = '<div class="state"><div class="spn"></div><div class="s">Loading store...</div></div>';
             return;
         }
-
-        if (items.length === 0) {
-            container.innerHTML = '<div class="st"><div class="ei">🔍</div><div class="et">No Results Found</div><div class="ed">Try a different search term or filter</div></div>';
+        if (!items.length) {
+            box.innerHTML = '<div class="state"><div class="e">🔍</div><div class="s">No results found. Try another term.</div></div>';
             return;
         }
-
-        var html = '';
-        for (var i = 0; i < items.length; i++) {
-            var item = items[i];
-            var sizeMB = (item.size / (1024 * 1024)).toFixed(1);
-            var downloadCount = item.download_count || 0;
-            var ext = (item.name.split('.').pop() || 'apk').toUpperCase();
-            var extInfo = getExtensionDisplay(ext);
-            var dateStr = '';
-            if (item.updated_at) {
-                var d = new Date(item.updated_at);
-                dateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-            }
-            var escapedName = item.name.replace(/'/g, "\\'");
-            var serialNum = (i + 1).toString().padStart(3, '0');
-
-            html += '<div class="cd">';
-            html += '<div class="ib" style="background:linear-gradient(135deg,' + extInfo.color + ',' + extInfo.color + '88)">' + extInfo.icon + '<span class="ex">' + ext + '</span></div>';
-            html += '<div class="if">';
-            html += '<div class="nm">' + item.name + '</div>';
-            html += '<div class="mt">';
-            html += '<span class="sz">💾 ' + sizeMB + ' MB</span>';
-            html += '<span class="sp">|</span>';
-            html += '<span style="font-weight:600">📥 ' + downloadCount.toLocaleString() + '</span>';
-            if (dateStr) {
-                html += '<span class="sp">|</span><span>📅 ' + dateStr + '</span>';
-            }
-            html += '<span class="sp">|</span><span>#' + serialNum + '</span>';
-            html += '</div></div>';
-            html += '<div class="ac">';
-            html += '<button class="sh" onclick="shareApp(applicationData.find(function(a){return a.name===\'' + escapedName + '\'}))">↗</button>';
-            html += '<a href="' + item.browser_download_url + '" class="dl" target="_blank" onclick="showToast(\'⬇️ Downloading ' + item.name + '\')">Get ↓</a>';
-            html += '</div></div>';
-        }
-
-        container.innerHTML = html;
-        applyCardThemeStyles();
-    }
-
-    function applyCardThemeStyles() {
-        var t = themeDefinitions[currentTheme];
-        if (!t) return;
-
-        document.querySelectorAll('.cd').forEach(function(el) {
-            el.style.background = t.cardBg;
-            el.style.border = '1px solid ' + t.cardBorder;
-            el.style.boxShadow = t.cardShadow;
-
-            var nameEl = el.querySelector('.nm');
-            if (nameEl) nameEl.style.color = t.cardName;
-
-            var metaEl = el.querySelector('.mt');
-            if (metaEl) metaEl.style.color = t.cardMeta;
-
-            var sizeEl = el.querySelector('.sz');
-            if (sizeEl) {
-                sizeEl.style.background = t.cardSize;
-                sizeEl.style.color = t.cardMeta;
-            }
-
-            var shareBtn = el.querySelector('.ac .sh');
-            if (shareBtn) {
-                shareBtn.style.background = t.shareBg;
-                shareBtn.style.color = t.shareText;
-                shareBtn.style.border = '1px solid ' + t.cardBorder;
-            }
-
-            var dlBtn = el.querySelector('.ac .dl');
-            if (dlBtn) {
-                dlBtn.style.background = t.dlBg;
-                dlBtn.style.color = t.dlText;
-                dlBtn.style.boxShadow = t.dlShadow;
-                if (t.dlBg.includes('gradient')) {
-                    dlBtn.style.border = 'none';
-                } else {
-                    dlBtn.style.border = '1px solid ' + t.dlBg;
-                }
-            }
-        });
+        box.innerHTML = items.map((it, idx) => {
+            const mb = (it.size / (1024 * 1024)).toFixed(1);
+            const dc = it.download_count || 0;
+            const ext = (it.name.split('.').pop() || 'apk').toUpperCase();
+            const info = extInfo(ext);
+            const esc = it.name.replace(/'/g, "\\'");
+            const date = it.updated_at ? new Date(it.updated_at).toLocaleDateString('en-IN', { day:'numeric', month:'short' }) : '';
+            return '' +
+            '<div class="card" style="animation-delay:' + (idx * 0.05) + 's">' +
+                '<div class="thumb">' + info.icon + '<span class="ext">' + ext + '</span></div>' +
+                '<div class="body">' +
+                    '<h4>' + it.name + '</h4>' +
+                    '<div class="meta">' +
+                        '<span>💾 ' + mb + ' MB</span>' +
+                        '<span>📥 ' + dc.toLocaleString() + '</span>' +
+                        (date ? '<span>📅 ' + date + '</span>' : '') +
+                    '</div>' +
+                    '<a class="btn-dl" href="' + it.browser_download_url + '" target="_blank" rel="noopener" onclick="showToast(\'⬇️ Downloading ' + it.name + '\')">⬇ Download APK</a>' +
+                '</div>' +
+            '</div>';
+        }).join('');
     }
 
     window.fetchAppData = async function() {
-        var container = document.getElementById('appGrid');
+        const box = document.getElementById('appGrid');
         try {
-            var response = await fetch(GIT_REPO_URL + '?t=' + Date.now());
-            if (!response.ok) {
-                response = await fetch(GIT_TAG_URL + '?t=' + Date.now());
-                if(!response.ok) throw new Error('HTTP ' + response.status);
+            let r = await fetch(GIT_REPO_URL + '?t=' + Date.now());
+            if (!r.ok) {
+                r = await fetch(GIT_TAG_URL + '?t=' + Date.now());
+                if (!r.ok) throw new Error('HTTP ' + r.status);
             }
-            var data = await response.json();
-
-            if (data.tag_name) {
-                document.getElementById('verBadge').innerHTML = data.tag_name + ' <span style="font-weight:400;opacity:0.5">' + themeDefinitions[currentTheme].name.toLowerCase() + '</span>';
-            }
-
+            const data = await r.json();
             applicationData = data.assets || [];
             isDataLoaded = true;
             retryCount = 0;
-
-            var totalDownloads = 0;
-            applicationData.forEach(function(item) {
-                totalDownloads += item.download_count || 0;
-            });
-
-            var formattedTotal = totalDownloads.toLocaleString();
-            document.getElementById('statDl').textContent = formattedTotal;
+            let total = 0;
+            applicationData.forEach(i => total += i.download_count || 0);
+            document.getElementById('statDl').textContent = total.toLocaleString();
             document.getElementById('statApk').textContent = applicationData.length;
-
-            buildCategoryFilters();
-            renderAppList(getFilteredItems());
-            updateSectionHeader();
-            checkChannelMembership();
-
-        } catch (error) {
+            buildCats();
+            render(getFiltered());
+            updateHead();
+        } catch (e) {
             retryCount++;
-            var retryText = retryCount > 1 ? 'Retry (' + retryCount + ')' : 'Retry';
-            container.innerHTML = '<div class="st"><div class="er">⚠️ Connection Error</div><div class="sb">' + error.message + '</div><button class="rty" onclick="fetchAppData()">' + retryText + '</button></div>';
+            const label = retryCount > 1 ? 'Retry (' + retryCount + ')' : 'Retry';
+            box.innerHTML = '<div class="state"><div class="e">⚠️ Connection Error</div><div class="s">' + e.message + '</div><button class="btn-rty btn-dl" style="display:inline-block;width:auto;padding:12px 28px;" onclick="fetchAppData()">' + label + '</button></div>';
         }
     };
 
-    var themeDefinitions = {
-        1: {
-            bg: '#0b0710', text: '#c0caf5', sub: 'rgba(192,202,245,0.35)',
-            cardBg: 'rgba(122,162,247,0.03)', cardBorder: 'rgba(122,162,247,0.06)',
-            cardShadow: '0 0 30px rgba(122,162,247,0.02)', cardName: '#c0caf5', cardMeta: 'rgba(192,202,245,0.35)',
-            cardSize: 'rgba(122,162,247,0.03)', shareBg: 'rgba(122,162,247,0.04)', shareText: 'rgba(192,202,245,0.25)',
-            dlBg: 'linear-gradient(135deg,#7aa2f7,#bb9af7)', dlText: '#ffffff', dlShadow: '0 4px 20px rgba(122,162,247,0.25)',
-            r1: '16px', r2: '12px', font: "'Inter',sans-serif",
-            topBg: 'rgba(122,162,247,0.03)', topText: '#7aa2f7', topBorder: 'rgba(122,162,247,0.08)',
-            heroBg: 'linear-gradient(135deg,#7aa2f7,#bb9af7)', heroText: '#ffffff', heroSub: 'rgba(255,255,255,0.75)',
-            heroTag: 'rgba(255,255,255,0.12)', heroTagText: '#ffffff', heroTagDot: '#ffffff',
-            statBg: 'rgba(255,255,255,0.1)', statBorder: 'rgba(255,255,255,0.08)', statNum: '#ffffff', statLbl: 'rgba(255,255,255,0.6)',
-            chBg: 'rgba(122,162,247,0.03)', chBorder: 'rgba(122,162,247,0.06)', chText: 'rgba(192,202,245,0.35)', chStrong: '#7aa2f7',
-            searchBg: 'rgba(122,162,247,0.03)', searchBorder: 'rgba(122,162,247,0.06)', searchText: '#c0caf5', searchPlace: 'rgba(192,202,245,0.15)',
-            catBg: 'rgba(122,162,247,0.02)', catText: 'rgba(192,202,245,0.25)', catBorder: 'rgba(122,162,247,0.06)', catActBg: '#7aa2f7', catActText: '#0b0710',
-            sectText: '#c0caf5', sectCount: 'rgba(192,202,245,0.25)',
-            toastBg: 'rgba(11,7,16,0.95)', toastText: '#c0caf5', toastBorder: 'rgba(122,162,247,0.08)', toastShadow: '0 0 30px rgba(122,162,247,0.02)',
-            spnBorder: 'rgba(122,162,247,0.08)', spnTop: '#bb9af7', errText: '#f7768e', retryBg: 'linear-gradient(135deg,#7aa2f7,#bb9af7)', retryText: '#ffffff',
-            tsBg: 'rgba(122,162,247,0.02)', tsBorder: 'rgba(122,162,247,0.06)', tsText: 'rgba(192,202,245,0.25)', tsActBg: '#7aa2f7', tsActText: '#0b0710',
-            emoji: '📦', name: 'Store', title: 'APK Store', desc: 'Browse & download latest Android apps',
-            tag: 'RASHD STORE'
-        }
-    };
-
-    window.setTheme = function(themeNumber) {
-        currentTheme = themeNumber;
-        var t = themeDefinitions[themeNumber];
-        if (!t) return;
-
-        var root = document.getElementById('bodyRoot');
-        var isDarkOrGlass = true;
-
-        root.style.background = t.bg;
-        root.style.color = t.text;
-        root.style.fontFamily = t.font;
-        root.style.setProperty('--r1', t.r1);
-        root.style.setProperty('--r2', t.r2);
-
-        var themeSwitchers = document.querySelectorAll('.ts .th');
-        themeSwitchers.forEach(function(el) {
-            var num = parseInt(el.dataset.theme);
-            if (num === themeNumber) {
-                el.style.background = t.tsActBg;
-                el.style.borderColor = t.tsActBg;
-                el.style.color = t.tsActText;
-            } else {
-                el.style.background = t.tsBg;
-                el.style.borderColor = t.tsBorder;
-                el.style.color = t.tsText;
-            }
-        });
-
-        var tsContainer = document.getElementById('themeSwitcher');
-        tsContainer.style.background = isDarkOrGlass ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.7)';
-        tsContainer.style.borderBottom = isDarkOrGlass ? '1px solid ' + t.cardBorder : 'none';
-
-        var bar = document.getElementById('topBar');
-        bar.style.background = t.topBg;
-        bar.style.border = t.topBorder !== 'none' ? '1px solid ' + t.topBorder : 'none';
-        bar.style.boxShadow = isDarkOrGlass ? '0 0 0 1px ' + t.cardBorder : '0 1px 3px rgba(0,0,0,0.02)';
-
-        var iconEl = document.getElementById('barIcon');
-        iconEl.style.background = isDarkOrGlass ? 'rgba(255,255,255,0.06)' : '#f3f4f6';
-
-        document.getElementById('topBar').querySelector('.tx h1').style.color = t.topText;
-
-        var badge = document.getElementById('verBadge');
-        badge.style.background = isDarkOrGlass ? 'rgba(255,255,255,0.06)' : '#f3f4f6';
-        badge.style.color = isDarkOrGlass ? 'rgba(255,255,255,0.5)' : '#6b7280';
-        badge.style.border = t.topBorder !== 'none' ? '1px solid ' + t.topBorder : 'none';
-        badge.innerHTML = document.getElementById('verBadge').textContent.split(' ')[0] + ' <span style="font-weight:400;opacity:0.5">' + t.name.toLowerCase() + '</span>';
-
-        var hero = document.getElementById('heroBox');
-        hero.style.background = t.heroBg;
-        hero.style.border = '1px solid ' + t.cardBorder;
-        hero.style.boxShadow = isDarkOrGlass ? '0 0 30px rgba(0,0,0,0.1)' : '0 1px 3px rgba(0,0,0,0.02)';
-
-        document.getElementById('heroTitle').style.color = t.heroText;
-        document.getElementById('heroTitle').textContent = t.title;
-        document.getElementById('heroDesc').style.color = t.heroSub;
-        document.getElementById('heroDesc').textContent = t.desc;
-
-        var heroTag = document.getElementById('heroTag');
-        heroTag.style.background = t.heroTag;
-        heroTag.style.border = '1px solid ' + t.cardBorder;
-        heroTag.style.color = t.heroTagText;
-        document.getElementById('heroTagText').textContent = t.tag;
-        document.getElementById('heroDot').style.background = t.heroTagDot;
-
-        document.querySelectorAll('.hero .sr .st').forEach(function(el) {
-            el.style.background = t.statBg;
-            el.style.border = '1px solid ' + t.statBorder;
-            el.querySelector('.nm').style.color = t.statNum;
-            el.querySelector('.lb').style.color = t.statLbl;
-        });
-
-        var ch = document.getElementById('channelBox');
-        ch.style.background = t.chBg;
-        ch.style.border = '1px solid ' + t.chBorder;
-        ch.style.boxShadow = isDarkOrGlass ? '0 0 0 1px ' + t.cardBorder : 'none';
-        var chText = document.getElementById('channelText');
-        chText.style.color = t.chText;
-        var strongs = chText.querySelectorAll('strong');
-        strongs.forEach(function(el) { el.style.color = t.chStrong; });
-
-        var searchBox = document.getElementById('searchBox');
-        searchBox.style.background = t.searchBg;
-        searchBox.style.border = '1px solid ' + t.searchBorder;
-        searchBox.style.boxShadow = isDarkOrGlass ? '0 0 0 1px ' + t.cardBorder : (t.searchBorder !== 'none' ? '0 0 0 1px ' + t.searchBorder : 'none');
-        var searchInput = document.getElementById('searchInput');
-        searchInput.style.color = t.searchText;
-        searchInput.style.fontFamily = t.font;
-        searchInput.style.setProperty('--ph', t.searchPlace);
-
-        var clearBtn = document.getElementById('clearSearch');
-        clearBtn.style.background = isDarkOrGlass ? 'rgba(255,255,255,0.06)' : '#f3f4f6';
-        clearBtn.style.color = isDarkOrGlass ? 'rgba(255,255,255,0.3)' : '#9ca3af';
-
-        document.querySelectorAll('.ct .cp').forEach(function(el) {
-            if (el.classList.contains('act')) {
-                el.style.background = t.catActBg;
-                el.style.color = t.catActText;
-                el.style.borderColor = t.catActBg;
-            } else {
-                el.style.background = t.catBg;
-                el.style.color = t.catText;
-                el.style.borderColor = t.catBorder;
-            }
-        });
-
-        document.getElementById('sectTitle').style.color = t.sectText;
-        document.getElementById('sectCount').style.color = t.sectCount;
-        document.getElementById('barSuffix').textContent = t.name;
-
-        var toast = document.getElementById('toast');
-        toast.style.background = t.toastBg;
-        toast.style.color = t.toastText;
-        toast.style.border = '1px solid ' + t.toastBorder;
-        toast.style.boxShadow = t.toastShadow;
-
-        var stateErrs = document.querySelectorAll('.st .er');
-        stateErrs.forEach(function(el) { el.style.color = t.errText; });
-        var stateRtys = document.querySelectorAll('.st .rty');
-        stateRtys.forEach(function(el) {
-            el.style.background = t.retryBg;
-            el.style.color = t.retryText;
-        });
-
-        document.querySelectorAll('.st .spn').forEach(function(el) {
-            el.style.border = '2px solid ' + t.spnBorder;
-            el.style.borderTopColor = t.spnTop;
-            el.style.borderRightColor = t.spnTop;
-        });
-
-        var orb1 = document.getElementById('orb1');
-        var orb2 = document.getElementById('orb2');
-        var orb3 = document.getElementById('orb3');
-
-        var orbMap = {
-            1: { o1: '250px 250px rgba(122,162,247,0.03) -40px -30px', o2: '200px 200px rgba(187,154,247,0.02) -30px 60%', o3: '180px 180px rgba(122,162,247,0.02) 70% 80%' }
-        };
-
-        var om = orbMap[themeNumber] || { none: true };
-        if (om.none) {
-            orb1.style.display = 'none';
-            orb2.style.display = 'none';
-            orb3.style.display = 'none';
-        } else {
-            var orbs = [orb1, orb2, orb3];
-            var keys = ['o1', 'o2', 'o3'];
-            keys.forEach(function(key, idx) {
-                if (om[key]) {
-                    orbs[idx].style.display = 'block';
-                    var parts = om[key].split(' ');
-                    orbs[idx].style.width = parts[0];
-                    orbs[idx].style.height = parts[1];
-                    orbs[idx].style.background = parts[2];
-                    orbs[idx].style.left = '';
-                    orbs[idx].style.right = '';
-                    orbs[idx].style.top = '';
-                    if (parts[3]) {
-                        if (parts[3].startsWith('-') || parts[3].includes('%')) {
-                            orbs[idx].style.left = parts[3];
-                        } else {
-                            orbs[idx].style.right = parts[3];
-                        }
-                    }
-                    if (parts[4]) orbs[idx].style.top = parts[4];
-                } else {
-                    orbs[idx].style.display = 'none';
-                }
-            });
-        }
-
-        applyCardThemeStyles();
-    };
-
-    var pullStartY = 0;
-    var isPulling = false;
-
-    document.addEventListener('touchstart', function(e) {
-        pullStartY = e.touches[0].clientY;
-        isPulling = false;
+    // pull to refresh
+    let pY = 0, pulling = false;
+    document.addEventListener('touchstart', e => { pY = e.touches[0].clientY; pulling = false; }, { passive: true });
+    document.addEventListener('touchmove', e => { if (e.touches[0].clientY - pY > 100 && window.scrollY === 0) pulling = true; }, { passive: true });
+    document.addEventListener('touchend', () => {
+        if (!pulling) return;
+        pulling = false;
+        fetchAppData();
+        loadViewCounter();
+        showToast('🔄 Refreshed!');
     }, { passive: true });
 
-    document.addEventListener('touchmove', function(e) {
-        var delta = e.touches[0].clientY - pullStartY;
-        if (delta > 100 && window.scrollY === 0) {
-            isPulling = true;
-        }
-    }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) loadViewCounter(); });
+    window.addEventListener('online', () => { showToast('🌐 Back online'); fetchAppData(); });
+    window.addEventListener('offline', () => showToast('⚠️ Offline mode'));
 
-    document.addEventListener('touchend', function() {
-        if (isPulling) {
-            isPulling = false;
-            fetchAppData();
-            loadViewCounter();
-            showToast('🔄 Refreshed!');
-        }
-    }, { passive: true });
-
-    setTheme(1);
     fetchAppData();
     loadViewCounter();
-
-    document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) {
-            loadViewCounter();
-        }
-    });
-
-    window.addEventListener('online', function() {
-        showToast('🌐 Back online');
-        fetchAppData();
-    });
-
-    window.addEventListener('offline', function() {
-        showToast('⚠️ Offline mode');
-    });
-
 })();
 </script>
 </body>
