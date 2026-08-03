@@ -154,11 +154,17 @@
         .card:hover { transform: translateY(-4px); border-color: var(--cyan); box-shadow: 0 0 26px rgba(0,240,255,0.22); }
         .thumb {
             position: relative; aspect-ratio: 16/10; display: grid; place-items: center; font-size: 40px;
-            background: linear-gradient(135deg, rgba(0,240,255,0.10), rgba(176,38,255,0.16));
+            background: linear-gradient(135deg, rgba(0,240,255,0.10), rgba(176,38,255,0.16)); overflow: hidden;
         }
+        .thumb .thumb-fb { position: absolute; inset: 0; display: grid; place-items: center; font-size: 40px; }
+        .thumb .thumb-img {
+            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+            opacity: 0; transition: opacity .35s ease, transform .35s ease; cursor: pointer;
+        }
+        .card:hover .thumb-img { transform: scale(1.06); }
         .thumb .ext {
             position: absolute; top: 10px; right: 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 1px; font-weight: 700;
-            color: #000; background: var(--cyan); border-radius: 5px; padding: 2px 6px;
+            color: #000; background: var(--cyan); border-radius: 5px; padding: 2px 6px; z-index: 2;
         }
         .body { padding: 13px 14px 16px; }
         .body h4 { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -396,10 +402,18 @@ const extIconMap = {
             const ext = (it.name.split('.').pop() || 'apk').toUpperCase();
             const info = extInfo(ext);
             const esc = it.name.replace(/'/g, "\\'");
+            const seed = encodeURIComponent(it.name.replace(/\.(apk|apks|zip)$/i, ''));
+            const thumbUrl = 'https://api.dicebear.com/9.x/shapes/png?seed=' + seed + '&backgroundColor=0b0b14&shapes[]=circle&shapes[]=diamond&shapes[]=triangle';
             const date = it.updated_at ? new Date(it.updated_at).toLocaleDateString('en-IN', { day:'numeric', month:'short' }) : '';
             return '' +
             '<div class="card" style="animation-delay:' + (idx * 0.05) + 's">' +
-                '<div class="thumb">' + info.icon + '<span class="ext">' + ext + '</span></div>' +
+                '<div class="thumb">' +
+                    '<span class="thumb-fb">' + info.icon + '</span>' +
+                    '<img class="thumb-img" src="' + thumbUrl + '" alt="' + it.name + '" loading="lazy" ' +
+                    'onload="this.style.opacity=\'1\';this.previousElementSibling.style.display=\'none\'" ' +
+                    'onerror="this.remove()">' +
+                    '<span class="ext">' + ext + '</span>' +
+                '</div>' +
                 '<div class="body">' +
                     '<h4>' + it.name + '</h4>' +
                     '<div class="meta">' +
