@@ -331,6 +331,20 @@ const extIconMap = {
         return { color: extColor[u] || '#22d3ee', icon: extIconMap[u] || '📁' };
     }
 
+    // APK asset -> branded logo (under /icons in this repo)
+    const ICON_BASE = 'https://github.com/v4zrashd/rashd-app--store/raw/main/icons/';
+    const ICON_MAP = {
+        'apktool.m_2.4.0-260718.apk': 'apktool-m.png',
+        'capcut_15.5.0.apk': 'capcut.png',
+        'dev.tools.pro_6.9.1-gp.apk': 'dev-tools.png',
+        'expert.cyber.security.zone_1.0.0.apk': 'cyber.png',
+        'mt.manager_2.26.7.apk': 'mt-manager.png',
+        'rashd.zip': 'rashd.png',
+        'sms-forward.v1._.rashd_1.0-rashd.apk': 'sms-forward.png',
+        'telegram.bot.free.hosting_1.0.9.apks': 'tg-bot.png',
+        'termux_0.119.0-beta.2.apk': 'termux.png'
+    };
+
     async function loadViewCounter() {
         try {
             const r = await fetch('https://api.counterapi.dev/v1/v4zrashd/rashdstore/up');
@@ -403,7 +417,11 @@ const extIconMap = {
             const info = extInfo(ext);
             const esc = it.name.replace(/'/g, "\\'");
             const seed = encodeURIComponent(it.name.replace(/\.(apk|apks|zip)$/i, ''));
-            const thumbUrl = 'https://api.dicebear.com/9.x/shapes/png?seed=' + seed + '&backgroundColor=0b0b14&shapes[]=circle&shapes[]=diamond&shapes[]=triangle';
+            const key = it.name.toLowerCase();
+            const iconFile = ICON_MAP[key];
+            const thumbUrl = iconFile
+                ? ICON_BASE + iconFile
+                : 'https://api.dicebear.com/9.x/shapes/png?seed=' + seed + '&backgroundColor=0b0b14&shapes[]=circle&shapes[]=diamond&shapes[]=triangle';
             const date = it.updated_at ? new Date(it.updated_at).toLocaleDateString('en-IN', { day:'numeric', month:'short' }) : '';
             return '' +
             '<div class="card" style="animation-delay:' + (idx * 0.05) + 's">' +
