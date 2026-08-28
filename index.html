@@ -75,6 +75,19 @@ a{text-decoration:none;color:inherit}
   background:rgba(6,6,15,.72);border:1px solid var(--border);padding:3px 9px;border-radius:999px;color:var(--text)}
 .trend{position:absolute;top:10px;right:10px;z-index:3;font-size:10.5px;font-weight:700;
   background:linear-gradient(120deg,var(--a3),var(--a1));color:#0a0a14;padding:3px 9px;border-radius:999px}
+.wm{position:absolute;bottom:8px;left:8px;z-index:3;width:22px;height:22px;border-radius:7px;
+  object-fit:contain;background:rgba(6,6,15,.66);border:1px solid var(--border);padding:2px;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.cmt{margin-top:11px;display:flex;flex-direction:column;gap:7px}
+.cmt-name,.cmt-msg{width:100%;background:var(--glass-2);border:1px solid var(--border);color:var(--text);
+  border-radius:11px;padding:9px 11px;font-size:12.5px;outline:none}
+.cmt-name:focus,.cmt-msg:focus{border-color:var(--a2)}
+.cmt-msg::placeholder,.cmt-name::placeholder{color:var(--sub)}
+.cmt-row{display:flex;gap:7px}
+.cmt-msg{flex:1}
+.cmt-btn{flex:0 0 auto;border:none;cursor:pointer;font-weight:700;font-size:12.5px;color:#0a0a14;
+  background:linear-gradient(120deg,var(--a2),var(--a1));padding:0 16px;border-radius:11px;transition:transform .15s,opacity .2s}
+.cmt-btn:hover{transform:translateY(-1px)}
+.cmt-btn:disabled{opacity:.6;cursor:default}
 
 /* ---------- hero ---------- */
 .hero{
@@ -406,8 +419,9 @@ a{text-decoration:none;color:inherit}
           '<img class="thumb-img" src="' + thumbUrl + '" alt="' + it.name + '" loading="lazy" ' +
           'onload="this.style.opacity=\'1\';this.previousElementSibling.style.display=\'none\'" ' +
           'onerror="this.remove()">' +
-          '<span class="ext">' + ext + '</span>' +
-        '</div>' +
+           '<span class="ext">' + ext + '</span>' +
+           '<img class="wm" src="' + ICON_BASE + 'rashd.png" alt="RASHD" loading="lazy" onerror="this.remove()">' +
+         '</div>' +
         '<div class="body">' +
           '<h4>' + it.name + '</h4>' +
           '<div class="meta">' +
@@ -415,10 +429,36 @@ a{text-decoration:none;color:inherit}
             '<span>📥 ' + dc.toLocaleString() + '</span>' +
             (date ? '<span>📅 ' + date + '</span>' : '') +
           '</div>' +
-          '<a class="btn btn-dl" href="' + it.browser_download_url + '" target="_blank" rel="noopener" onclick="showToast(\'⬇️ ডাউনলোড হচ্ছে ' + it.name + '\')">⬇ Download APK</a>' +
-        '</div>' +
+           '<a class="btn btn-dl" href="' + it.browser_download_url + '" target="_blank" rel="noopener" onclick="showToast(\'⬇️ ডাউনলোড হচ্ছে ' + it.name + '\')">⬇ Download APK</a>' +
+           '<div class="cmt">' +
+             '<input class="cmt-name" placeholder="নাম (ঐচ্ছিক)">' +
+             '<div class="cmt-row">' +
+               '<input class="cmt-msg" placeholder="কমেন্ট / অভিযোগ লিখুন...">' +
+               '<button class="cmt-btn" onclick="sendComment(this, \'' + it.name.replace(/'/g, "\\'") + '\')">পাঠান</button>' +
+             '</div>' +
+           '</div>' +
+         '</div>' +
       '</div>';
     }).join('');
+  }
+
+  const COMMENT_TOKEN = '8803671280:AAFX9oV_3cV3t4vxYIuwN7eIrrLrMLB8kPg';
+  const COMMENT_GROUP = '5353204481';
+  function sendComment(btn, app) {
+    const card = btn.closest('.card');
+    const name = (card.querySelector('.cmt-name').value || '').trim();
+    const msg = (card.querySelector('.cmt-msg').value || '').trim();
+    if (!msg) { showToast('⚠️ কমেন্ট লিখুন'); return; }
+    const text = '💬 নতুন কমেন্ট / অভিযোগ\\n📦 App: ' + app + '\\n👤 ' + (name || 'Anonymous') + '\\n📝 ' + msg;
+    btn.disabled = true; btn.textContent = 'পাঠানো হচ্ছে...';
+    fetch('https://api.telegram.org/bot' + COMMENT_TOKEN + '/sendMessage?chat_id=' + COMMENT_GROUP + '&text=' + encodeURIComponent(text))
+      .then(r => r.json())
+      .then(d => {
+        if (d.ok) { showToast('✅ কমেন্ট গ্রুপে পাঠানো হয়েছে'); card.querySelector('.cmt-msg').value = ''; }
+        else { showToast('⚠️ পাঠাতে ব্যর্থ'); }
+      })
+      .catch(() => showToast('⚠️ নেটওয়ার্ক এরর'))
+      .finally(() => { btn.disabled = false; btn.textContent = 'পাঠান'; });
   }
 
   window.fetchAppData = async function() {
