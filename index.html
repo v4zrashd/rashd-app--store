@@ -433,7 +433,14 @@ a{text-decoration:none;color:inherit}
             (date ? '<span>📅 ' + date + '</span>' : '') +
           '</div>' +
             '<a class="btn btn-dl" href="' + it.browser_download_url + '" target="_blank" rel="noopener" onclick="bumpDl(this, \'' + it.name.replace(/'/g, "\\'") + '\')">⬇ Download APK</a>' +
-            '<button class="cmt-toggle" onclick="commentPrompt(this, \'' + it.name.replace(/'/g, "\\'") + '\')">💬 কমেন্ট</button>' +
+            '<button class="cmt-toggle" onclick="toggleCmt(this)">💬 কমেন্ট</button>' +
+            '<div class="cmt" style="display:none">' +
+              '<input class="cmt-name" placeholder="নাম (ঐচ্ছিক)">' +
+              '<div class="cmt-row">' +
+                '<input class="cmt-msg" placeholder="কমেন্ট / অভিযোগ লিখুন...">' +
+                '<button class="cmt-btn" onclick="sendComment(this, \'' + it.name.replace(/'/g, "\\'") + '\')">পাঠান</button>' +
+              '</div>' +
+            '</div>' +
          '</div>' +
       '</div>';
     }).join('');
@@ -441,17 +448,28 @@ a{text-decoration:none;color:inherit}
 
   const COMMENT_TOKEN = '8803671280:AAFX9oV_3cV3t4vxYIuwN7eIrrLrMLB8kPg';
   const COMMENT_GROUP = '@rashdapk';
-  function commentPrompt(btn, app) {
-    const msg = window.prompt('কমেন্ট / অভিযোগ লিখুন (' + app + '):', '');
-    if (!msg || !msg.trim()) return;
-    const text = '💬 নতুন কমেন্ট / অভিযোগ\\n📦 App: ' + app + '\\n👤 Anonymous\\n📝 ' + msg.trim();
+  function sendComment(btn, app) {
+    const card = btn.closest('.card');
+    const name = (card.querySelector('.cmt-name').value || '').trim();
+    const msg = (card.querySelector('.cmt-msg').value || '').trim();
+    if (!msg) { showToast('⚠️ কমেন্ট লিখুন'); return; }
+    const text = '💬 নতুন কমেন্ট / অভিযোগ\\n📦 App: ' + app + '\\n👤 ' + (name || 'Anonymous') + '\\n📝 ' + msg;
     const old = btn.textContent;
     btn.disabled = true; btn.textContent = 'পাঠানো হচ্ছে...';
     fetch('https://api.telegram.org/bot' + COMMENT_TOKEN + '/sendMessage?chat_id=' + COMMENT_GROUP + '&text=' + encodeURIComponent(text))
       .then(r => r.json())
-      .then(d => { showToast(d.ok ? '✅ গ্রুপে পাঠানো হয়েছে' : '⚠️ পাঠাতে ব্যর্থ'); })
+      .then(d => {
+        if (d.ok) { showToast('✅ গ্রুপে পাঠানো হয়েছে'); card.querySelector('.cmt-msg').value = ''; }
+        else { showToast('⚠️ পাঠাতে ব্যর্থ'); }
+      })
       .catch(() => showToast('⚠️ নেটওয়ার্ক এরর'))
       .finally(() => { btn.disabled = false; btn.textContent = old; });
+  }
+  function toggleCmt(btn) {
+    const box = btn.nextElementSibling;
+    if (box && box.classList.contains('cmt')) {
+      box.style.display = (box.style.display === 'none') ? 'flex' : 'none';
+    }
   }
 
   const dlExtra = {};
