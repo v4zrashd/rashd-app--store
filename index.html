@@ -247,8 +247,7 @@ a{text-decoration:none;color:inherit}
 (function(){
   'use strict';
 
-  const GIT_REPO_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/latest';
-  const GIT_TAG_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/tags/v1.0';
+  const DATA_URL = './apps.json';
 
   let applicationData = [];
   let activeFilter = 'all';
@@ -499,11 +498,8 @@ a{text-decoration:none;color:inherit}
   window.fetchAppData = async function() {
     const box = document.getElementById('appGrid');
     try {
-      let r = await fetch(GIT_REPO_URL + '?t=' + Date.now());
-      if (!r.ok) {
-        r = await fetch(GIT_TAG_URL + '?t=' + Date.now());
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-      }
+      let r = await fetch(DATA_URL + '?t=' + Date.now());
+      if (!r.ok) throw new Error('HTTP ' + r.status);
       const data = await r.json();
       applicationData = data.assets || [];
       applicationData.sort((a, b) => (b.download_count || 0) - (a.download_count || 0));

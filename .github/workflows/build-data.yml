@@ -1,0 +1,45 @@
+name: Build app data
+
+on:
+  release:
+    types: [published, edited, released]
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/build-data.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate apps.json from latest release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/v4zrashd/rashd-app--store/releases/latest > rel.json
+          python3 - <<'PY'
+          import json
+          d = json.load(open('rel.json'))
+          assets = [
+              {
+                  'name': a['name'],
+                  'size': a['size'],
+                  'browser_download_url': a['browser_download_url'],
+                  'download_count': a.get('download_count', 0),
+                  'updated_at': a.get('updated_at', ''),
+              }
+              for a in d.get('assets', [])
+          ]
+          json.dump({'assets': assets}, open('apps.json', 'w'), indent=2, ensure_ascii=False)
+          PY
+          rm -f rel.json
+      - name: Commit
+        run: |
+          git config user.email "bot@rashd.local"
+          git config user.name "rashd-bot"
+          git add apps.json
+          git commit -m "chore: refresh apps.json from latest release" && git push || echo "no changes"
