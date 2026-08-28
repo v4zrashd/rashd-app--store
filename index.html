@@ -77,7 +77,10 @@ a{text-decoration:none;color:inherit}
   background:linear-gradient(120deg,var(--a3),var(--a1));color:#0a0a14;padding:3px 9px;border-radius:999px}
 .wm{position:absolute;bottom:8px;left:8px;z-index:3;width:22px;height:22px;border-radius:7px;
   object-fit:contain;background:rgba(6,6,15,.66);border:1px solid var(--border);padding:2px;box-shadow:0 2px 8px rgba(0,0,0,.4)}
-.cmt{margin-top:11px;display:flex;flex-direction:column;gap:7px}
+.cmt{margin-top:9px;display:flex;flex-direction:column;gap:7px}
+.cmt-toggle{margin-top:11px;align-self:flex-start;border:1px solid var(--border);background:var(--glass-2);
+  color:var(--text);font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:11px;cursor:pointer;transition:border-color .2s}
+.cmt-toggle:hover{border-color:var(--a2)}
 .cmt-name,.cmt-msg{width:100%;background:var(--glass-2);border:1px solid var(--border);color:var(--text);
   border-radius:11px;padding:9px 11px;font-size:12.5px;outline:none}
 .cmt-name:focus,.cmt-msg:focus{border-color:var(--a2)}
@@ -426,17 +429,18 @@ a{text-decoration:none;color:inherit}
           '<h4>' + it.name + '</h4>' +
           '<div class="meta">' +
             '<span>💾 ' + mb + ' MB</span>' +
-            '<span>📥 ' + dc.toLocaleString() + '</span>' +
+            '<span data-dl="' + dlKey(it.name) + '">📥 ' + dlShown(it) + '</span>' +
             (date ? '<span>📅 ' + date + '</span>' : '') +
           '</div>' +
-           '<a class="btn btn-dl" href="' + it.browser_download_url + '" target="_blank" rel="noopener" onclick="showToast(\'⬇️ ডাউনলোড হচ্ছে ' + it.name + '\')">⬇ Download APK</a>' +
-           '<div class="cmt">' +
-             '<input class="cmt-name" placeholder="নাম (ঐচ্ছিক)">' +
-             '<div class="cmt-row">' +
-               '<input class="cmt-msg" placeholder="কমেন্ট / অভিযোগ লিখুন...">' +
-               '<button class="cmt-btn" onclick="sendComment(this, \'' + it.name.replace(/'/g, "\\'") + '\')">পাঠান</button>' +
-             '</div>' +
-           '</div>' +
+            '<a class="btn btn-dl" href="' + it.browser_download_url + '" target="_blank" rel="noopener" onclick="bumpDl(this, \'' + it.name.replace(/'/g, "\\'") + '\')">⬇ Download APK</a>' +
+            '<button class="cmt-toggle" onclick="toggleCmt(this)">💬 কমেন্ট</button>' +
+            '<div class="cmt" style="display:none">' +
+              '<input class="cmt-name" placeholder="নাম (ঐচ্ছিক)">' +
+              '<div class="cmt-row">' +
+                '<input class="cmt-msg" placeholder="কমেন্ট / অভিযোগ লিখুন...">' +
+                '<button class="cmt-btn" onclick="sendComment(this, \'' + it.name.replace(/'/g, "\\'") + '\')">পাঠান</button>' +
+              '</div>' +
+            '</div>' +
          '</div>' +
       '</div>';
     }).join('');
@@ -461,6 +465,36 @@ a{text-decoration:none;color:inherit}
       .finally(() => { btn.disabled = false; btn.textContent = 'পাঠান'; });
   }
 
+  const dlExtra = {};
+  function dlKey(name){ return 'rashd-dl-' + name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
+  function dlShown(it){ return (it.download_count || 0) + (dlExtra[it.name] || 0); }
+  function totalDl(){ return applicationData.reduce((s, i) => s + (i.download_count || 0) + (dlExtra[i.name] || 0), 0); }
+  function refreshDl(){
+    applicationData.forEach(it => {
+      const base = parseInt(localStorage.getItem('rashd_dl_' + dlKey(it.name)) || '0', 10);
+      dlExtra[it.name] = base;
+      const el = document.querySelector('[data-dl="' + dlKey(it.name) + '"]');
+      if (el) el.textContent = '📥 ' + dlShown(it).toLocaleString();
+    });
+    animateCount(document.getElementById('statDl'), totalDl());
+  }
+  function bumpDl(btn, name){
+    const it = applicationData.find(i => i.name === name) || { name: name, download_count: 0 };
+    const cur = parseInt(localStorage.getItem('rashd_dl_' + dlKey(name)) || '0', 10) + 1;
+    localStorage.setItem('rashd_dl_' + dlKey(name), String(cur));
+    dlExtra[name] = cur;
+    const el = document.querySelector('[data-dl="' + dlKey(name) + '"]');
+    if (el) el.textContent = '📥 ' + dlShown(it).toLocaleString();
+    animateCount(document.getElementById('statDl'), totalDl());
+    showToast('⬇️ ডাউনলোড হচ্ছে ' + name);
+  }
+  function toggleCmt(btn){
+    const box = btn.nextElementSibling;
+    if (box && box.classList.contains('cmt')) {
+      box.style.display = (box.style.display === 'none') ? 'flex' : 'none';
+    }
+  }
+
   window.fetchAppData = async function() {
     const box = document.getElementById('appGrid');
     try {
@@ -482,6 +516,7 @@ a{text-decoration:none;color:inherit}
       animateCount(document.getElementById('statDl'), total);
       animateCount(document.getElementById('statApk'), applicationData.length);
       buildCats();
+      refreshDl();
       if (changed) {
         render(getFiltered());
         if (lastSig !== '') showToast('🔄 লাইভ আপডেট হয়েছে');
