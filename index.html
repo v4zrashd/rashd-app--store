@@ -60,6 +60,12 @@ a{text-decoration:none;color:inherit}
 .brand b{font-weight:700;letter-spacing:.5px;font-size:15px}
 .brand span{margin-left:auto;font-size:12px;color:var(--sub);
   border:1px solid var(--border);padding:5px 10px;border-radius:999px;background:var(--glass-2)}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--a2);
+  border:1px solid rgba(25,227,197,.4);background:rgba(25,227,197,.08);padding:5px 10px;border-radius:999px;margin-left:10px}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--a2);
+  box-shadow:0 0 0 0 rgba(25,227,197,.6);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(25,227,197,.55)}70%{box-shadow:0 0 0 9px rgba(25,227,197,0)}100%{box-shadow:0 0 0 0 rgba(25,227,197,0)}}
+.stat b{transition:color .3s}
 
 /* ---------- hero ---------- */
 .hero{
@@ -167,6 +173,7 @@ a{text-decoration:none;color:inherit}
   <div class="brand">
     <div class="logo">R</div>
     <b>RASHD App Store</b>
+    <span class="live"><i></i> LIVE</span>
     <span>@rashd12bot</span>
   </div>
 
@@ -221,6 +228,7 @@ a{text-decoration:none;color:inherit}
   let activeFilter = 'all';
   let isDataLoaded = false;
   let retryCount = 0;
+  let lastSig = '';
 
   if (window.Telegram && Telegram.WebApp) {
     Telegram.WebApp.ready();
@@ -234,6 +242,19 @@ a{text-decoration:none;color:inherit}
     toastEl.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+  }
+
+  function animateCount(el, to, dur) {
+    dur = dur || 900;
+    const cur = parseInt((el.textContent || '0').replace(/[^0-9]/g, ''), 10) || 0;
+    if (cur === to) { el.textContent = to.toLocaleString(); return; }
+    const t0 = performance.now();
+    (function step(t) {
+      const p = Math.min(1, (t - t0) / dur);
+      const v = Math.round(cur + (to - cur) * (1 - Math.pow(1 - p, 3)));
+      el.textContent = v.toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
   }
 
   const extIconMap = {
@@ -294,11 +315,11 @@ a{text-decoration:none;color:inherit}
       const r = await fetch('https://api.counterapi.dev/v1/v4zrashd/rashdstore/up');
       if (!r.ok) throw new Error('off');
       const d = await r.json();
-      document.getElementById('statViews').textContent = Number(d.count || 1).toLocaleString();
+      animateCount(document.getElementById('statViews'), Number(d.count || 1));
     } catch (e) {
       let v = parseInt(localStorage.getItem('views') || '154') + 1;
       localStorage.setItem('views', v);
-      document.getElementById('statViews').textContent = v.toLocaleString();
+      animateCount(document.getElementById('statViews'), v);
     }
   }
 
@@ -400,13 +421,20 @@ a{text-decoration:none;color:inherit}
       applicationData = data.assets || [];
       isDataLoaded = true;
       retryCount = 0;
+      const sig = JSON.stringify(applicationData.map(i => i.name + '|' + (i.download_count || 0)));
+      const changed = sig !== lastSig;
+      lastSig = sig;
       let total = 0;
       applicationData.forEach(i => total += i.download_count || 0);
-      document.getElementById('statDl').textContent = total.toLocaleString();
-      document.getElementById('statApk').textContent = applicationData.length;
+      animateCount(document.getElementById('statDl'), total);
+      animateCount(document.getElementById('statApk'), applicationData.length);
       buildCats();
-      render(getFiltered());
-      updateHead();
+      if (changed) {
+        render(getFiltered());
+        if (lastSig !== '') showToast('🔄 লাইভ আপডেট হয়েছে');
+      } else {
+        updateHead();
+      }
     } catch (e) {
       retryCount++;
       const label = retryCount > 1 ? 'Retry (' + retryCount + ')' : 'Retry';
@@ -432,6 +460,7 @@ a{text-decoration:none;color:inherit}
 
   fetchAppData();
   loadViewCounter();
+  setInterval(() => { fetchAppData(); loadViewCounter(); }, 45000);
 })();
 </script>
 </body>
