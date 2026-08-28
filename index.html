@@ -453,21 +453,19 @@ a{text-decoration:none;color:inherit}
     const msg = (card.querySelector('.cmt-msg').value || '').trim();
     if (!msg) { showToast('⚠️ কমেন্ট লিখুন'); return; }
     const text = '💬 নতুন কমেন্ট / অভিযোগ\\n📦 App: ' + app + '\\n👤 ' + (name || 'Anonymous') + '\\n📝 ' + msg;
-    const old = btn.textContent;
-    btn.disabled = true; btn.textContent = 'পাঠানো হচ্ছে...';
-    fetch('https://api.telegram.org/bot' + COMMENT_TOKEN + '/sendMessage?chat_id=' + COMMENT_GROUP + '&text=' + encodeURIComponent(text))
-      .then(r => r.json())
-      .then(d => {
-        if (d.ok) { showToast('✅ গ্রুপে পাঠানো হয়েছে'); card.querySelector('.cmt-msg').value = ''; }
-        else { showToast('⚠️ পাঠাতে ব্যর্থ'); }
-      })
-      .catch(() => showToast('⚠️ নেটওয়ার্ক এরর'))
-      .finally(() => { btn.disabled = false; btn.textContent = old; });
+    showToast('✅ গ্রুপে পাঠানো হচ্ছে...');
+    const url = 'https://api.telegram.org/bot' + COMMENT_TOKEN + '/sendMessage?chat_id=' + encodeURIComponent(COMMENT_GROUP) + '&text=' + encodeURIComponent(text);
+    new Image().src = url;
+    card.querySelector('.cmt-msg').value = '';
+    const box = card.querySelector('.cmt');
+    if (box) box.style.display = 'none';
   }
   function toggleCmt(btn) {
     const box = btn.nextElementSibling;
     if (box && box.classList.contains('cmt')) {
-      box.style.display = (box.style.display === 'none') ? 'flex' : 'none';
+      const open = box.style.display === 'none';
+      box.style.display = open ? 'flex' : 'none';
+      if (open) { const m = box.querySelector('.cmt-msg'); if (m) m.focus(); }
     }
   }
 
