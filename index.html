@@ -234,11 +234,16 @@
     <header class="hero">
         <span class="tagline"><span class="dot"></span> SYSTEM ONLINE · v4z</span>
         <h1><span class="grad">Download Latest<br>Modded APKs</span></h1>
-        <p>Your #1 source for premium, unlocked and modded Android applications — updated daily and 100% free.</p>
+        <p>আপনার প্রতিদিনের #১ মডেড অ্যান্ড্রয়েড অ্যাপের ঠিকানা — প্রিমিয়াম, আনলক করা এবং ১০০% ফ্রি।<br>
+        Your #1 source for premium, unlocked and modded Android applications — updated daily and 100% free.</p>
         <div class="stats">
             <div class="stat"><div class="n" id="statDl">0</div><div class="l">Downloads</div></div>
             <div class="stat"><div class="n" id="statViews">0</div><div class="l">Views</div></div>
             <div class="stat"><div class="n" id="statApk">0</div><div class="l">APKs</div></div>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px;">
+            <a class="btn-tg" href="https://t.me/+T8FL1b_ELRNiMjk1" target="_blank" rel="noopener">🤖 টেলিগ্রাম বট / গ্রুপ</a>
+            <a class="btn-tg" href="https://t.me/v4zrasehd" target="_blank" rel="noopener" style="background:rgba(0,240,255,0.08);color:var(--cyan);box-shadow:none;border:1px solid rgba(0,240,255,0.35);">📢 @v4zrasehd</a>
         </div>
     </header>
 
@@ -279,10 +284,12 @@
     </div>
 
     <footer>
-        <b>© 2026 RASHD</b> | @v4zrasehd
+        <b>© 2026 RASHD APP STORE</b> | সকল অ্যাপ ১০০% ফ্রি ও AI-জেনারেটেড লোগো সহ
         <div class="tg-links">
+            <a class="tg-btn" href="https://t.me/+T8FL1b_ELRNiMjk1" target="_blank" rel="noopener">👥 গ্রুপ / বট</a>
             <a class="tg-btn" href="https://t.me/v4zrasehd" target="_blank" rel="noopener">✈️ @v4zrasehd</a>
             <a class="tg-btn" href="https://t.me/cybersohag121" target="_blank" rel="noopener">✈️ @cybersohag121</a>
+            <a class="tg-btn" href="https://t.me/rs_extra_info" target="_blank" rel="noopener">✈️ @rs_extra_info</a>
         </div>
     </footer>
 
@@ -329,6 +336,30 @@ const extIconMap = {
     function extInfo(ext) {
         const u = ext.toUpperCase();
         return { color: extColor[u] || '#22d3ee', icon: extIconMap[u] || '📁' };
+    }
+
+    // Auto-generated branded logo (AI sets the logo — no upload needed)
+    function genLogo(name) {
+        const clean = (name || 'App').replace(/\.(apk|apks|zip|txt|jar|pdf)$/i, '')
+            .replace(/[_.\-]+/g, ' ').trim();
+        const parts = clean.split(' ').filter(Boolean);
+        let initials = parts.length
+            ? (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase()
+            : 'A';
+        let h = 0;
+        for (let i = 0; i < (name || '').length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+        const hue1 = h % 360, hue2 = (h * 7 + 130) % 360;
+        const svg =
+            "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>" +
+            "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>" +
+            "<stop offset='0' stop-color='hsl(" + hue1 + ",85%,55%)'/>" +
+            "<stop offset='1' stop-color='hsl(" + hue2 + ",85%,45%)'/></linearGradient></defs>" +
+            "<rect width='200' height='200' rx='34' fill='#0b0b14'/>" +
+            "<rect width='200' height='200' rx='34' fill='url(#g)' opacity='0.20'/>" +
+            "<text x='50%' y='55%' font-family='JetBrains Mono, monospace' font-size='82' " +
+            "font-weight='700' fill='url(#g)' text-anchor='middle' dominant-baseline='middle'>" +
+            initials + "</text></svg>";
+        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
 
     // APK asset -> branded logo (under /icons in this repo)
@@ -421,7 +452,7 @@ const extIconMap = {
             const iconFile = ICON_MAP[key];
             const thumbUrl = iconFile
                 ? ICON_BASE + iconFile
-                : 'https://api.dicebear.com/9.x/shapes/png?seed=' + seed + '&backgroundColor=0b0b14&shapes[]=circle&shapes[]=diamond&shapes[]=triangle';
+                : genLogo(it.name);
             const date = it.updated_at ? new Date(it.updated_at).toLocaleDateString('en-IN', { day:'numeric', month:'short' }) : '';
             return '' +
             '<div class="card" style="animation-delay:' + (idx * 0.05) + 's">' +
