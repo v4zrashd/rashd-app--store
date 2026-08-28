@@ -7,7 +7,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Host-GitHub%20Pages-6366f1" alt="host">
   <img src="https://img.shields.io/badge/Bot-@rashd12bot-229ed9" alt="bot">
-  <img src="https://img.shields.io/badge/Group-@rashdapk-ff5d8f" alt="group">
+  <img src="https://img.shields.io/badge/Group-RASHD-ff5d8f" alt="group">
   <img src="https://img.shields.io/badge/License-MIT-9aa0a0" alt="license">
 </p>
 
@@ -22,7 +22,7 @@
 - 🌌 **Aurora Glass ডিজাইন** — অ্যানিমেটেড ব্যাকগ্রাউন্ড, গ্লাস কার্ড, গ্রেডিয়েন্ট হিরো।
 - 🔄 **রিয়েল-টাইম ডেটা** — প্রতি ৪৫ সেকেন্ডে অটো-রিফ্রেশ, ডাউনলোড ও ভিউ কাউন্ট লাইভ আপডেট।
 - 📊 **রিয়েল ডাউনলোড কাউন্ট** — GitHub রিলিজের আসল `download_count` + ব্রাউজার ক্লিক কাউন্ট মিলে দেখায়।
-- 💬 **প্রতি APK-এ কমেন্ট** — `💬 কমেন্ট` → লিখে `পাঠান` → সরাসরি `@rashdapk` গ্রুপে যায় (বট অ্যাডমিন)।
+- 💬 **প্রতি APK-এ কমেন্ট** — `💬 কমেন্ট` → লিখে `পাঠান` → সরাসরি আমাদের গ্রুপে যায় (বট অ্যাডমিন)।
 - 🔍 **সার্চ ও ফিল্টার** — নাম দিয়ে খুঁজুন, এক্সটেনশন অনুযায়ী ফিল্টার করুন।
 - 🏅 **টপ ডাউনলোড** — সবচেয়ে বেশি ডাউনলোড হওয়া অ্যাপ `#১` + 🔥 Trending।
 - 🔒 **বট-এক্সক্লুসিভ** — সাইট একটা সিক্রেট কী দিয়ে গেটেড; ডাইরেক্ট লিংক কাজ করে না।
@@ -36,7 +36,7 @@
 | ধরণ | লিংক |
 |------|------|
 | 🤖 বট | [@rashd12bot](https://t.me/rashd12bot) |
-| 👥 গ্রুপ | [@rashdapk](https://t.me/rashdapk) |
+| 👥 গ্রুপ | [আমাদের গ্রুপ](https://t.me/+T8FL1b_ELRNiMjk1) |
 | 📢 চ্যানেল ১ | [@v4zrasehd](https://t.me/v4zrasehd) |
 | 📢 চ্যানেল ২ | [@cybersohag121](https://t.me/cybersohag121) |
 | 📢 চ্যানেল ৩ | [@rs_extra_info](https://t.me/rs_extra_info) |
@@ -62,7 +62,7 @@ Telegram Bot (@rashd12bot)
    │  "/start" → চ্যানেল ভেরিফাই → "🛒 Open App Store"
    ▼
 Static Site (GitHub Pages)  ──▶  apps.json  (রিলিজ থেকে জেনারেটেড)
-   │  💬 কমেন্ট → Image() রিকোয়েস্ট → @rashdapk গ্রুপে মেসেজ
+   │  💬 কমেন্ট → Image() রিকোয়েস্ট → আমাদের গ্রুপ গ্রুপে মেসেজ
 ```
 
 - সাইট স্ট্যাটিক (`index.html`), GitHub Pages দিয়ে হোস্ট।
@@ -86,7 +86,7 @@ Static Site (GitHub Pages)  ──▶  apps.json  (রিলিজ থেকে 
 প্রতিটি APK কার্ডের নিচে **💬 কমেন্ট** বাটন:
 
 - বাটন → ইনপুট বক্স ওপেন (অটো-ফোকাস)।
-- কমেন্ট লিখে **পাঠান** → ব্রাউজার থেকে সরাসরি `@rashdapk` গ্রুপে মেসেজ
+- কমেন্ট লিখে **পাঠান** → ব্রাউজার থেকে সরাসরি `আমাদের গ্রুপ` গ্রুপে মেসেজ
   (বট `@rashd12bot` গ্রুপে অ্যাডমিন হতে হবে)।
 
 ---
@@ -109,7 +109,7 @@ rashd-app--store/
 
 - APK ডাউনলোড শুধু এই ওয়েবসাইট থেকে (বট ফাইল পাঠানো বন্ধ)।
 - কোনো APK সম্পর্কে না জানলে সেটি ইনস্টল করবেন না।
-- কমেন্ট/অভিযোগ @rashdapk গ্রুপে পাঠানো যায়।
+- কমেন্ট/অভিযোগ আমাদের গ্রুপ গ্রুপে পাঠানো যায়।
 
 ---
 
