@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>RASHD App Store — প্রিমিয়াম মডেড স্টোর</title>
+<meta name="description" content="RASHD App Store — ফ্রি মডেড APK, টুলস ও গেমস। @rashd12bot">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #070913;
+  --bg-card: rgba(14, 18, 36, 0.75);
+  --bg-card-hover: rgba(22, 28, 56, 0.85);
+  --text: #f8fafc;
+  --sub: #94a3b8;
+  --a1: #00f5d4;   /* Neon Cyan */
+  --a2: #0070f3;   /* Electric Blue */
+  --a3: #7928ca;   /* Deep Violet */
+  --a4: #ff0080;   /* Neon Pink */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 245, 212, 0.35);
+  --glass: rgba(15, 23, 42, 0.65);
+  --glass-inner: rgba(255, 255, 255, 0.03);
+  --sans: 'Plus Jakarta Sans', 'Noto Sans Bengali', system-ui, sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+a{text-decoration:none;color:inherit}
+::selection{background:var(--a1);color:#070913}
+
+/* ---------- প্রিমিয়াম নিয়ন অরোরা ব্যাকগ্রাউন্ড ---------- */
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.aurora::before, .aurora::after, .aurora i{
+  content:"";position:absolute;border-radius:50%;filter:blur(85px);opacity:.45;
+}
+.aurora::before{
+  width:65vw;height:65vw;left:-20vw;top:-15vw;
+  background:radial-gradient(circle, var(--a3), transparent 65%);
+  animation:float1 18s ease-in-out infinite;
+}
+.aurora::after{
+  width:60vw;height:60vw;right:-20vw;top:15vh;
+  background:radial-gradient(circle, var(--a2), transparent 65%);
+  animation:float2 22s ease-in-out infinite;
+}
+.aurora i{
+  width:55vw;height:55vw;left:20vw;bottom:-20vw;
+  background:radial-gradient(circle, var(--a1), transparent 60%);
+  animation:float3 26s ease-in-out infinite;
+}
+@keyframes float1{50%{transform:translate(6vw,8vh) scale(1.1)}}
+@keyframes float2{50%{transform:translate(-8vw,6vh) scale(1.12)}}
+@keyframes float3{50%{transform:translate(5vw,-6vh) scale(1.06)}}
+
+.wrap{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:20px 16px 45px}
+
+/* ---------- ব্র্যান্ডিং ও টপ বার ---------- */
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.brand .logo{
+  width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+  font-weight:800;font-size:20px;color:#070913;
+  background:linear-gradient(135deg, var(--a1), #00b4d8);
+  box-shadow:0 0 25px rgba(0,245,212,0.45);
+}
+.brand b{font-weight:800;letter-spacing:.6px;font-size:16px;background:linear-gradient(to right, #fff, #cbd5e1);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand span{margin-left:auto;font-size:12px;color:var(--sub);
+  border:1px solid var(--border);padding:6px 12px;border-radius:999px;background:var(--glass-inner);backdrop-filter:blur(10px)}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--a1);
+  border:1px solid rgba(0,245,212,0.35);background:rgba(0,245,212,0.08);padding:6px 12px;border-radius:999px;margin-left:10px}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--a1);
+  box-shadow:0 0 0 0 rgba(0,245,212,0.6);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,245,212,0.6)}70%{box-shadow:0 0 0 8px rgba(0,245,212,0)}100%{box-shadow:0 0 0 0 rgba(0,245,212,0)}}
+
+/* ---------- হিরো সেকশন ---------- */
+.hero{
+  position:relative;border:1px solid var(--border);border-radius:26px;
+  background:linear-gradient(145deg, rgba(121,40,202,0.18), rgba(0,245,212,0.06) 60%, rgba(14,18,36,0.6));
+  padding:26px 22px;overflow:hidden;margin-bottom:20px;
+  backdrop-filter:blur(16px);
+  box-shadow:0 12px 35px rgba(0,0,0,0.35);
+}
+.hero h1{font-size:30px;line-height:1.2;font-weight:800;letter-spacing:-.6px}
+.hero h1 .g{
+  background:linear-gradient(120deg, var(--a1) 0%, #38bdf8 50%, var(--a4) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p{color:var(--sub);margin-top:8px;font-size:14px}
+.warn{margin-top:14px;font-size:12.5px;color:#fcd34d;
+  background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);
+  padding:10px 14px;border-radius:14px;line-height:1.45}
+.warn b{color:#fbbf24}
+
+.stats{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.stat{flex:1;min-width:90px;border:1px solid var(--border);border-radius:18px;
+  background:rgba(255,255,255,0.03);padding:12px 14px;backdrop-filter:blur(8px)}
+.stat b{display:block;font-size:20px;font-weight:800;color:#fff}
+.stat small{color:var(--sub);font-size:11.5px;font-weight:500}
+
+.cta{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{border:0;cursor:pointer;font-family:var(--sans);font-weight:700;font-size:13.5px;
+  padding:13px 20px;border-radius:14px;display:inline-flex;align-items:center;gap:8px;
+  transition:all .2s cubic-bezier(0.4, 0, 0.2, 1)}
+.btn:active{transform:scale(.97)}
+.btn-primary{
+  color:#070913;
+  background:linear-gradient(135deg, var(--a1), #00b4d8);
+  box-shadow:0 8px 24px rgba(0,245,212,0.35);
+}
+.btn-primary:hover{box-shadow:0 10px 30px rgba(0,245,212,0.5);transform:translateY(-1px)}
+.btn-ghost{color:var(--text);background:rgba(255,255,255,0.05);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2)}
+
+/* ---------- সার্চ ও ক্যাটাগরি চিপস ---------- */
+.bar{display:flex;gap:10px;align-items:center;margin:8px 0 14px}
+.search{flex:1;display:flex;align-items:center;gap:10px;border:1px solid var(--border);
+  background:rgba(14,18,36,0.7);border-radius:16px;padding:12px 16px;backdrop-filter:blur(10px);
+  transition:border-color .2s,box-shadow .2s}
+.search:focus-within{border-color:var(--a1);box-shadow:0 0 15px rgba(0,245,212,0.2)}
+.search input{flex:1;background:transparent;border:0;outline:0;color:var(--text);
+  font-family:var(--sans);font-size:14px}
+.search input::placeholder{color:var(--sub)}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.cp{flex:0 0 auto;cursor:pointer;font-size:12.5px;font-weight:600;padding:8px 15px;border-radius:999px;
+  border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--sub);white-space:nowrap;
+  transition:all .2s ease}
+.cp:hover{border-color:rgba(255,255,255,0.2);color:#fff}
+.cp.act{color:#070913;background:linear-gradient(135deg, var(--a1), #00b4d8);border-color:transparent;box-shadow:0 4px 15px rgba(0,245,212,0.3)}
+
+.sect{display:flex;align-items:baseline;justify-content:space-between;margin:14px 2px 12px}
+.sect h2{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.sect span{font-size:12px;color:var(--sub);font-weight:600}
+
+/* ---------- অ্যাপ কার্ড গ্রিড ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:14px}
+.card{
+  position:relative;border:1px solid var(--border);border-radius:22px;overflow:hidden;
+  background:var(--bg-card);backdrop-filter:blur(12px);padding:14px;
+  display:flex;flex-direction:column;gap:10px;
+  transition:transform .25s cubic-bezier(0.4, 0, 0.2, 1), border-color .25s ease, box-shadow .25s ease;
+  box-shadow:0 8px 20px rgba(0,0,0,0.25);
+}
+.card:hover{
+  transform:translateY(-5px);
+  border-color:var(--border-glow);
+  background:var(--bg-card-hover);
+  box-shadow:0 14px 32px rgba(0, 245, 212, 0.15);
+}
+.card.top{border-color:rgba(255,0,128,0.4);box-shadow:0 8px 25px rgba(255,0,128,0.18)}
+.card.top:hover{border-color:var(--a4);box-shadow:0 14px 35px rgba(255,0,128,0.3)}
+
+.rank{position:absolute;top:10px;left:10px;z-index:3;font-size:11px;font-weight:800;
+  background:rgba(7,9,19,0.8);border:1px solid var(--border);padding:3px 9px;border-radius:999px;color:var(--text);backdrop-filter:blur(6px)}
+.trend{position:absolute;top:10px;right:10px;z-index:3;font-size:10.5px;font-weight:800;
+  background:linear-gradient(135deg, var(--a4), var(--a3));color:#fff;padding:3px 9px;border-radius:999px;box-shadow:0 2px 10px rgba(255,0,128,0.4)}
+
+.thumb{position:relative;width:100%;aspect-ratio:1/1;border-radius:18px;overflow:hidden;
+  display:grid;place-items:center;
+  background:linear-gradient(145deg, rgba(121,40,202,0.25), rgba(0,245,212,0.12));
+  border:1px solid rgba(255,255,255,0.04);
+}
+.thumb-img{width:76%;height:76%;object-fit:contain;opacity:0;transition:opacity .3s}
+.thumb-fb{position:absolute;font-size:42px}
+.ext{position:absolute;bottom:8px;right:8px;font-size:10px;font-weight:800;letter-spacing:.5px;
+  padding:3px 8px;border-radius:8px;background:rgba(7,9,19,0.75);border:1px solid var(--border);color:var(--a1);backdrop-filter:blur(6px)}
+.wm{position:absolute;bottom:8px;left:8px;z-index:3;width:22px;height:22px;border-radius:8px;
+  object-fit:contain;background:rgba(7,9,19,0.75);border:1px solid var(--border);padding:2px;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+
+.body{display:flex;flex-direction:column;gap:8px}
+.body h4{font-size:13.5px;font-weight:700;word-break:break-word;line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#f1f5f9}
+.meta{display:flex;flex-wrap:wrap;gap:6px 10px;font-size:11px;color:var(--sub);font-weight:500}
+.meta span{display:inline-flex;align-items:center;gap:3px}
+
+.btn-dl{
+  margin-top:2px;text-align:center;justify-content:center;color:#070913;
+  background:linear-gradient(135deg, var(--a1), #00b4d8);
+  box-shadow:0 6px 18px rgba(0,245,212,0.3);font-size:12.5px;padding:11px 12px;font-weight:800;
+  border-radius:13px;
+}
+.btn-dl:hover{box-shadow:0 8px 24px rgba(0,245,212,0.45);transform:translateY(-1px)}
+
+/* ---------- কমেন্ট সেকশন ---------- */
+.cmt{margin-top:8px;display:flex;flex-direction:column;gap:7px}
+.cmt-toggle{
+  margin-top:6px;align-self:flex-start;border:1px solid var(--border);background:rgba(255,255,255,0.03);
+  color:var(--sub);font-size:12px;font-weight:700;padding:7px 13px;border-radius:11px;cursor:pointer;
+  transition:all .2s ease;
+}
+.cmt-toggle:hover{border-color:var(--a1);color:var(--text);background:rgba(0,245,212,0.08)}
+.cmt-name,.cmt-msg{width:100%;background:rgba(7,9,19,0.7);border:1px solid var(--border);color:var(--text);
+  border-radius:11px;padding:8px 12px;font-size:12px;outline:none;font-family:var(--sans);transition:border-color .2s}
+.cmt-name:focus,.cmt-msg:focus{border-color:var(--a1)}
+.cmt-msg::placeholder,.cmt-name::placeholder{color:var(--sub)}
+.cmt-row{display:flex;gap:6px}
+.cmt-msg{flex:1}
+.cmt-btn{
+  flex:0 0 auto;border:none;cursor:pointer;font-weight:800;font-size:12px;color:#070913;
+  background:linear-gradient(135deg, var(--a1), #00b4d8);padding:0 15px;border-radius:11px;
+  transition:transform .15s,opacity .2s;
+}
+.cmt-btn:hover{transform:translateY(-1px)}
+.cmt-btn:disabled{opacity:.6;cursor:default}
+
+/* ---------- লোডিং / এরর ---------- */
+.state{grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--sub)}
+.state .spn{width:36px;height:36px;border-radius:50%;margin:0 auto 14px;
+  border:3px solid rgba(255,255,255,0.08);border-top-color:var(--a1);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.state .e{font-size:32px;margin-bottom:8px}
+.state .s{font-size:13.5px}
+.btn-rty{cursor:pointer;border:0;margin-top:14px}
+
+/* ---------- ফুটার ---------- */
+.foot{margin-top:30px;border-top:1px solid var(--border);padding-top:20px;display:flex;flex-direction:column;gap:14px}
+.foot .row{display:flex;gap:10px;flex-wrap:wrap}
+.tg-btn{
+  flex:1;min-width:120px;text-align:center;font-size:12.5px;font-weight:600;padding:12px 14px;
+  border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text);
+  transition:all .2s ease;
+}
+.tg-btn:hover{border-color:var(--a1);background:rgba(0,245,212,0.06);color:var(--a1)}
+.foot small{color:var(--sub);font-size:11px;text-align:center}
+
+/* ---------- লক স্ক্রিন ---------- */
+.lock{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:30px;color:var(--text)}
+.lock-ic{font-size:56px;filter:drop-shadow(0 0 25px rgba(255,0,128,0.6))}
+.lock h2{font-size:24px;margin:0;background:linear-gradient(120deg, var(--a1), var(--a4));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:800}
+.lock p{color:var(--sub);max-width:340px;line-height:1.6;margin:0}
+.lock-btn{margin-top:8px;background:linear-gradient(135deg, var(--a1), #00b4d8);color:#070913;font-weight:800;padding:13px 24px;border-radius:14px;text-decoration:none}
+
+/* টোস্ট */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+  background:rgba(14,18,36,0.95);border:1px solid rgba(0,245,212,0.4);color:var(--text);
+  padding:12px 20px;border-radius:16px;font-size:13px;font-weight:600;z-index:50;opacity:0;
+  transition:.25s cubic-bezier(0.4,0,0.2,1);pointer-events:none;backdrop-filter:blur(12px);
+  box-shadow:0 8px 25px rgba(0,0,0,0.5)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:420px){
+  .hero h1{font-size:26px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(136px,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="aurora"><i></i></div>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="logo">R</div>
+    <b>RASHD STORE</b>
+    <span class="live"><i></i> LIVE</span>
+    <span>@rashd12bot</span>
+  </div>
+
+  <section class="hero">
+    <h1>মডেড অ্যাপ স্টোর <br><span class="g">ফ্রি ও আনলিমিটেড</span></h1>
+    <p>লেটেস্ট মডেড APK, স্ক্রিপ্ট ও সিকিউরিটি টুলস — রিয়েলটাইম আপডেট ও ওয়ান-ক্লিক ডাউনলোড।</p>
+    <div class="warn">⚠️ <b>সতর্কতা:</b> কোনো অ্যাপ সম্পর্কে বিস্তারিত না জানলে সেটি ফোনে ইনস্টল করবেন না।</div>
+    <div class="stats">
+      <div class="stat"><b id="statApk">0</b><small>টোটাল ফাইল</small></div>
+      <div class="stat"><b id="statDl">0</b><small>ডাউনলোড</small></div>
+      <div class="stat"><b id="statViews">0</b><small>মোট ভিউ</small></div>
+    </div>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://t.me/rashd12bot" target="_blank" rel="noopener">🤖 টেলিগ্রাম বট</a>
+      <a class="btn btn-ghost" href="https://t.me/+T8FL1b_ELRNiMjk1" target="_blank" rel="noopener">👥 অফিসিয়াল গ্রুপ</a>
+    </div>
+  </section>
+
+  <div class="bar">
+    <label class="search">
+      🔍 <input id="searchInput" type="text" placeholder="অ্যাপ অথবা ফাইল খুঁজুন..." oninput="onSearch()" />
+    </label>
+  </div>
+  <div class="chips" id="catRow"></div>
+
+  <div class="sect">
+    <h2 id="sectTitle">📱 All Files</h2>
+    <span id="sectCount">0 items</span>
+  </div>
+
+  <div class="grid" id="appGrid"></div>
+
+  <div class="foot">
+    <div class="row">
+      <a class="tg-btn" href="https://t.me/v4zrasehd" target="_blank" rel="noopener">✈️ @v4zrasehd</a>
+      <a class="tg-btn" href="https://t.me/cybersohag121" target="_blank" rel="noopener">✈️ @cybersohag121</a>
+      <a class="tg-btn" href="https://t.me/rs_extra_info" target="_blank" rel="noopener">✈️ @rs_extra_info</a>
+    </div>
+    <small>© RASHD Team • Designed & Developed by @v4zrasehd</small>
+  </div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  // সিকিউর অ্যাক্সেস কি
+  const ACCESS_KEY = 'RASHDPORTAL_8xK2pQ9';
+  if (new URLSearchParams(location.search).get('k') !== ACCESS_KEY) {
+    document.body.innerHTML = '<div class="lock"><div class="lock-ic">🔒</div><h2>অ্যাক্সেস সংরক্ষিত</h2><p>এই পোর্টালটি শুধুমাত্র <b>@rashd12bot</b> থেকে ওপেন করা যাবে।</p><a class="lock-btn" href="https://t.me/rashd12bot">🤖 বট ওপেন করুন</a></div>';
+    throw new Error('access denied');
+  }
+
+  // GitHub Release লাইভ API
+  const DATA_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/tags/v1.0';
+
+  let applicationData = [];
+  let activeFilter = 'all';
+  let isDataLoaded = false;
+  let retryCount = 0;
+  let lastSig = '';
+
+  if (window.Telegram && Telegram.WebApp) {
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+  }
+
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+  }
+
+  function animateCount(el, to, dur) {
+    dur = dur || 900;
+    const cur = parseInt((el.textContent || '0').replace(/[^0-9]/g, ''), 10) || 0;
+    if (cur === to) { el.textContent = to.toLocaleString(); return; }
+    const t0 = performance.now();
+    (function step(t) {
+      const p = Math.min(1, (t - t0) / dur);
+      const v = Math.round(cur + (to - cur) * (1 - Math.pow(1 - p, 3)));
+      el.textContent = v.toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+
+  const extIconMap = {
+    APK:'📦', PDF:'📄', ZIP:'🗜️', RAR:'🗜️', DOC:'📝', DOCX:'📝', TXT:'📄',
+    PNG:'🖼️', JPG:'🖼️', JPEG:'🖼️', MP4:'🎬', MP3:'🎵', GIF:'🎰', JSON:'📋',
+    XML:'📄', HTML:'🌐', CSS:'🎨', JS:'💻', PHP:'🛠️', PLP:'🎨'
+  };
+  const extColor = {
+    APK:'#00f5d4', PDF:'#ff0080', ZIP:'#f59e0b', RAR:'#f59e0b', DOC:'#38bdf8',
+    DOCX:'#38bdf8', TXT:'#94a3b8', PNG:'#10b981', JPG:'#f59e0b', JPEG:'#f59e0b',
+    MP4:'#7928ca', MP3:'#ec4899', GIF:'#00f5d4', SVG:'#00f5d4', JSON:'#06b6d4',
+    XML:'#7928ca', HTML:'#ef4444', CSS:'#38bdf8', JS:'#facc15', PHP:'#a855f7', PLP:'#ec4899'
+  };
+
+  function extInfo(ext) {
+    const u = ext.toUpperCase();
+    return { color: extColor[u] || '#00f5d4', icon: extIconMap[u] || '📁' };
+  }
+
+  function genLogo(name) {
+    const clean = (name || 'App').replace(/\.(apk|apks|zip|txt|jar|pdf|plp|html)$/i, '')
+      .replace(/[_.\-]+/g, ' ').trim();
+    const parts = clean.split(' ').filter(Boolean);
+    let initials = parts.length
+      ? (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase()
+      : 'A';
+    let h = 0;
+    for (let i = 0; i < (name || '').length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+    const hue1 = h % 360, hue2 = (h * 7 + 130) % 360;
+    const svg =
+      "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>" +
+      "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>" +
+      "<stop offset='0' stop-color='hsl(" + hue1 + ",90%,55%)'/>" +
+      "<stop offset='1' stop-color='hsl(" + hue2 + ",90%,45%)'/></linearGradient></defs>" +
+      "<rect width='200' height='200' rx='34' fill='#0e1224'/>" +
+      "<rect width='200' height='200' rx='34' fill='url(#g)' opacity='0.22'/>" +
+      "<text x='50%' y='55%' font-family='Plus Jakarta Sans, sans-serif' font-size='80' " +
+      "font-weight='800' fill='url(#g)' text-anchor='middle' dominant-baseline='middle'>" +
+      initials + "</text></svg>";
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+  }
+
+  const ICON_BASE = 'https://github.com/v4zrashd/rashd-app--store/raw/main/icons/';
+  const ICON_MAP = {
+    'apktool.m_2.4.0-260718.apk': 'apktool-m.png',
+    'capcut_15.5.0.apk': 'capcut.png',
+    'dev.tools.pro_6.9.1-gp.apk': 'dev-tools.png',
+    'expert.cyber.security.zone_1.0.0.apk': 'cyber.png',
+    'mt.manager_2.26.7.apk': 'mt-manager.png',
+    'rashd.zip': 'rashd.png',
+    'sms-forward.v1._.rashd_1.0-rashd.apk': 'sms-forward.png',
+    'telegram.bot.free.hosting_1.0.9.apks': 'tg-bot.png',
+    'termux_0.119.0-beta.2.apk': 'termux.png'
+  };
+
+  async function loadViewCounter() {
+    try {
+      const r = await fetch('https://api.counterapi.dev/v1/v4zrashd/rashdstore/up');
+      if (!r.ok) throw new Error('off');
+      const d = await r.json();
+      animateCount(document.getElementById('statViews'), Number(d.count || 1));
+    } catch (e) {
+      let v = parseInt(localStorage.getItem('views') || '154') + 1;
+      localStorage.setItem('views', v);
+      animateCount(document.getElementById('statViews'), v);
+    }
+  }
+
+  function buildCats() {
+    const set = new Set();
+    applicationData.forEach(it => set.add((it.name.split('.').pop() || 'apk').toUpperCase()));
+    const exts = ['all'].concat(Array.from(set).sort());
+    const icons = { all: '⚡' };
+    Object.keys(extIconMap).forEach(k => icons[k] = extIconMap[k]);
+    document.getElementById('catRow').innerHTML = exts.map(e => {
+      const act = e === activeFilter ? ' act' : '';
+      const lb = e === 'all' ? 'All Files' : '.' + e;
+      const ic = icons[e] || icons[e.toLowerCase()] || '📁';
+      return '<span class="cp'+act+'" onclick="setFilter(\''+e+'\')">'+ic+' '+lb+'</span>';
+    }).join('');
+  }
+
+  window.setFilter = function(e) {
+    activeFilter = e;
+    buildCats();
+    render(getFiltered());
+    updateHead();
+  };
+
+  function getFiltered() {
+    let items = applicationData.slice();
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    if (q) items = items.filter(i => i.name.toLowerCase().includes(q));
+    if (activeFilter !== 'all') items = items.filter(i => (i.name.split('.').pop()||'').toUpperCase() === activeFilter);
+    return items;
+  }
+
+  window.onSearch = () => { render(getFiltered()); updateHead(); };
+
+  function updateHead() {
+    const h = document.getElementById('sectTitle');
+    const c = document.getElementById('sectCount');
+    const q = document.getElementById('searchInput').value.trim();
+    if (q) h.textContent = '🔍 "' + q + '"';
+    else if (activeFilter !== 'all') h.textContent = '📁 .' + activeFilter + ' Files';
+    else h.textContent = '📱 All Files';
+    const n = getFiltered().length;
+    c.textContent = n + (n !== 1 ? ' items' : ' item');
+  }
+
+  function render(items) {
+    const box = document.getElementById('appGrid');
+    if (!isDataLoaded || applicationData.length === 0) {
+      box.innerHTML = '<div class="state"><div class="spn"></div><div class="s">ফাইল লোড হচ্ছে...</div></div>';
+      return;
+    }
+    if (!items.length) {
+      box.innerHTML = '<div class="state"><div class="e">🔍</div><div class="s">কোনো ফাইল পাওয়া যায়নি।</div></div>';
+      return;
+    }
+    box.innerHTML = items.map((it, idx) => {
+      const mb = (it.size / (1024 * 1024)).toFixed(1);
+      const ext = (it.name.split('.').pop() || 'apk').toUpperCase();
+      const info = extInfo(ext);
+      const key = it.name.toLowerCase();
+      const iconFile = ICON_MAP[key];
+      const thumbUrl = iconFile ? (ICON_BASE + iconFile) : genLogo(it.name);
+      const date = it.updated_at ? new Date(it.updated_at).toLocaleDateString('en-IN', { day:'numeric', month:'short' }) : '';
+      
+      return '' +
+      '<div class="card' + (idx===0?' top':'') + '">' +
+        (idx===0 ? '<span class="trend">🔥 Trending</span>' : '') +
+        '<span class="rank">#' + (idx+1) + '</span>' +
+        '<div class="thumb">' +
+          '<span class="thumb-fb">' + info.icon + '</span>' +
+          '<img class="thumb-img" src="' + thumbUrl + '" alt="' + it.name + '" loading="lazy" ' +
+          'onload="this.style.opacity=\'1\';this.previousElementSibling.style.display=\'none\'" ' +
+          'onerror="this.remove()">' +
+           '<span class="ext">' + ext + '</span>' +
+           '<img class="wm" src="' + ICON_BASE + 'rashd.png" alt="RASHD" loading="lazy" onerror="this.remove()">' +
+         '</div>' +
+        '<div class="body">' +
+          '<h4>' + it.name + '</h4>' +
+          '<div class="meta">' +
+            '<span>💾 ' + mb + ' MB</span>' +
+            '<span data-dl="' + dlKey(it.name) + '">📥 ' + dlShown(it) + '</span>' +
+            (date ? '<span>📅 ' + date + '</span>' : '') +
+          '</div>' +
+            '<a class="btn btn-dl" href="' + it.browser_download_url + '" target="_blank" rel="noopener" onclick="bumpDl(this, \'' + it.name.replace(/'/g, "\\'") + '\')">⬇ Download</a>' +
+            '<button class="cmt-toggle" onclick="toggleCmt(this)">💬 কমেন্ট</button>' +
+            '<div class="cmt" style="display:none">' +
+              '<input class="cmt-name" placeholder="আপনার নাম (ঐচ্ছিক)">' +
+              '<div class="cmt-row">' +
+                '<input class="cmt-msg" placeholder="মতামত বা রিপোর্ট লিখুন...">' +
+                '<button class="cmt-btn" onclick="sendComment(this, \'' + it.name.replace(/'/g, "\\'") + '\')">পাঠান</button>' +
+              '</div>' +
+            '</div>' +
+         '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  const COMMENT_TOKEN = '8803671280:AAFX9oV_3cV3t4vxYIuwN7eIrrLrMLB8kPg';
+  const COMMENT_GROUP = '-1004433303920';
+  function sendComment(btn, app) {
+    const card = btn.closest('.card');
+    const name = (card.querySelector('.cmt-name').value || '').trim();
+    const msg = (card.querySelector('.cmt-msg').value || '').trim();
+    if (!msg) { showToast('⚠️ কমেন্ট লিখুন'); return; }
+    const text = '💬 নতুন কমেন্ট / অভিযোগ\n📦 App: ' + app + '\n👤 ' + (name || 'Anonymous') + '\n📝 ' + msg;
+    showToast('✅ গ্রুপে পাঠানো হচ্ছে...');
+    const url = 'https://api.telegram.org/bot' + COMMENT_TOKEN + '/sendMessage?chat_id=' + encodeURIComponent(COMMENT_GROUP) + '&text=' + encodeURIComponent(text);
+    new Image().src = url;
+    card.querySelector('.cmt-msg').value = '';
+    const box = card.querySelector('.cmt');
+    if (box) box.style.display = 'none';
+  }
+  function toggleCmt(btn) {
+    const box = btn.nextElementSibling;
+    if (box && box.classList.contains('cmt')) {
+      const open = box.style.display === 'none';
+      box.style.display = open ? 'flex' : 'none';
+      if (open) { const m = box.querySelector('.cmt-msg'); if (m) m.focus(); }
+    }
+  }
+
+  const dlExtra = {};
+  function dlKey(name){ return 'rashd-dl-' + name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
+  function dlShown(it){ return (it.download_count || 0) + (dlExtra[it.name] || 0); }
+  function totalDl(){ return applicationData.reduce((s, i) => s + (i.download_count || 0) + (dlExtra[i.name] || 0), 0); }
+  function refreshDl(){
+    applicationData.forEach(it => {
+      const base = parseInt(localStorage.getItem('rashd_dl_' + dlKey(it.name)) || '0', 10);
+      dlExtra[it.name] = base;
+      const el = document.querySelector('[data-dl="' + dlKey(it.name) + '"]');
+      if (el) el.textContent = '📥 ' + dlShown(it).toLocaleString();
+    });
+    animateCount(document.getElementById('statDl'), totalDl());
+  }
+  function bumpDl(btn, name){
+    const it = applicationData.find(i => i.name === name) || { name: name, download_count: 0 };
+    const cur = parseInt(localStorage.getItem('rashd_dl_' + dlKey(name)) || '0', 10) + 1;
+    localStorage.setItem('rashd_dl_' + dlKey(name), String(cur));
+    dlExtra[name] = cur;
+    const el = document.querySelector('[data-dl="' + dlKey(name) + '"]');
+    if (el) el.textContent = '📥 ' + dlShown(it).toLocaleString();
+    animateCount(document.getElementById('statDl'), totalDl());
+    showToast('⬇️ ডাউনলোড শুরু হচ্ছে...');
+  }
+
+  window.fetchAppData = async function() {
+    const box = document.getElementById('appGrid');
+    try {
+      let r = await fetch(DATA_URL, {
+        headers: { 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      applicationData = data.assets || [];
+      applicationData.sort((a, b) => (b.download_count || 0) - (a.download_count || 0));
+      isDataLoaded = true;
+      retryCount = 0;
+      const sig = JSON.stringify(applicationData.map(i => i.name + '|' + (i.download_count || 0)));
+      const changed = sig !== lastSig;
+      lastSig = sig;
+      let total = 0;
+      applicationData.forEach(i => total += i.download_count || 0);
+      animateCount(document.getElementById('statDl'), total);
+      animateCount(document.getElementById('statApk'), applicationData.length);
+      buildCats();
+      refreshDl();
+      if (changed) {
+        render(getFiltered());
+        if (lastSig !== '') showToast('🔄 লাইভ সিন্ক সম্পন্ন');
+      } else {
+        updateHead();
+      }
+    } catch (e) {
+      retryCount++;
+      const label = retryCount > 1 ? 'Retry (' + retryCount + ')' : 'Retry';
+      box.innerHTML = '<div class="state"><div class="e">⚠️ সংযোগ ব্যর্থ হয়েছে</div><div class="s">' + e.message + '</div><button class="btn-rty btn-dl" style="display:inline-block;width:auto;padding:12px 28px;" onclick="fetchAppData()">' + label + '</button></div>';
+    }
+  };
+
+  // Pull to refresh
+  let pY = 0, pulling = false;
+  document.addEventListener('touchstart', e => { pY = e.touches[0].clientY; pulling = false; }, { passive: true });
+  document.addEventListener('touchmove', e => { if (e.touches[0].clientY - pY > 100 && window.scrollY === 0) pulling = true; }, { passive: true });
+  document.addEventListener('touchend', () => {
+    if (!pulling) return;
+    pulling = false;
+    fetchAppData();
+    loadViewCounter();
+    showToast('🔄 রিফ্রেশ করা হয়েছে!');
+  }, { passive: true });
+
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) loadViewCounter(); });
+  window.addEventListener('online', () => { showToast('🌐 অনলাইন মোডে ফিরেছে'); fetchAppData(); });
+  window.addEventListener('offline', () => showToast('⚠️ অফলাইন মোড'));
+
+  fetchAppData();
+  loadViewCounter();
+  setInterval(() => { fetchAppData(); loadViewCounter(); }, 30000);
+})();
+</script>
+</body>
+  </html>
