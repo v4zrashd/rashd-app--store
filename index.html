@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>RASHD App Store — প্রিমিয়াম মডেড স্টোর</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #070913;
+  --bg-card: rgba(14, 18, 36, 0.85);
+  --text: #f8fafc;
+  --sub: #94a3b8;
+  --a1: #00f5d4;
+  --a2: #0070f3;
+  --a3: #7928ca;
+  --a4: #ff0080;
+  --gold: #f59e0b;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-glow: rgba(0, 245, 212, 0.35);
+  --sans: 'Plus Jakarta Sans', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html, body{
+  width:100%;
+  min-height:100%;
+  background-color:#070913;
+  color:#f8fafc;
+  font-family:var(--sans);
+  line-height:1.5;
+}
+
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.aurora::before, .aurora::after{
+  content:"";position:absolute;border-radius:50%;filter:blur(80px);opacity:.3;
+}
+.aurora::before{
+  width:65vw;height:65vw;left:-20vw;top:-15vw;
+  background:radial-gradient(circle, var(--a3), transparent 65%);
+}
+.aurora::after{
+  width:60vw;height:60vw;right:-20vw;top:15vh;
+  background:radial-gradient(circle, var(--a1), transparent 65%);
+}
+
+.wrap{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:16px 14px 45px}
+
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.brand .logo{
+  width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  font-weight:800;font-size:20px;color:#070913;
+  background:linear-gradient(135deg, var(--a1), #00b4d8);
+  box-shadow:0 0 20px rgba(0,245,212,0.4);
+}
+.brand b{font-weight:800;letter-spacing:.5px;font-size:15px;color:#fff}
+.brand span{margin-left:auto;font-size:11.5px;color:var(--sub);border:1px solid var(--border);padding:5px 10px;border-radius:999px}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--a1);
+  border:1px solid rgba(0,245,212,0.35);background:rgba(0,245,212,0.08);padding:5px 10px;border-radius:999px;margin-left:8px}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--a1);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}
+
+.hero{
+  position:relative;border:1px solid var(--border);border-radius:22px;
+  background:linear-gradient(145deg, rgba(121,40,202,0.18), rgba(0,245,212,0.06) 60%, rgba(14,18,36,0.6));
+  padding:20px 18px;overflow:hidden;margin-bottom:14px;
+}
+.hero h1{font-size:24px;line-height:1.25;font-weight:800}
+.hero h1 .g{
+  background:linear-gradient(120deg, var(--a1) 0%, #38bdf8 50%, var(--a4) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p{color:var(--sub);margin-top:6px;font-size:13px}
+
+.stats{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.stat{flex:1;min-width:85px;border:1px solid var(--border);border-radius:14px;
+  background:rgba(255,255,255,0.03);padding:9px 12px;}
+.stat b{display:block;font-size:17px;font-weight:800;color:#fff}
+.stat small{color:var(--sub);font-size:11px;font-weight:500}
+
+.cta{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;cursor:pointer;font-family:var(--sans);font-weight:700;font-size:12.5px;
+  padding:10px 15px;border-radius:12px;display:inline-flex;align-items:center;gap:6px;
+  text-decoration:none;justify-content:center}
+.btn-primary{color:#070913;background:linear-gradient(135deg, var(--a1), #00b4d8)}
+.btn-ghost{color:var(--text);background:rgba(255,255,255,0.05);border:1px solid var(--border)}
+
+/* ==================== সার্চ ও ক্যাটাগরি ==================== */
+.bar{display:flex;gap:8px;align-items:center;margin:12px 0 12px}
+.search{flex:1;display:flex;align-items:center;gap:8px;border:1px solid var(--border);
+  background:rgba(14,18,36,0.8);border-radius:14px;padding:10px 14px}
+.search input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-family:var(--sans);font-size:13.5px}
+.search input::placeholder{color:var(--sub)}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.cp{flex:0 0 auto;cursor:pointer;font-size:12px;font-weight:600;padding:6px 13px;border-radius:999px;
+  border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--sub);white-space:nowrap}
+.cp.act{color:#070913;background:linear-gradient(135deg, var(--a1), #00b4d8);border-color:transparent}
+
+.sect{display:flex;align-items:baseline;justify-content:space-between;margin:12px 2px 10px}
+.sect h2{font-size:17px;font-weight:800}
+.sect span{font-size:11.5px;color:var(--sub);font-weight:600}
+
+/* ==================== গ্রিড ও কার্ড ==================== */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;margin-bottom:24px}
+.card{
+  position:relative;border:1px solid var(--border);border-radius:20px;overflow:hidden;
+  background:var(--bg-card);padding:12px;display:flex;flex-direction:column;gap:9px;
+  box-shadow:0 6px 16px rgba(0,0,0,0.25);
+  transition:border-color .2s ease;
+}
+.card.trending-card{
+  border:1.5px solid rgba(255, 0, 128, 0.45);
+  box-shadow:0 6px 20px rgba(255, 0, 128, 0.15);
+}
+.rank{position:absolute;top:8px;left:8px;z-index:3;font-size:10px;font-weight:800;
+  background:rgba(7,9,19,0.85);border:1px solid var(--border);padding:2px 8px;border-radius:999px}
+.trend{position:absolute;top:8px;right:8px;z-index:3;font-size:10px;font-weight:800;
+  background:linear-gradient(135deg, var(--a4), var(--a3));color:#fff;padding:2px 8px;border-radius:999px}
+
+.thumb{position:relative;width:100%;aspect-ratio:1/1;border-radius:15px;overflow:hidden;
+  display:grid;place-items:center;
+  background:linear-gradient(145deg, rgba(121,40,202,0.22), rgba(0,245,212,0.1));
+}
+.thumb-img{width:76%;height:76%;object-fit:contain}
+.thumb-fb{position:absolute;font-size:38px}
+.ext{position:absolute;bottom:6px;right:6px;font-size:9.5px;font-weight:800;
+  padding:2px 7px;border-radius:7px;background:rgba(7,9,19,0.85);border:1px solid var(--border);color:var(--a1)}
+
+.body{display:flex;flex-direction:column;gap:7px}
+.body h4{font-size:13px;font-weight:700;word-break:break-word;line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#f1f5f9}
+.meta{display:flex;flex-wrap:wrap;gap:4px 8px;font-size:10.5px;color:var(--sub);font-weight:500}
+.meta .dl-stat{color:#38bdf8;font-weight:700}
+
+.btn-dl{
+  margin-top:2px;text-align:center;justify-content:center;color:#070913;
+  background:linear-gradient(135deg, var(--a1), #00b4d8);
+  font-size:12px;padding:10px 10px;font-weight:800;border-radius:11px;
+  cursor:pointer;display:inline-flex;align-items:center;gap:5px;border:none;
+}
+
+/* ==================== নিচে স্থানান্তরিত ভিআইপি কোর্স কার্ড ==================== */
+.course-card{
+  position:relative;border:1.5px solid rgba(245,158,11,0.5);border-radius:20px;
+  background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(121,40,202,0.2) 50%, rgba(14,18,36,0.95));
+  padding:18px 16px;margin:20px 0 16px;overflow:hidden;
+  box-shadow:0 8px 25px rgba(245,158,11,0.18);
+}
+.course-badge-top{
+  display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;
+  background:linear-gradient(135deg, #f59e0b, #d97706);color:#070913;
+  padding:4px 10px;border-radius:999px;margin-bottom:8px;text-transform:uppercase;
+}
+.course-card h2{font-size:18px;font-weight:800;color:#fff;line-height:1.3;margin-bottom:4px}
+.course-card h2 span{
+  background:linear-gradient(120deg, #fcd34d, #f59e0b, #fbbf24);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.course-desc{font-size:12.5px;color:#cbd5e1;line-height:1.45;margin-bottom:10px}
+.course-perks{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px}
+.perk-item{
+  font-size:11.5px;color:#f8fafc;background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);padding:6px 9px;border-radius:10px;display:flex;align-items:center;gap:6px;
+}
+.course-price-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(7,9,19,0.75);border:1px solid rgba(245,158,11,0.35);
+  padding:8px 12px;border-radius:12px;margin-bottom:12px;
+}
+.course-price-bar .price{font-size:18px;font-weight:800;color:#fcd34d}
+.course-price-bar .price del{font-size:13px;color:var(--sub);margin-left:4px;font-weight:500}
+.course-price-bar .ref-offer{font-size:11px;font-weight:700;color:#34d399}
+.course-actions{display:flex;gap:8px}
+.btn-course-buy{
+  flex:1;background:linear-gradient(135deg, #f59e0b, #ea580c);color:#070913;
+  font-weight:800;font-size:12.5px;padding:11px;border-radius:11px;border:none;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-course-info{
+  flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#fff;
+  font-weight:700;font-size:12.5px;padding:11px;border-radius:11px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+}
+
+.foot{margin-top:20px;border-top:1px solid var(--border);padding-top:18px;display:flex;flex-direction:column;gap:12px}
+.tg-btn{
+  text-align:center;font-size:12.5px;font-weight:700;padding:11px 16px;
+  border-radius:13px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text);
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;
+}
+.foot small{color:var(--sub);font-size:11px;text-align:center}
+
+/* ==================== মডালসমূহ ==================== */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(5,7,15,0.9);backdrop-filter:blur(12px);
+  z-index:999;display:none;align-items:center;justify-content:center;padding:14px;
+}
+.modal-overlay.active{display:flex}
+.modal-box{
+  background:rgba(15,20,38,0.98);border:1px solid var(--border-glow);
+  width:100%;max-width:440px;max-height:88vh;overflow-y:auto;
+  border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;
+}
+.modal-head{display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-size:16px;font-weight:800;color:#fff}
+.modal-head .btn-close{
+  background:rgba(255,255,255,0.06);border:1px solid var(--border);
+  color:var(--sub);width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;
+}
+.course-poster-img{width:100%;border-radius:14px;border:1px solid rgba(245,158,11,0.3);margin-bottom:8px}
+.module-list{
+  font-size:11.5px;color:#cbd5e1;line-height:1.6;background:rgba(7,9,19,0.7);
+  padding:10px 12px;border-radius:12px;border:1px solid var(--border);max-height:160px;overflow-y:auto;
+}
+
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+  background:rgba(14,18,36,0.95);border:1px solid rgba(0,245,212,0.4);color:var(--text);
+  padding:10px 18px;border-radius:14px;font-size:12.5px;font-weight:600;z-index:1000;opacity:0;
+  transition:.2s ease;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:420px){
+  .hero h1{font-size:22px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
+  .course-perks{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="aurora"></div>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="logo">R</div>
+    <b>RASHD STORE</b>
+    <span class="live"><i></i> LIVE</span>
+    <span>@rashd12bot</span>
+  </div>
+
+  <section class="hero">
+    <h1>মডেড অ্যাপ স্টোর <br><span class="g">ফ্রি ও সিকিউর</span></h1>
+    <p>লেটেস্ট মডেড APK, স্ক্রিপ্ট ও সাইবার টুলস — সরাসরি টেলিগ্রাম বটে ডেলিভারি।</p>
+    <div class="stats">
+      <div class="stat"><b id="statApk">...</b><small>টোটাল ফাইল</small></div>
+      <div class="stat"><b id="statDl">...</b><small>মোট ডাউনলোড</small></div>
+      <div class="stat"><b id="statViews">850</b><small>মোট ভিউ</small></div>
+    </div>
+    <div class="cta">
+      <button class="btn btn-primary" onclick="openBotLink('')">🤖 টেলিগ্রাম বট</button>
+      <a class="btn btn-ghost" href="https://t.me/v4zrasehd" target="_blank" rel="noopener">📢 অফিসিয়াল চ্যানেল</a>
+    </div>
+  </section>
+
+  <!-- সার্চ ও ফিল্টার -->
+  <div class="bar">
+    <label class="search">
+      🔍 <input id="searchInput" type="text" placeholder="অ্যাপ অথবা ফাইল খুঁজুন..." oninput="onSearch()" />
+    </label>
+  </div>
+  <div class="chips" id="catRow"></div>
+
+  <div class="sect">
+    <h2 id="sectTitle">📱 All Files</h2>
+    <span id="sectCount">লোড হচ্ছে...</span>
+  </div>
+
+  <!-- অ্যাপ গ্রিড (সবার আগে অ্যাপগুলো শো করবে) -->
+  <div class="grid" id="appGrid"></div>
+
+  <!-- ==================== নিচে স্থানান্তরিত ভিআইপি কোর্স সেকশন ==================== -->
+  <section class="course-card">
+    <div class="course-badge-top">👑 Official VIP Course • Live Proof</div>
+    <h2>COMPLETE <span>HACKING & DEVELOPMENT</span></h2>
+    <p class="course-desc">শূন্য থেকে শুরু — নো রুট! অ্যান্ড্রয়েড অ্যাপ ডেভেলপমেন্ট, টার্মিক্স অটোমেশন ও সিকিউরিটি টেস্ট সহ সম্পূর্ণ প্র্যাক্টিক্যাল কোর্স।</p>
+    
+    <div class="course-perks">
+      <div class="perk-item">⚡ <b>৩০টি স্পেশাল মডিউল</b></div>
+      <div class="perk-item">🎁 <b>বটের সব ফাইল আজীবন ফ্রি</b></div>
+      <div class="perk-item">📱 <b>মোবাইল ও পিসি সাপোর্ট</b></div>
+      <div class="perk-item">🛡️ <b>২৪/৭ লাইভ সাপোর্ট গ্রুপ</b></div>
+    </div>
+
+    <div class="course-price-bar">
+      <div>
+        <div style="font-size:10.5px;color:var(--sub)">রেগুলার কোর্স ফি:</div>
+        <div class="price">৩০০ ৳ <del>১০০০৳</del></div>
+      </div>
+      <div style="text-align:right">
+        <div class="ref-offer">🎉 ১৫টি রেফারেল সম্পন্ন হলে</div>
+        <div style="font-size:13px;font-weight:800;color:#38bdf8">কোর্স ফি মাত্র ২০০ ৳</div>
+      </div>
+    </div>
+
+    <div class="course-actions">
+      <button class="btn-course-buy" onclick="openBotLink('buy_course')">💎 কোর্স কিনুন (বট)</button>
+      <button class="btn-course-info" onclick="openCourseModal()">📚 সিলেবাস ও পোস্টার</button>
+    </div>
+  </section>
+
+  <div class="foot">
+    <div class="row" style="display:flex;justify-content:center">
+      <a class="tg-btn" href="https://t.me/v4zrasehd" target="_blank" rel="noopener">✈️ Official Channel: @v4zrasehd</a>
+    </div>
+    <small>© RASHD Team • Secured & Delivered via @rashd12bot</small>
+  </div>
+
+</div>
+
+<!-- কোর্স মডাল -->
+<div class="modal-overlay" id="courseModal" onclick="closeModalOnBackdrop(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>📚 VIP কোর্স সিলেবাস ও পোস্টার</h3>
+      <button class="btn-close" onclick="closeCourseModal()">✕</button>
+    </div>
+    <img class="course-poster-img" src="https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/G6HpUimgMvHWJTTCMNozRueHm0B.jpg" alt="Course Poster" loading="lazy">
+    
+    <div style="font-size:12px;font-weight:700;color:var(--a1)">📋 কোর্সের মূল ৩০টি স্পেশাল মডিউল:</div>
+    <div class="module-list">
+      1. Website Development (HTML/CSS/JS/PHP)<br>
+      2. Android App Development & Modding<br>
+      3. Gallery App Master & Hidden Vault<br>
+      4. Termux Masterclass & Automation Scripts<br>
+      5. Notification & SMS Monitor Techniques<br>
+      6. Android Security & Device Monitoring<br>
+      7. App System Add/Remove & Customization<br>
+      8. Premium APK Maker & Pro Key Unlock<br>
+      9. SQLite Database Injection & Analysis<br>
+      10. APK Decompile & Smali Code Editing<br>
+      11. WiFi Network Analysis & Pentesting<br>
+      12. Bluetooth Hacking & Pair Bypass<br>
+      13. ARP Spoofing & MITM Attacks<br>
+      14. Packet Sniffing & WireShark Lab<br>
+      15. Port Scanning & Service Detection<br>
+      16. Vulnerability Scanning & Nmap Labs<br>
+      17. DDoS Attack Defense & Testing<br>
+      18. File Hacking, Backdoors & Backup<br>
+      19. Camera & Remote Access Lab<br>
+      20. Mic Hacking & Stealth Audio Monitor<br>
+      21. Keyboard & Keylogger Concepts<br>
+      22. Clipboard Data Intercept & Steal Demo<br>
+      23. SMS Bomber & WhatsApp Tools Lab<br>
+      24. Phone Info & SIM/IMEI Tracking<br>
+      25. Cryptography, Hash & En/Decryption<br>
+      26. Website Hacking (SQLi/XSS/Admin Panel)<br>
+      27. Phishing Page Creation & Protection<br>
+      28. Brute Force Attack & Hash Cracking<br>
+      29. Linux Privilege Escalation (SUID/Root)<br>
+      30. Python & Bash Scripting for Hackers
+    </div>
+
+    <button class="btn-course-buy" style="margin-top:6px;width:100%" onclick="closeCourseModal();openBotLink('buy_course')">
+      <span>💳 বটের মাধ্যমে বিকাশ পেমেন্ট ও এনরোল করুন</span>
+    </button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  try {
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+    }
+  } catch(e) {}
+
+  const BOT_USERNAME = 'rashd12bot';
+  const DATA_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/tags/v1.0';
+  const ICON_BASE = 'https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/icons/';
+
+  // ব্যাকআপ ফলব্যাক ডাটা
+  let applicationData = [
+    { name: "V4Zteem_1.0_modified.apk", size: 2936012, download_count: 189 },
+    { name: "CYBER.SOHAG.plp", size: 943718, download_count: 186 },
+    { name: "termux_0.119.0-beta.2.apk", size: 104857600, download_count: 154 },
+    { name: "sms-forward.v1._.rashd_1.0-rashd.apk", size: 4194304, download_count: 122 },
+    { name: "telegram.bot.free.hosting_1.0.9.apks", size: 8388608, download_count: 110 },
+    { name: "mt.manager_2.26.7.apk", size: 24117248, download_count: 98 },
+    { name: "apktool.m_2.4.0-260718.apk", size: 15728640, download_count: 85 },
+    { name: "capcut_15.5.0.apk", size: 188743680, download_count: 76 },
+    { name: "dev.tools.pro_6.9.1-gp.apk", size: 7340032, download_count: 65 },
+    { name: "expert.cyber.security.zone_1.0.0.apk", size: 12582912, download_count: 54 },
+    { name: "rashd.zip", size: 10485760, download_count: 42 }
+  ];
+
+  let activeFilter = 'all';
+
+  const extIconMap = {
+    APK:'📦', APKS:'📦', PDF:'📄', ZIP:'🗜️', RAR:'🗜️', PLP:'🎨', TXT:'📄'
+  };
+
+  function extInfo(ext) {
+    const u = (ext || 'APK').toUpperCase();
+    return { icon: extIconMap[u] || '📁' };
+  }
+
+  function genLogo(name) {
+    const clean = (name || 'App').replace(/\.(apk|apks|zip|txt|jar|pdf|plp)$/i, '').replace(/[_.\-]+/g, ' ').trim();
+    const parts = clean.split(' ').filter(Boolean);
+    const initials = parts.length ? (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase() : 'A';
+    let h = 0;
+    for (let i = 0; i < (name || '').length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+    const hue = h % 360;
+    const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><rect width='160' height='160' rx='28' fill='#0e1224'/><text x='50%' y='55%' font-family='sans-serif' font-size='60' font-weight='800' fill='hsl("+hue+",90%,60%)' text-anchor='middle' dominant-baseline='middle'>"+initials+"</text></svg>";
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+  }
+
+  const ICON_MAP = {
+    'apktool.m_2.4.0-260718.apk': 'apktool-m.png',
+    'capcut_15.5.0.apk': 'capcut.png',
+    'dev.tools.pro_6.9.1-gp.apk': 'dev-tools.png',
+    'expert.cyber.security.zone_1.0.0.apk': 'cyber.png',
+    'mt.manager_2.26.7.apk': 'mt-manager.png',
+    'rashd.zip': 'rashd.png',
+    'sms-forward.v1._.rashd_1.0-rashd.apk': 'sms-forward.png',
+    'telegram.bot.free.hosting_1.0.9.apks': 'tg-bot.png',
+    'termux_0.119.0-beta.2.apk': 'termux.png'
+  };
+
+  function updateDownloadStats() {
+    let totalDl = 0;
+    applicationData.forEach(item => {
+      totalDl += (Number(item.download_count) || 0);
+    });
+    const statDlEl = document.getElementById('statDl');
+    const statApkEl = document.getElementById('statApk');
+    if (statDlEl) statDlEl.textContent = totalDl.toLocaleString('en-US');
+    if (statApkEl) statApkEl.textContent = applicationData.length;
+  }
+
+  function sortDataByDownloads() {
+    applicationData.sort((a, b) => (Number(b.download_count) || 0) - (Number(a.download_count) || 0));
+  }
+
+  function buildCats() {
+    const set = new Set();
+    applicationData.forEach(it => set.add((it.name.split('.').pop() || 'apk').toUpperCase()));
+    const exts = ['all'].concat(Array.from(set).sort());
+    const row = document.getElementById('catRow');
+    if (!row) return;
+    row.innerHTML = exts.map(e => {
+      const act = e === activeFilter ? ' act' : '';
+      const lb = e === 'all' ? 'All Files' : '.' + e;
+      const ic = extIconMap[e] || '📁';
+      return '<span class="cp'+act+'" onclick="setFilter(\''+e+'\')">'+ic+' '+lb+'</span>';
+    }).join('');
+  }
+
+  window.setFilter = function(e) {
+    activeFilter = e;
+    buildCats();
+    render(getFiltered());
+    updateHead();
+  };
+
+  function getFiltered() {
+    let items = applicationData.slice();
+    const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+    if (q) items = items.filter(i => i.name.toLowerCase().includes(q));
+    if (activeFilter !== 'all') items = items.filter(i => (i.name.split('.').pop()||'').toUpperCase() === activeFilter);
+    return items;
+  }
+
+  window.onSearch = () => { render(getFiltered()); updateHead(); };
+
+  function updateHead() {
+    const h = document.getElementById('sectTitle');
+    const c = document.getElementById('sectCount');
+    const q = document.getElementById('searchInput').value.trim();
+    if (q) h.textContent = '🔍 "' + q + '"';
+    else if (activeFilter !== 'all') h.textContent = '📁 .' + activeFilter + ' Files';
+    else h.textContent = '📱 All Files';
+    c.textContent = getFiltered().length + ' items';
+  }
+
+  window.openBotLink = function(param) {
+    const deepLink = param ? ('https://t.me/' + BOT_USERNAME + '?start=' + encodeURIComponent(param)) : ('https://t.me/' + BOT_USERNAME);
+    if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openTelegramLink === 'function') {
+      try {
+        window.Telegram.WebApp.openTelegramLink(deepLink);
+        setTimeout(() => { try { window.Telegram.WebApp.close(); } catch(err){} }, 300);
+        return;
+      } catch(e) {}
+    }
+    window.location.href = deepLink;
+  };
+
+  // টেলিগ্রামের গভীর লিংকের জন্য ১০০% নির্ভরযোগ্য এবং নিরাপদ কোডিং
+  window.requestBotDownload = function(appName) {
+    const toast = document.getElementById('toast');
+    if (toast) {
+      toast.textContent = '🤖 বটের মাধ্যমে ফাইল পাঠানো হচ্ছে...';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    // টেলিগ্রাম স্টার্ট প্যারামিটারে ডট (.) এবং স্পেস বাদ দিয়ে সর্বোচ্চ ৫০ অক্ষরের নিরাপদ স্লাগ তৈরি
+    const cleanSlug = appName.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 50);
+    const botDeepLink = 'https://t.me/' + BOT_USERNAME + '?start=get_' + cleanSlug;
+
+    if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openTelegramLink === 'function') {
+      try {
+        window.Telegram.WebApp.openTelegramLink(botDeepLink);
+        setTimeout(() => { try { window.Telegram.WebApp.close(); } catch(err){} }, 350);
+        return;
+      } catch(e) {}
+    }
+    window.location.href = botDeepLink;
+  };
+
+  function render(items) {
+    const box = document.getElementById('appGrid');
+    if (!box) return;
+    if (!items.length) {
+      box.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:35px;color:var(--sub)">🔍 কোনো ফাইল পাওয়া যায়নি</div>';
+      return;
+    }
+    box.innerHTML = items.map((it, idx) => {
+      const mb = (it.size / (1024 * 1024)).toFixed(1);
+      const ext = (it.name.split('.').pop() || 'apk').toUpperCase();
+      const info = extInfo(ext);
+      const key = it.name.toLowerCase();
+      const iconFile = ICON_MAP[key];
+      const thumbUrl = iconFile ? (ICON_BASE + iconFile) : genLogo(it.name);
+      const safeName = it.name.replace(/'/g, "\\'");
+      const dls = it.download_count || 0;
+      const isTopTrend = (idx === 0 && activeFilter === 'all' && !document.getElementById('searchInput').value.trim());
+      
+      return '' +
+      '<div class="card ' + (isTopTrend ? 'trending-card' : '') + '">' +
+        (isTopTrend ? '<span class="trend">🔥 Hot</span>' : '') +
+        '<span class="rank">#' + (idx+1) + '</span>' +
+        '<div class="thumb">' +
+          '<span class="thumb-fb">' + info.icon + '</span>' +
+          '<img class="thumb-img" src="' + thumbUrl + '" alt="' + it.name + '" loading="lazy" ' +
+          'onload="this.previousElementSibling.style.display=\'none\'" ' +
+          'onerror="this.remove()">' +
+          '<span class="ext">' + ext + '</span>' +
+        '</div>' +
+        '<div class="body">' +
+          '<h4>' + it.name + '</h4>' +
+          '<div class="meta">' +
+            '<span>💾 ' + mb + ' MB</span>' +
+            '<span class="dl-stat">📥 ' + dls.toLocaleString('en-US') + ' dl</span>' +
+          '</div>' +
+          '<button class="btn-dl" onclick="requestBotDownload(\'' + safeName + '\')">⬇ Get File in Bot</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  window.openCourseModal = function() {
+    document.getElementById('courseModal').classList.add('active');
+  };
+  window.closeCourseModal = function() {
+    document.getElementById('courseModal').classList.remove('active');
+  };
+  window.closeModalOnBackdrop = function(e) {
+    if (e.target.id === 'courseModal') closeCourseModal();
+  };
+
+  async function fetchLiveData() {
+    try {
+      const res = await fetch(DATA_URL, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && data.assets && data.assets.length) {
+        applicationData = data.assets;
+        sortDataByDownloads();
+        updateDownloadStats();
+        buildCats();
+        render(getFiltered());
+        updateHead();
+      }
+    } catch(err) {}
+  }
+
+  sortDataByDownloads();
+  updateDownloadStats();
+  buildCats();
+  render(getFiltered());
+  updateHead();
+  fetchLiveData();
+})();
+</script>
+</body>
+                                     </html>
