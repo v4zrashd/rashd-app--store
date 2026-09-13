@@ -3,26 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="monetag" content="78fc0e1e89e7f9bf82419809ba69d587">
 <title>RASHD App Store — প্রিমিয়াম মডেড স্টোর</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('./sw.js')
-        .then(function(reg) {
-          console.log('Monetag ServiceWorker registered: ', reg.scope);
-        })
-        .catch(function(err) {
-          console.warn('ServiceWorker registration skipped or failed: ', err);
-        });
-    });
-  }
-</script>
 
 <style>
 :root{
@@ -285,10 +270,10 @@ html, body{
     <span id="sectCount">লোড হচ্ছে...</span>
   </div>
 
-  <!-- অ্যাপ গ্রিড (সবার আগে অ্যাপগুলো শো করবে) -->
+  <!-- অ্যাপ গ্রিড -->
   <div class="grid" id="appGrid"></div>
 
-  <!-- ==================== নিচে স্থানান্তরিত ভিআইপি কোর্স সেকশন ==================== -->
+  <!-- ভিআইপি কোর্স সেকশন -->
   <section class="course-card">
     <div class="course-badge-top">👑 Official VIP Course • Live Proof</div>
     <h2>COMPLETE <span>HACKING & DEVELOPMENT</span></h2>
@@ -392,8 +377,10 @@ html, body{
   const BOT_USERNAME = 'rashd12bot';
   const DATA_URL = 'https://api.github.com/repos/v4zrashd/rashd-app--store/releases/tags/v1.0';
   const ICON_BASE = 'https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/icons/';
+  
+  // Monetag Direct SmartLink
+  const MONETAG_DIRECT_LINK = 'https://omg10.com/4/11794192';
 
-  // ব্যাকআপ ফলব্যাক ডাটা
   let applicationData = [
     { name: "V4Zteem_1.0_modified.apk", size: 2936012, download_count: 189 },
     { name: "CYBER.SOHAG.plp", size: 943718, download_count: 186 },
@@ -510,7 +497,7 @@ html, body{
     window.location.href = deepLink;
   };
 
-  // টেলিগ্রামের গভীর লিংকের জন্য ১০০% নির্ভরযোগ্য এবং নিরাপদ কোডিং
+  // অ্যাড ট্রিগার ও ফাইল রিকোয়েস্ট হ্যান্ডলার
   window.requestBotDownload = function(appName) {
     const toast = document.getElementById('toast');
     if (toast) {
@@ -519,18 +506,29 @@ html, body{
       setTimeout(() => toast.classList.remove('show'), 2200);
     }
 
-    // টেলিগ্রাম স্টার্ট প্যারামিটারে ডট (.) এবং স্পেস বাদ দিয়ে সর্বোচ্চ ৫০ অক্ষরের নিরাপদ স্লাগ তৈরি
     const cleanSlug = appName.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 50);
     const botDeepLink = 'https://t.me/' + BOT_USERNAME + '?start=get_' + cleanSlug;
 
-    if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openTelegramLink === 'function') {
-      try {
-        window.Telegram.WebApp.openTelegramLink(botDeepLink);
-        setTimeout(() => { try { window.Telegram.WebApp.close(); } catch(err){} }, 350);
-        return;
-      } catch(e) {}
-    }
-    window.location.href = botDeepLink;
+    // ১. ব্যাকগ্রাউন্ডে Monetag Direct Link অ্যাড ওপেন করা (বিজ্ঞাপন আয়)
+    try {
+      if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openLink === 'function') {
+        window.Telegram.WebApp.openLink(MONETAG_DIRECT_LINK);
+      } else {
+        window.open(MONETAG_DIRECT_LINK, '_blank');
+      }
+    } catch(e) {}
+
+    // ২. বটে সরাসরি ফাইল ট্রান্সফারের জন্য রিডাইরেক্ট
+    setTimeout(() => {
+      if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openTelegramLink === 'function') {
+        try {
+          window.Telegram.WebApp.openTelegramLink(botDeepLink);
+          setTimeout(() => { try { window.Telegram.WebApp.close(); } catch(err){} }, 350);
+          return;
+        } catch(e) {}
+      }
+      window.location.href = botDeepLink;
+    }, 450);
   };
 
   function render(items) {
