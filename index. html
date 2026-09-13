@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>RASHD App Store — প্রিমিয়াম মডেড স্টোর</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<!-- সোহাগের Monetag সাইট ভেরিফিকেশন -->
+<meta name="monetag" content="b3a0bad47159adbdc1fef5b9a4cce7e2">
+<!-- Monetag In-Page Small Ads (ব্যানার/পপ-আন্ডার) -->
+<script src="https://quge5.com/88/tag.min.js" data-zone="262222" async data-cfasync="false"></script>
+<!-- Monetag Telegram SDK (ডাউনলোডে চাপ দিলে বড় রিওয়ার্ডেড অ্যাড) -->
+<script src='//libtl.com/sdk.js' data-zone='11793933' data-sdk='show_11793933'></script>
+
+<style>
+:root{
+  --bg: #070913;
+  --bg-card: rgba(14, 18, 36, 0.85);
+  --text: #f8fafc;
+  --sub: #94a3b8;
+  --a1: #00f5d4;
+  --a2: #0070f3;
+  --a3: #7928ca;
+  --a4: #ff0080;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-glow: rgba(0, 245, 212, 0.35);
+  --sans: 'Plus Jakarta Sans', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html, body{width:100%;min-height:100%;background-color:#070913;color:#f8fafc;font-family:var(--sans);line-height:1.5;}
+
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.aurora::before, .aurora::after{content:"";position:absolute;border-radius:50%;filter:blur(80px);opacity:.3;}
+.aurora::before{width:65vw;height:65vw;left:-20vw;top:-15vw;background:radial-gradient(circle, var(--a3), transparent 65%);}
+.aurora::after{width:60vw;height:60vw;right:-20vw;top:15vh;background:radial-gradient(circle, var(--a1), transparent 65%);}
+
+.wrap{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:16px 14px 45px}
+
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.brand .logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:20px;color:#070913;background:linear-gradient(135deg, var(--a1), #00b4d8);box-shadow:0 0 20px rgba(0,245,212,0.4);}
+.brand b{font-weight:800;letter-spacing:.5px;font-size:15px;color:#fff}
+.brand span{margin-left:auto;font-size:11.5px;color:var(--sub);border:1px solid var(--border);padding:5px 10px;border-radius:999px}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--a1);border:1px solid rgba(0,245,212,0.35);background:rgba(0,245,212,0.08);padding:5px 10px;border-radius:999px;margin-left:8px}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--a1);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}
+
+.hero{position:relative;border:1px solid var(--border);border-radius:22px;background:linear-gradient(145deg, rgba(121,40,202,0.18), rgba(0,245,212,0.06) 60%, rgba(14,18,36,0.6));padding:20px 18px;overflow:hidden;margin-bottom:14px;}
+.hero h1{font-size:24px;line-height:1.25;font-weight:800}
+.hero h1 .g{background:linear-gradient(120deg, var(--a1) 0%, #38bdf8 50%, var(--a4) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{color:var(--sub);margin-top:6px;font-size:13px}
+
+.bar{display:flex;gap:8px;align-items:center;margin:16px 0 12px}
+.search{flex:1;display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:rgba(14,18,36,0.8);border-radius:14px;padding:10px 14px}
+.search input{flex:1;background:transparent;border:0;outline:0;color:var(--text);font-family:var(--sans);font-size:13.5px}
+
+.sect{display:flex;align-items:baseline;justify-content:space-between;margin:12px 2px 10px}
+.sect h2{font-size:17px;font-weight:800}
+.sect span{font-size:11.5px;color:var(--sub);font-weight:600}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;margin-bottom:24px}
+.card{position:relative;border:1px solid var(--border);border-radius:20px;overflow:hidden;background:var(--bg-card);padding:12px;display:flex;flex-direction:column;gap:9px;}
+.thumb{position:relative;width:100%;aspect-ratio:1/1;border-radius:15px;overflow:hidden;display:grid;place-items:center;background:linear-gradient(145deg, rgba(121,40,202,0.22), rgba(0,245,212,0.1));}
+.thumb-img{width:76%;height:76%;object-fit:contain}
+.ext{position:absolute;bottom:6px;right:6px;font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:7px;background:rgba(7,9,19,0.85);border:1px solid var(--border);color:var(--a1)}
+
+.body{display:flex;flex-direction:column;gap:7px}
+.body h4{font-size:13px;font-weight:700;word-break:break-word;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#f1f5f9}
+.btn-dl{margin-top:2px;text-align:center;justify-content:center;color:#070913;background:linear-gradient(135deg, var(--a1), #00b4d8);font-size:12px;padding:10px 10px;font-weight:800;border-radius:11px;cursor:pointer;display:inline-flex;align-items:center;border:none;}
+
+/* Modal / Popup Styles */
+.modal-overlay{position:fixed;inset:0;background:rgba(5,7,15,0.92);backdrop-filter:blur(14px);z-index:999;display:none;align-items:center;justify-content:center;padding:14px;}
+.modal-overlay.active{display:flex}
+.modal-box{background:rgba(15,20,38,0.98);border:1.5px solid var(--border-glow);width:100%;max-width:440px;border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 40px rgba(0,245,212,0.18);}
+.modal-head{display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-size:16px;font-weight:800;color:#fff}
+.modal-head .btn-close{background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--sub);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;}
+
+.gate-card{background:rgba(7,9,19,0.75);border:1px solid rgba(255,255,255,0.1);padding:16px;border-radius:16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.gate-timer-circle{width:90px;height:90px;border-radius:50%;border:4px solid rgba(0,245,212,0.2);border-top-color:var(--a1);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:spin 2s linear infinite;}
+.gate-timer-circle.active{animation:none;border-color:var(--a1)}
+.gate-timer-num{font-size:28px;font-weight:800;color:var(--a1);line-height:1}
+.gate-warn-box{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);padding:10px 12px;border-radius:12px;font-size:12px;color:#fca5a5;line-height:1.45;}
+
+.btn-gate-action{width:100%;background:linear-gradient(135deg, var(--a1), #00b4d8);color:#070913;font-weight:800;font-size:13.5px;padding:13px;border-radius:13px;border:none;cursor:pointer;}
+.btn-gate-action:disabled{background:rgba(255,255,255,0.1);color:var(--sub);cursor:not-allowed;}
+</style>
+</head>
+<body>
+<div class="aurora"></div>
+
+<div class="wrap">
+  <div class="brand">
+    <div class="logo">R</div>
+    <b>RASHD STORE</b>
+    <span class="live"><i></i> LIVE</span>
+    <span>Auto Bot Cloud</span>
+  </div>
+
+  <section class="hero">
+    <h1>মডেড অ্যাপ স্টোর <br><span class="g">ফ্রি ও সিকিউর</span></h1>
+    <p>লেটেস্ট মডেড APK — স্পন্সর অ্যাড দেখে সরাসরি টেলিগ্রাম বটে ফাইল ডাউনলোড করুন।</p>
+  </section>
+
+  <div class="bar">
+    <label class="search">
+      🔍 <input id="searchInput" type="text" placeholder="অ্যাপ খুঁজুন..." oninput="onSearch()" />
+    </label>
+  </div>
+
+  <div class="sect">
+    <h2 id="sectTitle">📱 All Files</h2>
+    <span id="sectCount">লোড হচ্ছে...</span>
+  </div>
+
+  <!-- এখানেই অ্যাপগুলো শো করবে -->
+  <div class="grid" id="appGrid"></div>
+</div>
+
+<!-- ডাউনলোড বাটনে চাপ দিলে এই পপ-আপ আসবে -->
+<div class="modal-overlay" id="adGateModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="adGateTitle">🛡️ সিকিউর ডাউনলোড</h3>
+      <button class="btn-close" onclick="closeAdGateModal()">✕</button>
+    </div>
+    
+    <div class="gate-warn-box">
+      ⚠️ <b>সতর্কবার্তা:</b> এটি একটি স্পন্সরড ফ্রি ফাইল। <b>বিজ্ঞাপন সম্পূর্ণ দেখা শেষ হলে স্বয়ংক্রিয়ভাবে ডাউনলোড বাটন খুলে যাবে!</b>
+    </div>
+
+    <div class="gate-card">
+      <div class="gate-timer-circle" id="timerCircle">
+        <span class="gate-timer-num" id="gateTimer">15</span>
+        <span style="font-size:10px;color:var(--sub)">সেকেন্ড বাকি</span>
+      </div>
+      <div style="font-size:12.5px;color:#cbd5e1" id="timerText">
+        টেলিগ্রাম রিওয়ার্ডেড বিজ্ঞাপন প্রস্তুত হচ্ছে...
+      </div>
+    </div>
+
+    <button class="btn-gate-action" id="btnSponsorOpen" onclick="triggerAd()">
+      🎬 বিজ্ঞাপন চালু করুন (Play Ad)
+    </button>
+    <button class="btn-gate-action" id="btnClaimFile" disabled onclick="claimFile()">
+      ⏳ বিজ্ঞাপন শেষ হওয়া পর্যন্ত অপেক্ষা করুন...
+    </button>
+  </div>
+</div>
+
+<script>
+  const BOT_USERNAME = 'rashd12bot';
+  const FALLBACK_AD_LINK = 'https://omg10.com/4/11794192';
+  const ICON_BASE = 'https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/icons/';
+  
+  // ডেমো অ্যাপ লিস্ট (যাতে সাইট কখনো ফাঁকা না থাকে)
+  let apps = [
+    { name: "V4Zteem_1.0_modified.apk", size: 2936012 },
+    { name: "termux_0.119.0-beta.2.apk", size: 104857600 },
+    { name: "capcut_pro_15.5.0.apk", size: 188743680 },
+    { name: "mt_manager_vip.apk", size: 24117248 },
+    { name: "sms_forwarder.apk", size: 4194304 },
+    { name: "cyber_security_tools.zip", size: 12582912 }
+  ];
+
+  let currentApp = '';
+  let timeLeft = 15;
+  let timerInterval = null;
+
+  // অ্যাপগুলো পেজে রেন্ডার করা
+  function render(list) {
+    const box = document.getElementById('appGrid');
+    document.getElementById('sectCount').textContent = list.length + ' items';
+    if (!list.length) {
+      box.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:35px;color:var(--sub)">🔍 কিছু পাওয়া যায়নি</div>';
+      return;
+    }
+    box.innerHTML = list.map(it => {
+      const mb = (it.size / (1024*1024)).toFixed(1);
+      const ext = (it.name.split('.').pop() || 'apk').toUpperCase();
+      const thumb = ICON_BASE + encodeURIComponent(it.name) + '.png';
+      return `
+      <div class="card">
+        <div class="thumb">
+          <img class="thumb-img" src="${thumb}" alt="icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/825/825484.png'">
+          <span class="ext">${ext}</span>
+        </div>
+        <div class="body">
+          <h4>${it.name}</h4>
+          <span style="font-size:11px;color:var(--sub)">💾 ${mb} MB</span>
+          <button class="btn-dl" onclick="openDownloadModal('${it.name}')">⬇ Get File (Ad)</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // সার্চ ফাংশন
+  window.onSearch = () => {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    render(apps.filter(i => i.name.toLowerCase().includes(q)));
+  };
+
+  // ডাউনলোড বাটনে চাপ দিলে পপ-আপ ওপেন হওয়া
+  window.openDownloadModal = function(name) {
+    currentApp = name;
+    timeLeft = 15;
+    document.getElementById('adGateTitle').textContent = '🛡️ ' + name;
+    document.getElementById('gateTimer').textContent = timeLeft;
+    document.getElementById('btnClaimFile').disabled = true;
+    document.getElementById('btnClaimFile').innerHTML = '⏳ অপেক্ষা করুন...';
+    document.getElementById('timerCircle').classList.remove('active');
+    
+    // পপ-আপ শো করানো
+    document.getElementById('adGateModal').classList.add('active');
+    
+    // সাথে সাথে অ্যাড কল করা
+    triggerAd();
+    
+    // টাইমার শুরু
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      document.getElementById('gateTimer').textContent = timeLeft > 0 ? timeLeft : 0;
+      if (timeLeft <= 0) unlockFile();
+    }, 1000);
+  };
+
+  window.closeAdGateModal = function() {
+    document.getElementById('adGateModal').classList.remove('active');
+    if(timerInterval) clearInterval(timerInterval);
+  };
+
+  // অ্যাড প্লে করা (Telegram SDK বা ডিরেক্ট লিংক)
+  window.triggerAd = function() {
+    if (typeof show_11793933 === 'function') {
+      try { show_11793933().catch(()=>{}); } catch(e) {}
+    } else {
+      window.open(FALLBACK_AD_LINK, '_blank');
+    }
+  };
+
+  // টাইমার শেষ হলে বাটন আনলক
+  function unlockFile() {
+    clearInterval(timerInterval);
+    document.getElementById('timerCircle').classList.add('active');
+    document.getElementById('timerText').textContent = '✅ বিজ্ঞাপন দেখা সফল!';
+    const btn = document.getElementById('btnClaimFile');
+    btn.disabled = false;
+    btn.innerHTML = '⚡ বটে ফাইলটি ডাউনলোড করুন';
+  }
+
+  // বটে ফাইল পাঠানো
+  window.claimFile = function() {
+    const slug = currentApp.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 50);
+    const link = 'https://t.me/' + BOT_USERNAME + '?start=dl_' + slug;
+    
+    closeAdGateModal();
+    
+    if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openTelegramLink === 'function') {
+      window.Telegram.WebApp.openTelegramLink(link);
+      setTimeout(() => window.Telegram.WebApp.close(), 300);
+    } else {
+      window.location.href = link;
+    }
+  };
+
+  // গিটহাব থেকে আসল লাইভ ডাটা লোড করার চেষ্টা করা
+  async function fetchLive() {
+    try {
+      const res = await fetch('https://api.github.com/repos/v4zrashd/rashd-app--store/releases/latest');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.assets && data.assets.length) {
+          apps = data.assets;
+          render(apps);
+        }
+      }
+    } catch(e) {}
+  }
+
+  // শুরুতে ডেমো ডাটা রেন্ডার এবং পরে লাইভ ডাটা কল
+  render(apps);
+  fetchLive();
+</script>
+</body>
+</html>
