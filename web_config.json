@@ -1,0 +1,10 @@
+{
+  "timer": 15,
+  "on_store_load": true,
+  "on_card_click": true,
+  "on_video_click": true,
+  "on_download": true,
+  "inapp_frequency": 5,
+  "inapp_capping": 0.1,
+  "inapp_interval": 15
+}
