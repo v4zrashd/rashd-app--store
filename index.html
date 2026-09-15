@@ -1,946 +1,1918 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>RASHD Cyber App Store — মডেড স্টোর</title>
-​<!-- Telegram WebApp SDK -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-​<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
-​<!-- Monetag Telegram Mini App Official SDK -->
-<script src="//libtl.com/sdk.js" data-zone="11794192" data-sdk="show_11794192"></script>
-​<style>
-:root {
---bg: #030712;
---card-bg: rgba(9, 18, 38, 0.92);
---neon-cyan: #00ffcc;
---neon-blue: #0099ff;
---neon-pink: #ff007f;
---neon-border: rgba(0, 255, 204, 0.28);
---text-main: #f1f5f9;
---text-muted: #94a3b8;
---mono: 'Share Tech Mono', monospace;
---sans: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
-}
-​*, *::before, *::after {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
--webkit-tap-highlight-color: transparent;
-}
-​html, body {
-width: 100%;
-min-height: 100vh;
-background-color: var(--bg);
-color: var(--text-main);
-font-family: var(--sans);
-overflow-x: hidden;
-position: relative;
-}
-​.cyber-bg {
-position: fixed;
-inset: 0;
-background-image:
-linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
-linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
-background-size: 24px 24px;
-pointer-events: none;
-z-index: 0;
-}
-​.cyber-glow {
-position: fixed;
-top: -90px;
-left: 50%;
-transform: translateX(-50%);
-width: 320px;
-height: 320px;
-background: radial-gradient(circle, rgba(0, 153, 255, 0.2), transparent 70%);
-pointer-events: none;
-z-index: 0;
-}
-​.container {
-position: relative;
-z-index: 1;
-width: 100%;
-max-width: 460px;
-margin: 0 auto;
-padding: 14px 12px 60px;
-display: flex;
-flex-direction: column;
-align-items: stretch;
-}
-​.header {
-display: flex;
-flex-direction: column;
-align-items: center;
-text-align: center;
-margin-bottom: 16px;
-gap: 6px;
-width: 100%;
-}
-​.logo-ring {
-width: 72px;
-height: 72px;
-border-radius: 50%;
-padding: 2.5px;
-background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue), var(--neon-pink));
-box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
-display: grid;
-place-items: center;
-margin-bottom: 4px;
-}
-​.logo-img {
-width: 100%;
-height: 100%;
-border-radius: 50%;
-object-fit: cover;
-background: #060e1e;
-}
-​.site-title {
-font-family: var(--mono);
-font-size: 21px;
-font-weight: 800;
-letter-spacing: 2px;
-color: #fff;
-text-shadow: 0 0 12px var(--neon-cyan);
-}
-​.site-subtitle {
-font-size: 11.5px;
-color: var(--neon-cyan);
-letter-spacing: 1px;
-font-family: var(--mono);
-font-weight: 700;
-}
-​.live-status-bar {
-width: 100%;
-background: var(--card-bg);
-border: 1px solid var(--neon-border);
-border-radius: 12px;
-padding: 10px 14px;
-backdrop-filter: blur(12px);
-margin-bottom: 12px;
-font-family: var(--mono);
-box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
-}
-​.status-item {
-display: flex;
-justify-content: space-between;
-align-items: center;
-font-size: 12px;
-margin: 4px 0;
-}
-​.status-item .label {
-color: var(--text-muted);
-display: flex;
-align-items: center;
-gap: 6px;
-font-weight: 700;
-}
-​.status-item .value {
-color: var(--neon-cyan);
-font-weight: 800;
-max-width: 60%;
-text-align: right;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
-​.live-dot {
-width: 7px;
-height: 7px;
-background: var(--neon-cyan);
-border-radius: 50%;
-box-shadow: 0 0 8px var(--neon-cyan);
-animation: pulse 1.5s infinite;
-}
-​@keyframes pulse {
-0%, 100% { opacity: 1; transform: scale(1); }
-50% { opacity: 0.3; transform: scale(0.8); }
-}
-​.search-wrapper {
-position: relative;
-width: 100%;
-margin-bottom: 12px;
-}
-​.search-input {
-width: 100%;
-background: var(--card-bg);
-border: 1px solid var(--neon-border);
-border-radius: 10px;
-padding: 11px 14px 11px 40px;
-color: #fff;
-font-family: var(--mono);
-font-size: 13px;
-outline: none;
-transition: all 0.2s ease;
-}
-​.search-input:focus {
-border-color: var(--neon-cyan);
-box-shadow: 0 0 12px rgba(0, 255, 204, 0.25);
-}
-​.search-icon {
-position: absolute;
-left: 14px;
-top: 50%;
-transform: translateY(-50%);
-color: var(--neon-cyan);
-font-size: 14px;
-pointer-events: none;
-}
-​.category-scroll {
-display: flex;
-gap: 6px;
-overflow-x: auto;
-padding-bottom: 4px;
-margin-bottom: 14px;
-width: 100%;
-scrollbar-width: none;
-}
-.category-scroll::-webkit-scrollbar { display: none; }
-​.cat-btn {
-background: var(--card-bg);
-border: 1px solid rgba(255, 255, 255, 0.1);
-color: var(--text-muted);
-padding: 5px 12px;
-border-radius: 7px;
-font-family: var(--mono);
-font-size: 11.5px;
-font-weight: 700;
-white-space: nowrap;
-cursor: pointer;
-transition: all 0.2s ease;
-}
-​.cat-btn.active {
-background: rgba(0, 255, 204, 0.15);
-border-color: var(--neon-cyan);
-color: var(--neon-cyan);
-box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
-}
-​.apps-grid {
-display: grid;
-grid-template-columns: repeat(2, minmax(0, 1fr));
-gap: 10px;
-width: 100%;
-}
-​.app-card {
-width: 100%;
-min-width: 0;
-background: var(--card-bg);
-border: 1px solid var(--neon-border);
-border-radius: 12px;
-padding: 12px 8px 10px;
-display: flex;
-flex-direction: column;
-align-items: center;
-text-align: center;
-position: relative;
-cursor: pointer;
-backdrop-filter: blur(10px);
-transition: transform 0.16s, border-color 0.16s, box-shadow 0.16s;
-overflow: hidden;
-}
-​.app-card:active { transform: scale(0.97); }
-.app-card:hover {
-border-color: var(--neon-cyan);
-box-shadow: 0 0 16px rgba(0, 255, 204, 0.22);
-}
-​.rank-tag {
-position: absolute;
-top: 6px;
-right: 6px;
-font-family: var(--mono);
-font-size: 8.5px;
-font-weight: 800;
-padding: 1.5px 5px;
-border-radius: 4px;
-border: 1px solid var(--neon-blue);
-color: var(--neon-blue);
-background: rgba(0, 153, 255, 0.12);
-}
-​.rank-tag.hot {
-border-color: #ffd700;
-color: #ffd700;
-background: rgba(255, 215, 0, 0.16);
-box-shadow: 0 0 8px rgba(255, 215, 0, 0.35);
-}
-​.card-thumb-wrap {
-width: 54px;
-height: 54px;
-border-radius: 50%;
-padding: 2px;
-border: 1.5px solid var(--neon-cyan);
-box-shadow: 0 0 12px rgba(0, 255, 204, 0.28);
-margin: 4px 0 8px;
-display: grid;
-place-items: center;
-flex-shrink: 0;
-}
-​.card-thumb {
-width: 100%;
-height: 100%;
-border-radius: 50%;
-object-fit: cover;
-background: #081222;
-}
-​.card-title {
-font-family: var(--mono);
-font-size: 11.5px;
-font-weight: 700;
-color: #fff;
-line-height: 1.3;
-margin-bottom: 8px;
-width: 100%;
-display: -webkit-box;
--webkit-line-clamp: 2;
--webkit-box-orient: vertical;
-overflow: hidden;
-word-break: break-word;
-min-height: 30px;
-}
-​.card-footer {
-display: flex;
-justify-content: space-between;
-align-items: center;
-width: 100%;
-font-family: var(--mono);
-font-size: 10.5px;
-color: var(--neon-cyan);
-padding-top: 6px;
-border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-​.card-footer .dl-stat {
-display: flex;
-align-items: center;
-gap: 3px;
-font-weight: 800;
-}
-​#storeView { display: block; width: 100%; }
-#detailView { display: none; width: 100%; }
-​.detail-container {
-width: 100%;
-background: var(--card-bg);
-border: 1.5px solid var(--neon-cyan);
-border-radius: 16px;
-padding: 18px 14px;
-display: flex;
-flex-direction: column;
-align-items: center;
-text-align: center;
-box-shadow: 0 0 28px rgba(0, 255, 204, 0.22);
-backdrop-filter: blur(14px);
-}
-​.detail-thumb-wrap {
-width: 82px;
-height: 82px;
-border-radius: 50%;
-padding: 3px;
-border: 2px solid var(--neon-cyan);
-box-shadow: 0 0 20px rgba(0, 255, 204, 0.45);
-margin-bottom: 12px;
-display: grid;
-place-items: center;
-}
-​.detail-thumb {
-width: 100%;
-height: 100%;
-border-radius: 50%;
-object-fit: cover;
-background: #081222;
-}
-​.detail-app-name {
-font-family: var(--mono);
-font-size: 18px;
-font-weight: 800;
-color: var(--neon-cyan);
-letter-spacing: 0.5px;
-margin-bottom: 4px;
-text-shadow: 0 0 10px var(--neon-cyan);
-word-break: break-word;
-width: 100%;
-}
-​.detail-tagline {
-font-size: 11px;
-color: var(--text-muted);
-margin-bottom: 14px;
-font-family: var(--mono);
-word-break: break-all;
-}
-​.meta-specs-grid {
-width: 100%;
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 7px;
-margin-bottom: 14px;
-font-family: var(--mono);
-font-size: 11.5px;
-}
-​.spec-item {
-background: rgba(0, 255, 204, 0.05);
-border: 1px solid var(--neon-border);
-padding: 7px 9px;
-border-radius: 7px;
-display: flex;
-justify-content: space-between;
-}
-​.spec-item .sp-lbl { color: var(--text-muted); }
-.spec-item .sp-val { color: var(--neon-cyan); font-weight: bold; }
-​.desc-box {
-width: 100%;
-background: rgba(4, 10, 22, 0.85);
-border: 1px solid rgba(0, 255, 204, 0.22);
-border-radius: 9px;
-padding: 12px;
-font-size: 12.5px;
-color: #cbd5e1;
-line-height: 1.55;
-text-align: left;
-margin-bottom: 16px;
-white-space: pre-line;
-}
-​.detail-actions {
-width: 100%;
-display: flex;
-flex-direction: column;
-gap: 9px;
-}
-​.btn-download {
-background: var(--neon-cyan);
-color: #030712;
-font-family: var(--mono);
-font-size: 13.5px;
-font-weight: 800;
-padding: 13px;
-border-radius: 9px;
-border: none;
-cursor: pointer;
-letter-spacing: 0.5px;
-box-shadow: 0 0 16px rgba(0, 255, 204, 0.35);
-transition: all 0.2s;
-}
-​.btn-download:active { transform: scale(0.98); }
-​.btn-video {
-background: rgba(255, 0, 127, 0.12);
-border: 1px solid var(--neon-pink);
-color: #ff3399;
-font-family: var(--mono);
-font-size: 12px;
-font-weight: 700;
-padding: 10px;
-border-radius: 9px;
-text-decoration: none;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 6px;
-cursor: pointer;
-}
-​.btn-back {
-background: transparent;
-border: 1px solid rgba(255, 255, 255, 0.2);
-color: #fff;
-font-family: var(--mono);
-font-size: 12.5px;
-font-weight: 700;
-padding: 10px;
-border-radius: 9px;
-cursor: pointer;
-}
-​.modal-backdrop {
-position: fixed;
-inset: 0;
-background: rgba(2, 6, 18, 0.95);
-backdrop-filter: blur(12px);
-z-index: 9999;
-display: none;
-align-items: center;
-justify-content: center;
-padding: 14px;
-}
-​.modal-backdrop.active { display: flex !important; }
-​.modal-window {
-background: #091326;
-border: 1.5px solid var(--neon-cyan);
-width: 100%;
-max-width: 350px;
-border-radius: 16px;
-padding: 20px 16px;
-display: flex;
-flex-direction: column;
-align-items: center;
-text-align: center;
-gap: 12px;
-box-shadow: 0 0 30px rgba(0, 255, 204, 0.35);
-}
-​.timer-circle-wrap {
-position: relative;
-width: 82px;
-height: 82px;
-margin: 4px auto;
-}
-​.timer-ring-spinner {
-position: absolute;
-inset: 0;
-border-radius: 50%;
-border: 3.5px solid rgba(0, 255, 204, 0.15);
-border-top-color: var(--neon-cyan);
-animation: spinRing 1.3s linear infinite;
-}
-​.timer-ring-spinner.done { animation: none; border-color: var(--neon-cyan); }
-​@keyframes spinRing {
-0% { transform: rotate(0deg); }
-100% { transform: rotate(360deg); }
-}
-​.timer-number-display {
-position: absolute;
-inset: 0;
-display: flex;
-align-items: center;
-justify-content: center;
-font-family: var(--mono);
-font-size: 26px;
-font-weight: 800;
-color: var(--neon-cyan);
-}
-​.btn-claim-file {
-width: 100%;
-background: var(--neon-cyan);
-color: #030712;
-font-family: var(--mono);
-font-size: 13px;
-font-weight: 800;
-padding: 12px;
-border-radius: 9px;
-border: none;
-cursor: pointer;
-box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
-transition: all 0.2s;
-}
-​.btn-claim-file:disabled {
-background: rgba(255, 255, 255, 0.1);
-color: rgba(255, 255, 255, 0.35);
-cursor: not-allowed;
-box-shadow: none;
-}
-</style>
-<style id="rasd-fx">
-.site-title{background:linear-gradient(90deg,#00ffcc,#0099ff,#ff007f,#ffd700,#00ffcc);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:rasdShimmer 5s linear infinite;text-shadow:none;}
-@keyframes rasdShimmer{0%{background-position:0% 50%}100%{background-position:250% 50%}}
-.site-subtitle{color:#ffd700;animation:rasdPulse 2s ease-in-out infinite alternate;}
-@keyframes rasdPulse{from{opacity:.7;text-shadow:0 0 6px #ff007f}to{opacity:1;text-shadow:0 0 14px #00ffcc}}
-.logo-ring{animation:rasdHue 9s linear infinite;}
-@keyframes rasdHue{to{filter:hue-rotate(360deg)}}
-.color-ticker{margin:12px 0;overflow:hidden;padding:6px 0;border:1px solid rgba(255,215,0,.28);border-radius:12px;background:linear-gradient(90deg,rgba(10,20,40,.92),rgba(24,12,46,.92),rgba(10,20,40,.92));white-space:nowrap;}
-.tick-track{display:inline-block;animation:rasdMarquee 24s linear infinite;}
-.tick-track span{display:inline-block;padding:0 18px;font-family:var(--mono);font-size:11px;letter-spacing:1px;background:linear-gradient(90deg,#ffd700,#ff007f,#00ffcc,#0099ff,#ff8bd6,#ffd700);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:rasdShimmer 4s linear infinite;}
-@keyframes rasdMarquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.live-status-bar{border:1px solid;border-image:linear-gradient(90deg,#00ffcc,#ff007f,#ffd700) 1;border-image-slice:1;}
-.live-status-bar .value{color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,.45);}
-.cat-btn{border:1px solid rgba(0,255,204,.3);background:rgba(9,18,38,.92);letter-spacing:.5px;}
-.cat-btn.active{background:linear-gradient(135deg,rgba(0,255,204,.25),rgba(255,0,127,.2));color:#fff;border-color:#ffd700;box-shadow:0 0 14px rgba(255,215,0,.45);}
-.app-card{background:linear-gradient(160deg,rgba(11,22,46,.96),rgba(26,13,48,.93));border-color:rgba(0,255,204,.32);}
-.app-card:hover{border-color:#ffd700;box-shadow:0 0 22px rgba(255,215,0,.4);}
-.card-title{color:#eaffff;}
-.rank-tag{color:#5cebff;border-color:#5cebff;}
-.rank-tag.hot{color:#0b0f14;background:linear-gradient(135deg,#ffd700,#ffb300);border-color:#ffd700;box-shadow:0 0 14px rgba(255,215,0,.65);}
-.card-footer{color:#00ffcc;border-top-color:rgba(0,255,204,.25);}
-.btn-download{background:linear-gradient(90deg,#00ffcc,#0099ff,#ff007f,#ffd700,#00ffcc);background-size:300% auto;color:#04070d;font-weight:700;animation:rasdBtnFlow 4s linear infinite;border:none;}
-@keyframes rasdBtnFlow{to{background-position:300% center}}
-.btn-download:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,255,204,.5);}
-.detail-app-name{background:linear-gradient(90deg,#ffd700,#ff007f,#00ffcc,#ff8bd6);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:rasdShimmer 3.5s linear infinite;text-shadow:none;}
-.detail-tagline{color:#5cebff;}
-.meta-specs-grid .spec-item:nth-child(1) .sp-val{color:#ffd700;}
-.meta-specs-grid .spec-item:nth-child(2) .sp-val{color:#ff8bd6;}
-.meta-specs-grid .spec-item:nth-child(3) .sp-val{color:#00ffcc;}
-.sp-lbl{color:rgba(255,255,255,.5);}
-.desc-box{border-color:rgba(146,64,255,.35);}
-.btn-video{background:linear-gradient(90deg,rgba(0,153,255,.25),rgba(146,64,255,.25));color:#9be8ff;border-color:rgba(0,153,255,.35);}
-.btn-back{color:#ffd700;border-color:rgba(255,215,0,.4);}
-.modal-window{border:1px solid;border-image:linear-gradient(135deg,#00ffcc,#ff007f,#ffd700) 1;border-image-slice:1;}
-.btn-claim-file{background:linear-gradient(90deg,#ffd700,#ff7f11,#ff007f);background-size:220% auto;color:#04070d;animation:rasdBtnFlow 4s linear infinite;}
-.btn-claim-file:disabled{background:linear-gradient(90deg,#2a3b55,#1a2440);color:#8aa0c0;animation:none;cursor:not-allowed;}
-::selection{background:#ff007f;color:#fff;}
-::-webkit-scrollbar{width:6px;height:6px;}
-::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#00ffcc,#ff007f);border-radius:6px;}
-::-webkit-scrollbar-track{background:#070d1b;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>RASHD Cyber App Store — মডেড স্টোর</title>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Monetag Telegram Mini App SDK -->
+  <script src="//libtl.com/sdk.js" data-zone="11794192" data-sdk="show_11794192"></script>
+
+  <style>
+    :root {
+      --bg: #030712;
+      --card-bg: rgba(9, 18, 38, 0.92);
+      --neon-cyan: #00ffcc;
+      --neon-blue: #0099ff;
+      --neon-pink: #ff007f;
+      --neon-border: rgba(0, 255, 204, 0.28);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .cyber-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .cyber-glow {
+      position: fixed;
+      top: -90px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(0, 153, 255, 0.2), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 14px 12px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 16px;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .logo-ring {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      padding: 2.5px;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue), var(--neon-pink));
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+      display: grid;
+      place-items: center;
+      margin-bottom: 4px;
+    }
+
+    .logo-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #060e1e;
+    }
+
+    .site-title {
+      font-family: var(--mono);
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 0 0 12px var(--neon-cyan);
+    }
+
+    .site-subtitle {
+      font-size: 11.5px;
+      color: var(--neon-cyan);
+      letter-spacing: 1px;
+      font-family: var(--mono);
+      font-weight: 700;
+    }
+
+    .live-status-bar {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--neon-border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 12px;
+      font-family: var(--mono);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin: 4px 0;
+    }
+
+    .status-item .label {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+    }
+
+    .status-item .value {
+      color: var(--neon-cyan);
+      font-weight: 800;
+      max-width: 60%;
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--neon-cyan);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--neon-border);
+      border-radius: 10px;
+      padding: 11px 14px 11px 40px;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0, 255, 204, 0.25);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--neon-cyan);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .category-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 14px;
+      width: 100%;
+      scrollbar-width: none;
+    }
+
+    .category-scroll::-webkit-scrollbar { display: none; }
+
+    .cat-btn {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      padding: 5px 12px;
+      border-radius: 7px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .cat-btn.active {
+      background: rgba(0, 255, 204, 0.15);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+    }
+
+    .app-card {
+      width: 100%;
+      min-width: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--neon-border);
+      border-radius: 12px;
+      padding: 12px 8px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: transform 0.16s, border-color 0.16s, box-shadow 0.16s;
+      overflow: hidden;
+    }
+
+    .app-card:active { transform: scale(0.97); }
+
+    .app-card:hover {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 16px rgba(0, 255, 204, 0.22);
+    }
+
+    .rank-tag {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-family: var(--mono);
+      font-size: 8.5px;
+      font-weight: 800;
+      padding: 1.5px 5px;
+      border-radius: 4px;
+      border: 1px solid var(--neon-blue);
+      color: var(--neon-blue);
+      background: rgba(0, 153, 255, 0.12);
+    }
+
+    .rank-tag.hot {
+      border-color: #ffd700;
+      color: #ffd700;
+      background: rgba(255, 215, 0, 0.16);
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.35);
+    }
+
+    .card-thumb-wrap {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      padding: 2px;
+      border: 1.5px solid var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0, 255, 204, 0.28);
+      margin: 4px 0 8px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .card-thumb {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #081222;
+    }
+
+    .card-title {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+      margin-bottom: 8px;
+      width: 100%;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+      min-height: 30px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--neon-cyan);
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .card-footer .dl-stat {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-weight: 800;
+    }
+
+    #storeView { display: block; width: 100%; }
+    #detailView { display: none; width: 100%; }
+
+    .detail-container {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1.5px solid var(--neon-cyan);
+      border-radius: 16px;
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 0 28px rgba(0, 255, 204, 0.22);
+      backdrop-filter: blur(14px);
+    }
+
+    .detail-thumb-wrap {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      padding: 3px;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.45);
+      margin-bottom: 12px;
+      display: grid;
+      place-items: center;
+    }
+
+    .detail-thumb {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #081222;
+    }
+
+    .detail-app-name {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--neon-cyan);
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      text-shadow: 0 0 10px var(--neon-cyan);
+      word-break: break-word;
+      width: 100%;
+    }
+
+    .detail-tagline {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      font-family: var(--mono);
+      word-break: break-all;
+    }
+
+    .meta-specs-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 14px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+    }
+
+    .spec-item {
+      background: rgba(0, 255, 204, 0.05);
+      border: 1px solid var(--neon-border);
+      padding: 7px 9px;
+      border-radius: 7px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .spec-item .sp-lbl { color: var(--text-muted); }
+    .spec-item .sp-val { color: var(--neon-cyan); font-weight: bold; }
+
+    .desc-box {
+      width: 100%;
+      background: rgba(4, 10, 22, 0.85);
+      border: 1px solid rgba(0, 255, 204, 0.22);
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 12.5px;
+      color: #cbd5e1;
+      line-height: 1.55;
+      text-align: left;
+      margin-bottom: 16px;
+      white-space: pre-line;
+    }
+
+    .detail-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .btn-download {
+      background: var(--neon-cyan);
+      color: #030712;
+      font-family: var(--mono);
+      font-size: 13.5px;
+      font-weight: 800;
+      padding: 13px;
+      border-radius: 9px;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 16px rgba(0, 255, 204, 0.35);
+      transition: all 0.2s;
+    }
+
+    .btn-download:active { transform: scale(0.98); }
+
+    .btn-video {
+      background: rgba(255, 0, 127, 0.12);
+      border: 1px solid var(--neon-pink);
+      color: #ff3399;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 9px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .btn-back {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 18, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .modal-backdrop.active { display: flex !important; }
+
+    .modal-window {
+      background: #091326;
+      border: 1.5px solid var(--neon-cyan);
+      width: 100%;
+      max-width: 350px;
+      border-radius: 16px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+      box-shadow: 0 0 30px rgba(0, 255, 204, 0.35);
+    }
+
+    .timer-circle-wrap {
+      position: relative;
+      width: 82px;
+      height: 82px;
+      margin: 4px auto;
+    }
+
+    .timer-ring-spinner {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3.5px solid rgba(0, 255, 204, 0.15);
+      border-top-color: var(--neon-cyan);
+      animation: spinRing 1.3s linear infinite;
+    }
+
+    .timer-ring-spinner.done {
+      animation: none;
+      border-color: var(--neon-cyan);
+    }
+
+    @keyframes spinRing {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .timer-number-display {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--neon-cyan);
+    }
+
+    .btn-claim-file {
+      width: 100%;
+      background: var(--neon-cyan);
+      color: #030712;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 800;
+      padding: 12px;
+      border-radius: 9px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-claim-file:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.35);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  </style>
+
+  <style id="rasd-fx">
+    .site-title{background:linear-gradient(90deg,#00ffcc,#0099ff,#ff007f,#ffd700,#00ffcc);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:rasdShimmer 5s linear infinite;text-shadow:none;}
+    @keyframes rasdShimmer{0%{background-position:0% 50%}100%{background-position:250% 50%}}
+    .site-subtitle{color:#ffd700;animation:rasdPulse 2s ease-in-out infinite alternate;}
+    @keyframes rasdPulse{from{opacity:.7;text-shadow:0 0 6px #ff007f}to{opacity:1;text-shadow:0 0 14px #00ffcc}}
+    .logo-ring{animation:rasdHue 9s linear infinite;}
+    @keyframes rasdHue{to{filter:hue-rotate(360deg)}}
+    .color-ticker{margin:12px 0;overflow:hidden;padding:6px 0;border:1px solid rgba(255,215,0,.28);border-radius:12px;background:linear-gradient(90deg,rgba(10,20,40,.92),rgba(24,12,46,.92),rgba(10,20,40,.92));white-space:nowrap;}
+    .tick-track{display:inline-block;animation:rasdMarquee 24s linear infinite;}
+    .tick-track span{display:inline-block;padding:0 18px;font-family:var(--mono);font-size:11px;letter-spacing:1px;background:linear-gradient(90deg,#ffd700,#ff007f,#00ffcc,#0099ff,#ff8bd6,#ffd700);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:rasdShimmer 4s linear infinite;}
+    @keyframes rasdMarquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .live-status-bar{border:1px solid;border-image:linear-gradient(90deg,#00ffcc,#ff007f,#ffd700) 1;border-image-slice:1;}
+    .live-status-bar .value{color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,.45);}
+    .cat-btn{border:1px solid rgba(0,255,204,.3);background:rgba(9,18,38,.92);letter-spacing:.5px;}
+    .cat-btn:nth-child(1){border-color:rgba(0,255,204,.5)}
+    .cat-btn:nth-child(2){border-color:rgba(0,153,255,.5)}
+    .cat-btn:nth-child(3){border-color:rgba(255,0,127,.5)}
+    .cat-btn:nth-child(4){border-color:rgba(255,215,0,.5)}
+    .cat-btn:nth-child(5){border-color:rgba(146,64,255,.5)}
+    .cat-btn.active{background:linear-gradient(135deg,rgba(0,255,204,.25),rgba(255,0,127,.2));color:#fff;border-color:#ffd700;box-shadow:0 0 14px rgba(255,215,0,.45);}
+    .app-card{background:linear-gradient(160deg,rgba(11,22,46,.96),rgba(26,13,48,.93));border-color:rgba(0,255,204,.32);}
+    .app-card:hover{border-color:#ffd700;box-shadow:0 0 22px rgba(255,215,0,.4);}
+    .card-title{color:#eaffff;}
+    .rank-tag{color:#5cebff;border-color:#5cebff;}
+    .rank-tag.hot{color:#0b0f14;background:linear-gradient(135deg,#ffd700,#ffb300);border-color:#ffd700;box-shadow:0 0 14px rgba(255,215,0,.65);}
+    .card-footer{color:#00ffcc;border-top-color:rgba(0,255,204,.25);}
+    .btn-download{background:linear-gradient(90deg,#00ffcc,#0099ff,#ff007f,#ffd700,#00ffcc);background-size:300% auto;color:#04070d;font-weight:700;animation:rasdBtnFlow 4s linear infinite;border:none;}
+    @keyframes rasdBtnFlow{to{background-position:300% center}}
+    .btn-download:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,255,204,.5);}
+    .detail-app-name{background:linear-gradient(90deg,#ffd700,#ff007f,#00ffcc,#ff8bd6);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:rasdShimmer 3.5s linear infinite;text-shadow:none;}
+    .detail-tagline{color:#5cebff;}
+    .meta-specs-grid .spec-item:nth-child(1) .sp-val{color:#ffd700;}
+    .meta-specs-grid .spec-item:nth-child(2) .sp-val{color:#ff8bd6;}
+    .meta-specs-grid .spec-item:nth-child(3) .sp-val{color:#00ffcc;}
+    .sp-lbl{color:rgba(255,255,255,.5);}
+    .desc-box{border-color:rgba(146,64,255,.35);}
+    .btn-video{background:linear-gradient(90deg,rgba(0,153,255,.25),rgba(146,64,255,.25));color:#9be8ff;border-color:rgba(0,153,255,.35);}
+    .btn-back{color:#ffd700;border-color:rgba(255,215,0,.4);}
+    .modal-window{border:1px solid;border-image:linear-gradient(135deg,#00ffcc,#ff007f,#ffd700) 1;border-image-slice:1;}
+    .ad-slot{position:relative;overflow:hidden;border-radius:12px;padding:16px 12px;text-align:center;background:linear-gradient(120deg,#1a0f2e,#083a44,#1a0f2e);background-size:220% auto;animation:rasdMarquee 9s linear infinite;border:1px solid rgba(255,215,0,.45);box-shadow:0 0 18px rgba(0,255,204,.25) inset;}
+    .ad-slot-badge{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:2px;color:#0b0f14;background:linear-gradient(90deg,#ffd700,#ff7f11,#ff007f);padding:3px 10px;border-radius:999px;margin-bottom:8px;font-weight:700;}
+    .ad-slot-msg{font-family:var(--mono);font-size:12.5px;font-weight:700;letter-spacing:.5px;background:linear-gradient(90deg,#ffd700,#ff007f,#00ffcc,#ff8bd6,#ffd700);background-size:240% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:rasdShimmer 3.5s linear infinite;}
+    .store-ad-strip{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:7px 10px;border:1px solid rgba(0,255,204,.35);border-radius:10px;background:linear-gradient(90deg,rgba(10,20,40,.95),rgba(26,13,48,.95));overflow:hidden;}
+    .store-ad-strip-badge{font-family:var(--mono);font-size:9px;letter-spacing:1px;color:#0b0f14;background:linear-gradient(90deg,#ff007f,#ffd700);padding:3px 8px;border-radius:6px;font-weight:700;white-space:nowrap;}
+    .store-ad-strip-msg{font-family:var(--mono);font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:linear-gradient(90deg,#00ffcc,#0099ff,#ff8bd6,#ffd700,#00ffcc);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:rasdShimmer 4s linear infinite;}
+    .btn-claim-file{background:linear-gradient(90deg,#ffd700,#ff7f11,#ff007f);background-size:220% auto;color:#04070d;animation:rasdBtnFlow 4s linear infinite;}
+    .btn-claim-file:disabled{background:linear-gradient(90deg,#2a3b55,#1a2440);color:#8aa0c0;animation:none;cursor:not-allowed;}
+    ::selection{background:#ff007f;color:#fff;}
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#00ffcc,#ff007f);border-radius:6px;}
+    ::-webkit-scrollbar-track{background:#070d1b;}
+  </style>
 </head>
+
 <body>
-​<div class="cyber-bg"></div>
-<div class="cyber-glow"></div>
-​<div class="container">
-<header class="header">
-<div class="logo-ring">
-<img class="logo-img" src="https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/icons/logo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/825/825484.png'" alt="RASHD Logo">
-</div>
-<h1 class="site-title">RASHD APP STORE</h1>
-<div class="site-subtitle">CYBER TOOLS & APK VAULT</div>
-</header>
-​<main id="storeView">
-<section class="live-status-bar">
-<div class="status-item">
-<span class="label"><span class="live-dot"></span> TOP TRENDING</span>
-<span class="value" id="topTrendApp">লোড হচ্ছে...</span>
-</div>
-<div class="status-item">
-<span class="label">⚡ TOTAL STORE DOWNLOADS</span>
-<span class="value" id="storeTotalDl">0</span>
-</div>
-</section>
-​<div class="color-ticker"><div class="tick-track">
-<span>🔥 RASHD PREMIUM VAULT</span><span>🌐 DAILY UPDATED</span><span>⚡ 100% SAFE</span><span>💎 CYBER TOOLS</span><span>🛡️ SECURED</span><span>📱 FREE FIRE MAX</span><span>⚙️ ALL MOD TOOLS</span><span>⚡ FAST SERVER</span>
-</div></div>
-​<div class="search-wrapper">
-<span class="search-icon">🔍</span>
-<input type="text" id="searchInput" class="search-input" placeholder="Search apps, tools, apks..." oninput="handleSearch()">
-</div>
-​<nav class="category-scroll">
-<button class="cat-btn active" onclick="selectCategory('ALL', this)">ALL</button>
-<button class="cat-btn" onclick="selectCategory('APK', this)">APK</button>
-<button class="cat-btn" onclick="selectCategory('APKS', this)">APKS</button>
-<button class="cat-btn" onclick="selectCategory('ZIP', this)">ZIP</button>
-<button class="cat-btn" onclick="selectCategory('PLP', this)">PLP</button>
-</nav>
-​<div class="apps-grid" id="appsGrid"></div>
-</main>
-​<section id="detailView">
-<div class="detail-container">
-<div class="detail-thumb-wrap">
-<img class="detail-thumb" id="detailIcon" src="" alt="App Icon">
-</div>
-<h2 class="detail-app-name" id="detailTitle">App Name</h2>
-<div class="detail-tagline" id="detailSub">Verified Application</div>
-​<div class="meta-specs-grid">
-<div class="spec-item">
-<span class="sp-lbl">Downloads:</span>
-<span class="sp-val" id="detailDlCount">0</span>
-</div>
-<div class="spec-item">
-<span class="sp-lbl">Format:</span>
-<span class="sp-val" id="detailFormat">APK</span>
-</div>
-<div class="spec-item">
-<span class="sp-lbl">Size:</span>
-<span class="sp-val" id="detailFileSize">0 MB</span>
-</div>
-<div class="spec-item">
-<span class="sp-lbl">Security:</span>
-<span class="sp-val" style="color: #00ffcc;">Verified 🛡️</span>
-</div>
-</div>
-​<div class="desc-box" id="detailDescription">ফাইলটির বিবরণ লোড হচ্ছে...</div>
-​<div class="detail-actions">
-<a class="btn-video" id="detailVideoBtn" href="#" onclick="return handleVideoWatch();">
-▶️ ভিডিও টিউটোরিয়াল দেখুন (Watch Tutorial)
-</a>
-<button class="btn-download" onclick="triggerDownloadFlow()">
-⬇️ DOWNLOAD APP (SPONSOR AD)
-</button>
-<button class="btn-back" onclick="returnToStore()">
-⬅️ Back To Store
-</button>
-</div>
-</div>
-</section>
-</div>
-​<!-- Multi-Step Ad Verification Modal -->
-<div class="modal-backdrop" id="sponsorModal">
-<div class="modal-window">
-<h3 style="font-family:var(--mono); color:var(--neon-cyan); font-size:15px; margin-top:12px;" id="modalTitle">
-🛡️ VERIFICATION (Stage 1)
-</h3>
-<p style="font-size:11.5px; color:var(--text-muted); line-height:1.5;" id="modalDesc">
-বিজ্ঞাপন ও কাউন্টডাউন চলছে (১৫ সেকেন্ড)...
-</p>
-​<div class="timer-circle-wrap">
-<div class="timer-ring-spinner" id="timerRing"></div>
-<div class="timer-number-display" id="timerNum">15</div>
-</div>
-​<div id="adNoticeText" style="font-size:11.5px; color:#fff; font-family:var(--mono);">
-বিজ্ঞাপন ভেরিফাই হচ্ছে...
-</div>
-​<button class="btn-claim-file" id="btnClaimFile" disabled onclick="handleModalComplete()">
-⏳ অপেক্ষা করুন...
-</button>
-</div>
-</div>
-​<script>
+  <div class="cyber-bg"></div>
+  <div class="cyber-glow"></div>
+
+  <div class="container">
+    <header class="header">
+      <div class="logo-ring">
+        <img class="logo-img"
+             src="https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/icons/logo.png"
+             onerror="this.src='https://cdn-icons-png.flaticon.com/512/825/825484.png'"
+             alt="RASHD Logo">
+      </div>
+      <h1 class="site-title">RASHD APP STORE</h1>
+      <div class="site-subtitle">CYBER TOOLS & APK VAULT</div>
+    </header>
+
+    <main id="storeView">
+      <section class="live-status-bar">
+        <div class="status-item">
+          <span class="label"><span class="live-dot"></span> TOP TRENDING</span>
+          <span class="value" id="topTrendApp">লোড হচ্ছে...</span>
+        </div>
+        <div class="status-item">
+          <span class="label">⚡ TOTAL STORE DOWNLOADS</span>
+          <span class="value" id="storeTotalDl">0</span>
+        </div>
+      </section>
+
+      <div class="color-ticker">
+        <div class="tick-track">
+          <span>🔥 RASHD PREMIUM VAULT</span>
+          <span>🌐 DAILY UPDATED</span>
+          <span>⚡ 100% SAFE</span>
+          <span>💎 CYBER TOOLS</span>
+          <span>🛡️ SECURED</span>
+          <span>📱 FREE FIRE MAX</span>
+          <span>⚙️ ALL MOD TOOLS</span>
+          <span>⚡ FAST SERVER</span>
+          <span>🔥 RASHD PREMIUM VAULT</span>
+          <span>🌐 DAILY UPDATED</span>
+          <span>⚡ 100% SAFE</span>
+          <span>💎 CYBER TOOLS</span>
+          <span>🛡️ SECURED</span>
+          <span>📱 FREE FIRE MAX</span>
+          <span>⚙️ ALL MOD TOOLS</span>
+          <span>⚡ FAST SERVER</span>
+        </div>
+      </div>
+
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input"
+               placeholder="Search apps, tools, apks..." oninput="handleSearch()">
+      </div>
+
+      <nav class="category-scroll">
+        <button class="cat-btn active" onclick="selectCategory('ALL', this)">ALL</button>
+        <button class="cat-btn" onclick="selectCategory('APK', this)">APK</button>
+        <button class="cat-btn" onclick="selectCategory('APKS', this)">APKS</button>
+        <button class="cat-btn" onclick="selectCategory('ZIP', this)">ZIP</button>
+        <button class="cat-btn" onclick="selectCategory('PLP', this)">PLP</button>
+      </nav>
+
+      <div class="apps-grid" id="appsGrid"></div>
+    </main>
+
+    <section id="detailView">
+      <div class="detail-container">
+        <div class="detail-thumb-wrap">
+          <img class="detail-thumb" id="detailIcon" src="" alt="App Icon">
+        </div>
+
+        <h2 class="detail-app-name" id="detailTitle">App Name</h2>
+        <div class="detail-tagline" id="detailSub">Verified Application</div>
+
+        <div class="meta-specs-grid">
+          <div class="spec-item">
+            <span class="sp-lbl">Downloads:</span>
+            <span class="sp-val" id="detailDlCount">0</span>
+          </div>
+          <div class="spec-item">
+            <span class="sp-lbl">Format:</span>
+            <span class="sp-val" id="detailFormat">APK</span>
+          </div>
+          <div class="spec-item">
+            <span class="sp-lbl">Size:</span>
+            <span class="sp-val" id="detailFileSize">0 MB</span>
+          </div>
+          <div class="spec-item">
+            <span class="sp-lbl">Security:</span>
+            <span class="sp-val" style="color: #00ffcc;">Verified 🛡️</span>
+          </div>
+        </div>
+
+        <div class="desc-box" id="detailDescription">
+          ফাইলটির বিবরণ লোড হচ্ছে...
+        </div>
+
+        <div class="detail-actions">
+          <a class="btn-video" id="detailVideoBtn" href="#" onclick="return handleVideoWatch();">
+            ▶️ ভিডিও টিউটোরিয়াল দেখুন (Watch Tutorial)
+          </a>
+
+          <button class="btn-download" id="downloadButton" onclick="triggerDownloadFlow()">
+            ⬇️ DOWNLOAD APP (WATCH SPONSOR)
+          </button>
+
+          <button class="btn-back" onclick="returnToStore()">
+            ⬅️ Back To Store
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="sponsorModal">
+    <div class="modal-window">
+      <h3 style="font-family:var(--mono); color:var(--neon-cyan); font-size:15px; margin-top:12px;">
+        🛡️ SPONSOR VERIFICATION
+      </h3>
+
+      <p style="font-size:11.5px; color:var(--text-muted); line-height:1.5;">
+        স্পন্সর বিজ্ঞাপন (১৫ সেকেন্ড) শেষ হলে টেলিগ্রাম বটে ফাইল ডাউনলোড আনলক হবে!
+      </p>
+
+      <div class="timer-circle-wrap">
+        <div class="timer-ring-spinner" id="timerRing"></div>
+        <div class="timer-number-display" id="timerNum">15</div>
+      </div>
+
+      <div id="adNoticeText" style="font-size:11.5px; color:#fff; font-family:var(--mono);">
+        স্পনসর বিজ্ঞাপন ভেরিফাই হচ্ছে...
+      </div>
+
+      <button class="btn-claim-file" id="btnClaimFile" disabled onclick="claimSponsor()">
+        ⏳ বিজ্ঞাপন দেখা পর্যন্ত অপেক্ষা করুন...
+      </button>
+    </div>
+  </div>
+
+<script>
 "use strict";
-var X = { repo: "v4zrashd/rashd-app--store", raw: "https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/", rel: "https://api.github.com/repos/v4zrashd/rashd-app--store/releases/tags/v1.0", bot: "rashd12bot", icons: "https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/icons/", assets: "https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/assets.json" };
-var B = { repo: "rashedahmedofficial46-png/ashd-app--store", raw: "https://raw.githubusercontent.com/rashedahmedofficial46-png/ashd-app--store/main/", rel: "https://api.github.com/repos/rashedahmedofficial46-png/ashd-app--store/releases/tags/v2.0", page: "https://rashedahmedofficial46-png.github.io/ashd-app--store/", icons: "https://raw.githubusercontent.com/rashedahmedofficial46-png/ashd-app--store/main/icons/", assets: "https://raw.githubusercontent.com/rashedahmedofficial46-png/ashd-app--store/main/assets.json" };
-​var TG = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-if (TG) try { TG.ready(); TG.expand(); } catch (e) {}
-​var store = [], currentCategory = "ALL", currentSelectedApp = null;
-var pendingAppEncoded = null;
-var verificationStage = 1; // 1 = App Click Stage 1, 2 = App Click Stage 2, 3 = Download Stage
-var sponsorTimer = null;
-var secondsRemaining = 15;
-​async function loadJSON(url, fallback) {
-try { var r = await fetch(url); return r.ok ? await r.json() : fallback; } catch (e) { return fallback; }
-}
-​function fmtSize(bytes) {
-if (!bytes || bytes === 0) return "0 MB";
-var k = 1024;
-return bytes < k * k ? (bytes / k).toFixed(1) + " KB" : (bytes / (k * k)).toFixed(1) + " MB";
-}
-​function cleanName(name) {
-return name.replace(/.[^/.]+$/, "").replace(/[_.]/g, " ");
-}
-​function extOf(name) {
-return (name.split(".").pop() || "APK").toUpperCase();
-}
-​function mergeAssets(assets, meta) {
-var map = meta && meta.apps ? meta.apps : {};
-return assets.map(function(item) {
-return {
-name: item.name,
-size: item.size,
-downloads: item.downloads || item.download_count || 0,
-url: item.url || item.browser_download_url,
-desc: map[item.name] && map[item.name].desc || "✅ টেস্টেড ও নিরাপদ ফাইল।\nভেরিফিকেশন শেষে বট থেকে ফাইলটি গ্রহণ করুন।",
-video: map[item.name] && map[item.name].video || ""
+
+/* =========================================================
+   RASHD APP STORE
+   AD FLOW:
+   Store Open
+      ↓
+   NO AD
+      ↓
+   App/File Click
+      ↓
+   Clean In-App Ad #1
+      ↓
+   15 sec
+      ↓
+   Clean In-App Ad #2
+      ↓
+   15 sec
+      ↓
+   Same Details Screen
+      ↓
+   Download
+      ↓
+   Clean In-App Ad
+      ↓
+   15 sec
+      ↓
+   Same Telegram Bot download flow
+   ========================================================= */
+
+var X = {
+  repo: "v4zrashd/rashd-app--store",
+  raw: "https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/",
+  rel: "https://api.github.com/repos/v4zrashd/rashd-app--store/releases/tags/v1.0",
+  bot: "rashd12bot",
+  icons: "https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/icons/",
+  assets: "https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/assets.json"
 };
-});
+
+var B = {
+  repo: "rashedahmedofficial46-png/ashd-app--store",
+  raw: "https://raw.githubusercontent.com/rashedahmedofficial46-png/ashd-app--store/main/",
+  rel: "https://api.github.com/repos/rashedahmedofficial46-png/ashd-app--store/releases/tags/v2.0",
+  page: "https://rashedahmedofficial46-png.github.io/ashd-app--store/",
+  icons: "https://raw.githubusercontent.com/rashedahmedofficial46-png/ashd-app--store/main/icons/",
+  assets: "https://raw.githubusercontent.com/rashedahmedofficial46-png/ashd-app--store/main/assets.json"
+};
+
+var TG = window.Telegram && window.Telegram.WebApp
+  ? window.Telegram.WebApp
+  : null;
+
+if (TG) {
+  try {
+    TG.ready();
+    TG.expand();
+  } catch (e) {}
 }
-​function updMetrics(list) {
-if (list.length) {
-var top = list.reduce(function(a, b) { return a.downloads >= b.downloads ? a : b; });
-document.getElementById("topTrendApp").textContent = cleanName(top.name) + " (" + Number(top.downloads).toLocaleString() + ")";
-var total = list.reduce(function(acc, curr) { return acc + Number(curr.downloads || 0); }, 0);
-document.getElementById("storeTotalDl").textContent = total.toLocaleString();
+
+/* 15 seconds fixed, as requested.
+   No ad is triggered on store opening. */
+var AD = {
+  timer: 15,
+  ad_on_open: true,
+  ad_on_video: false,
+  ad_on_download: true
+};
+
+var store = [];
+var currentCategory = "ALL";
+var currentSelectedApp = null;
+var flowBusy = false;
+var timerInterval = null;
+
+
+/* ---------- Utility ---------- */
+
+function now() {
+  return Date.now();
 }
+
+async function loadJSON(url, fallback) {
+  try {
+    var response = await fetch(url);
+    return response.ok ? await response.json() : fallback;
+  } catch (e) {
+    return fallback;
+  }
 }
-​function renderGrid() {
-var q = (document.getElementById("searchInput").value || "").trim().toLowerCase();
-var sorted = store.slice().sort(function(a, b) { return b.downloads - a.downloads; });
-updMetrics(sorted);
-var filtered = sorted.filter(function(item) {
-return ("ALL" === currentCategory || extOf(item.name) === currentCategory) && item.name.toLowerCase().includes(q);
-});
-var grid = document.getElementById("appsGrid");
-if (store.length) {
-if (filtered.length) {
-grid.innerHTML = filtered.map(function(e, idx) {
-var isHot = idx === 0;
-return '<div class="app-card" onclick="handleCardClick('' + encodeURIComponent(JSON.stringify(e)).replace(/'/g, "%27") + '')"><span class="rank-tag ' + (isHot ? "hot" : "") + '">' + (isHot ? "🔥 #1 TOP" : "#" + (idx + 1)) + '</span><div class="card-thumb-wrap"><img class="card-thumb" src="' + X.icons + encodeURIComponent(e.name) + '.png" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/825/825484.png\'" alt="' + cleanName(e.name) + '"></div><div class="card-title">' + cleanName(e.name) + '</div><div class="card-footer"><span class="dl-stat">⬇️ ' + Number(e.downloads).toLocaleString() + "</span><span>" + extOf(e.name) + "</span></div></div>";
-}).join("");
-} else {
-grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--text-muted);font-family:var(--mono)">NO APPS FOUND</div>';
+
+function fmtSize(bytes) {
+  if (!bytes || Number(bytes) <= 0) return "0 MB";
+
+  var n = Number(bytes);
+
+  if (n < 1024) {
+    return n + " B";
+  }
+
+  if (n < 1024 * 1024) {
+    return (n / 1024).toFixed(1) + " KB";
+  }
+
+  return (n / (1024 * 1024)).toFixed(1) + " MB";
 }
-} else {
-grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--text-muted);font-family:var(--mono)">⏳ অ্যাপ লোড হচ্ছে...</div>';
+
+function cleanName(name) {
+  return String(name || "")
+    .replace(/\.[^/.]+$/, "")
+    .replace(/[.]/g, " ");
 }
+
+function extOf(name) {
+  return (String(name || "").split(".").pop() || "APK").toUpperCase();
 }
-​function fireInAppInterstitial() {
-if (typeof show_11793933 === 'function') {
-try {
-show_11794192({
-type: "inApp",
-inAppSettings: { frequency: 1, capping: 1, interval: 10, timeout: 30, everyPage: true }
-});
-} catch (e) {}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
+
+
+/* ---------- Assets ---------- */
+
+function mergeAssets(list, appsConfig) {
+  var appMap = appsConfig && appsConfig.apps
+    ? appsConfig.apps
+    : {};
+
+  return (list || []).map(function (item) {
+    var extra = appMap[item.name] || {};
+
+    return {
+      name: item.name,
+      size: item.size,
+      downloads: item.downloads || item.download_count || 0,
+      url: item.url || item.browser_download_url || "",
+      desc: extra.desc ||
+        "✅ টেস্টেড ও নিরাপদ ফাইল।\nস্পনসর ভেরিফিকেশন শেষে বট থেকে ফাইলটি গ্রহণ করুন।",
+      video: extra.video || ""
+    };
+  });
 }
-​// Store open = Clean (No ads on open)
-// App / File click = Triggers Ad #1 + 15s timer
-function handleCardClick(encoded) {
-pendingAppEncoded = encoded;
-verificationStage = 1;
-document.getElementById("sponsorModal").classList.add("active");
-startSponsorCountdown();
+
+function updateMetrics(list) {
+  var trend = document.getElementById("topTrendApp");
+  var total = document.getElementById("storeTotalDl");
+
+  if (!list || !list.length) {
+    if (trend) trend.textContent = "No data";
+    if (total) total.textContent = "0";
+    return;
+  }
+
+  var top = list.reduce(function (best, item) {
+    return Number(item.downloads || 0) >= Number(best.downloads || 0)
+      ? item
+      : best;
+  });
+
+  var totalDownloads = list.reduce(function (sum, item) {
+    return sum + Number(item.downloads || 0);
+  }, 0);
+
+  if (trend) {
+    trend.textContent =
+      cleanName(top.name) +
+      " (" +
+      Number(top.downloads || 0).toLocaleString() +
+      ")";
+  }
+
+  if (total) {
+    total.textContent = totalDownloads.toLocaleString();
+  }
 }
-​function selectCategory(cat, btn) {
-currentCategory = cat;
-var btns = document.querySelectorAll(".cat-btn");
-for (var i = 0; i < btns.length; i++) btns[i].classList.remove("active");
-if (btn) btn.classList.add("active");
-renderGrid();
+
+
+/* ---------- Store UI ---------- */
+
+function renderGrid() {
+  var input = document.getElementById("searchInput");
+  var query = input
+    ? String(input.value || "").trim().toLowerCase()
+    : "";
+
+  var sorted = store.slice().sort(function (a, b) {
+    return Number(b.downloads || 0) - Number(a.downloads || 0);
+  });
+
+  updateMetrics(sorted);
+
+  var filtered = sorted.filter(function (item) {
+    var categoryOk =
+      currentCategory === "ALL" ||
+      extOf(item.name) === currentCategory;
+
+    var searchOk =
+      String(item.name || "").toLowerCase().includes(query);
+
+    return categoryOk && searchOk;
+  });
+
+  var grid = document.getElementById("appsGrid");
+
+  if (!grid) return;
+
+  if (!store.length) {
+    grid.innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--text-muted);font-family:var(--mono)">⏳ অ্যাপ লোড হচ্ছে...</div>';
+    return;
+  }
+
+  if (!filtered.length) {
+    grid.innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--text-muted);font-family:var(--mono)">NO APPS FOUND</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(function (item, index) {
+    var encoded = encodeURIComponent(JSON.stringify(item));
+    var safeEncoded = encoded.replace(/'/g, "%27");
+    var isTop = index === 0;
+
+    return (
+      '<div class="app-card" onclick="handleCardClick(\'' +
+      safeEncoded +
+      '\')">' +
+
+      '<span class="rank-tag ' +
+      (isTop ? "hot" : "") +
+      '">' +
+      (isTop ? "🔥 #1 TOP" : "#" + (index + 1)) +
+      "</span>" +
+
+      '<div class="card-thumb-wrap">' +
+      '<img class="card-thumb" src="' +
+      escapeHtml(X.icons + encodeURIComponent(item.name) + ".png") +
+      '" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/825/825484.png\'" alt="' +
+      escapeHtml(cleanName(item.name)) +
+      '">' +
+      "</div>" +
+
+      '<div class="card-title">' +
+      escapeHtml(cleanName(item.name)) +
+      "</div>" +
+
+      '<div class="card-footer">' +
+      '<span class="dl-stat">⬇️ ' +
+      Number(item.downloads || 0).toLocaleString() +
+      "</span>" +
+      "<span>" +
+      escapeHtml(extOf(item.name)) +
+      "</span>" +
+      "</div>" +
+
+      "</div>"
+    );
+  }).join("");
 }
-​function handleSearch() { renderGrid(); }
-​function showAppDetails(encoded) {
-var item = JSON.parse(decodeURIComponent(encoded));
-currentSelectedApp = item;
-document.getElementById("detailTitle").textContent = cleanName(item.name);
-document.getElementById("detailSub").textContent = "Package: " + item.name;
-document.getElementById("detailIcon").src = X.icons + encodeURIComponent(item.name) + ".png";
-document.getElementById("detailFormat").textContent = extOf(item.name);
-document.getElementById("detailFileSize").textContent = fmtSize(item.size);
-document.getElementById("detailDlCount").textContent = Number(item.downloads).toLocaleString();
-document.getElementById("detailDescription").textContent = item.desc || "ফাইলটি টেস্টেড ও নিরাপদ।";
-var vidBtn = document.getElementById("detailVideoBtn");
-if (item.video) vidBtn.style.display = "flex"; else vidBtn.style.display = "none";
-document.getElementById("storeView").style.display = "none";
-document.getElementById("detailView").style.display = "block";
-window.scrollTo({ top: 0, behavior: "smooth" });
+
+
+/* ---------- Monetag Clean In-App Ad ---------- */
+
+/*
+ IMPORTANT:
+ The SDK in <head> is:
+ data-zone="11794192"
+ data-sdk="show_11794192"
+
+ Therefore the function MUST be:
+ show_11794192(...)
+
+ Not show_11793933.
+*/
+
+function showCleanInAppAd() {
+  return new Promise(function (resolve) {
+
+    if (typeof window.show_11794192 !== "function") {
+      console.warn(
+        "Monetag SDK is not ready: show_11794192 is unavailable."
+      );
+
+      resolve(false);
+      return;
+    }
+
+    var finished = false;
+
+    function done(result) {
+      if (finished) return;
+      finished = true;
+      resolve(result);
+    }
+
+    try {
+      var result = window.show_11794192({
+        type: "inApp",
+        inAppSettings: {
+          frequency: 1,
+          capping: 1,
+          interval: 30,
+          timeout: 5,
+          everyPage: false
+        }
+      });
+
+      /*
+       Some SDK versions return a Promise.
+       If so, wait for it.
+      */
+      if (result && typeof result.then === "function") {
+        result.then(function () {
+          done(true);
+        }).catch(function (err) {
+          console.warn("Monetag ad rejected:", err);
+          done(false);
+        });
+
+      } else {
+        /*
+         SDK may not return a Promise.
+         Give it a short moment to launch the ad,
+         then continue to the required 15-second gate.
+        */
+        setTimeout(function () {
+          done(true);
+        }, 1200);
+      }
+
+    } catch (err) {
+      console.error("Monetag In-App Ad error:", err);
+      done(false);
+    }
+
+    /*
+     Safety fallback so a broken ad SDK cannot freeze
+     the entire Mini App forever.
+    */
+    setTimeout(function () {
+      done(false);
+    }, 10000);
+  });
 }
-​function openTgLink(url) {
-if (TG && typeof TG.openTelegramLink === "function" && url.indexOf("t.me/") >= 0) {
-TG.openTelegramLink(url);
-} else {
-window.open(url, "_blank");
+
+
+/* ---------- 15 Second Verification ---------- */
+
+function wait15Seconds(message) {
+  return new Promise(function (resolve) {
+
+    var modal = document.getElementById("sponsorModal");
+    var timerNum = document.getElementById("timerNum");
+    var timerRing = document.getElementById("timerRing");
+    var notice = document.getElementById("adNoticeText");
+    var claimBtn = document.getElementById("btnClaimFile");
+
+    if (!modal || !timerNum) {
+      resolve();
+      return;
+    }
+
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    modal.classList.add("active");
+
+    if (claimBtn) {
+      claimBtn.disabled = true;
+      claimBtn.style.display = "none";
+    }
+
+    if (timerRing) {
+      timerRing.classList.remove("done");
+    }
+
+    var seconds = 15;
+
+    timerNum.textContent = String(seconds);
+
+    if (notice) {
+      notice.textContent =
+        message || "স্পনসর বিজ্ঞাপন ভেরিফাই হচ্ছে...";
+    }
+
+    timerInterval = setInterval(function () {
+      seconds--;
+
+      timerNum.textContent = String(Math.max(seconds, 0));
+
+      if (seconds <= 0) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+
+        if (timerRing) {
+          timerRing.classList.add("done");
+        }
+
+        resolve();
+      }
+    }, 1000);
+  });
 }
+
+function closeSponsorModal() {
+  var modal = document.getElementById("sponsorModal");
+
+  if (modal) {
+    modal.classList.remove("active");
+  }
+
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
 }
-​function handleVideoWatch() {
-var url = currentSelectedApp && currentSelectedApp.video;
-return !!url && (openTgLink(url), false);
+
+
+/* ---------- App Click Flow ---------- */
+
+async function handleCardClick(encodedApp) {
+  if (flowBusy) return;
+
+  var app;
+
+  try {
+    app = JSON.parse(decodeURIComponent(encodedApp));
+  } catch (e) {
+    console.error("Invalid app data:", e);
+    return;
+  }
+
+  currentSelectedApp = app;
+  flowBusy = true;
+
+  try {
+
+    /*
+      APP CLICK:
+      Ad #1 → 15 sec → Ad #2 → 15 sec → Details
+    */
+
+    await showCleanInAppAd();
+
+    await wait15Seconds(
+      "প্রথম স্পনসর বিজ্ঞাপন ভেরিফাই হচ্ছে..."
+    );
+
+    await showCleanInAppAd();
+
+    await wait15Seconds(
+      "দ্বিতীয় স্পনসর বিজ্ঞাপন ভেরিফাই হচ্ছে..."
+    );
+
+    closeSponsorModal();
+
+    showAppDetails(encodedApp);
+
+  } catch (err) {
+    console.error("App open flow error:", err);
+
+    closeSponsorModal();
+
+    /*
+     Even if an ad fails, keep the original store usable.
+    */
+    showAppDetails(encodedApp);
+
+  } finally {
+    flowBusy = false;
+  }
 }
-​function returnToStore() {
-document.getElementById("detailView").style.display = "none";
-document.getElementById("storeView").style.display = "block";
-renderGrid();
-window.scrollTo({ top: 0, behavior: "smooth" });
+
+
+/* ---------- Category/Search ---------- */
+
+function selectCategory(category, button) {
+  currentCategory = category;
+
+  var buttons = document.querySelectorAll(".cat-btn");
+
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].classList.remove("active");
+  }
+
+  if (button) {
+    button.classList.add("active");
+  }
+
+  renderGrid();
 }
-​function sendUserToTelegramBot() {
-if (currentSelectedApp) {
-var slug = currentSelectedApp.name.replace(/[^a-zA-Z0-9_-]/g, "").substring(0, 50);
-var target = "https://t.me/" + X.bot + "?start=dl" + slug;
-if (TG && typeof TG.openTelegramLink === "function") {
-TG.openTelegramLink(target);
-setTimeout(function() { try { TG.close(); } catch (e) {} }, 400);
-} else {
-window.location.href = target;
+
+function handleSearch() {
+  renderGrid();
 }
+
+
+/* ---------- Details Screen ---------- */
+
+function showAppDetails(encodedApp) {
+  var app;
+
+  try {
+    app = JSON.parse(decodeURIComponent(encodedApp));
+  } catch (e) {
+    return;
+  }
+
+  currentSelectedApp = app;
+
+  document.getElementById("detailTitle").textContent =
+    cleanName(app.name);
+
+  document.getElementById("detailSub").textContent =
+    "Package: " + app.name;
+
+  document.getElementById("detailIcon").src =
+    X.icons + encodeURIComponent(app.name) + ".png";
+
+  document.getElementById("detailFormat").textContent =
+    extOf(app.name);
+
+  document.getElementById("detailFileSize").textContent =
+    fmtSize(app.size);
+
+  document.getElementById("detailDlCount").textContent =
+    Number(app.downloads || 0).toLocaleString();
+
+  document.getElementById("detailDescription").textContent =
+    app.desc || "ফাইলটি টেস্টেড ও নিরাপদ।";
+
+  var videoButton = document.getElementById("detailVideoBtn");
+
+  if (app.video) {
+    videoButton.style.display = "flex";
+  } else {
+    videoButton.style.display = "none";
+  }
+
+  document.getElementById("storeView").style.display = "none";
+  document.getElementById("detailView").style.display = "block";
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
+
+
+/* ---------- Telegram Links ---------- */
+
+function openTgLink(url) {
+  if (!url) return;
+
+  if (
+    TG &&
+    typeof TG.openTelegramLink === "function" &&
+    url.indexOf("t.me/") >= 0
+  ) {
+    try {
+      TG.openTelegramLink(url);
+      return;
+    } catch (e) {}
+  }
+
+  /*
+   No window.open / new tab.
+   Use same-window navigation instead.
+  */
+  window.location.href = url;
 }
-​// Download Click = Triggers Ad on Download + 15s timer
-function triggerDownloadFlow() {
-if (!currentSelectedApp) return;
-verificationStage = 3;
-document.getElementById("sponsorModal").classList.add("active");
-startSponsorCountdown();
+
+function handleVideoWatch() {
+  var video =
+    currentSelectedApp &&
+    currentSelectedApp.video
+      ? currentSelectedApp.video
+      : "";
+
+  if (!video) {
+    return false;
+  }
+
+  /*
+   Video has no ad because ad_on_video = false.
+  */
+  openTgLink(video);
+
+  return false;
 }
-​function startSponsorCountdown() {
-secondsRemaining = 15;
-document.getElementById("timerNum").textContent = secondsRemaining;
-document.getElementById("timerRing").classList.remove("done");
-var btn = document.getElementById("btnClaimFile");
-btn.disabled = true;
-btn.innerHTML = "⏳ বিজ্ঞাপন দেখা পর্যন্ত অপেক্ষা করুন...";
-​if (verificationStage === 1) {
-document.getElementById("modalTitle").textContent = "🛡️ VERIFICATION (Ad #1)";
-document.getElementById("modalDesc").textContent = "প্রথম স্পনসর বিজ্ঞাপন ও কাউন্টডাউন চলছে (১৫ সেকেন্ড)...";
-document.getElementById("adNoticeText").textContent = "In-App Ad #1 লোড হচ্ছে...";
-} else if (verificationStage === 2) {
-document.getElementById("modalTitle").textContent = "🛡️ VERIFICATION (Ad #2)";
-document.getElementById("modalDesc").textContent = "দ্বিতীয় স্পনসর বিজ্ঞাপন ও কাউন্টডাউন চলছে (১৫ সেকেন্ড)...";
-document.getElementById("adNoticeText").textContent = "In-App Ad #2 লোড হচ্ছে...";
-} else {
-document.getElementById("modalTitle").textContent = "🛡️ DOWNLOAD VERIFICATION";
-document.getElementById("modalDesc").textContent = "ফাইল ডাউনলোড করার আগে স্পনসর বিজ্ঞাপন ও কাউন্টডাউন চলছে (১৫ সেকেন্ড)...";
-document.getElementById("adNoticeText").textContent = "ডাউনলোড এড লোড হচ্ছে...";
+
+
+/* ---------- Back ---------- */
+
+function returnToStore() {
+  document.getElementById("detailView").style.display = "none";
+  document.getElementById("storeView").style.display = "block";
+
+  renderGrid();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
-​fireInAppInterstitial(); // Fire respective In-App Ad
-​if (sponsorTimer) clearInterval(sponsorTimer);
-sponsorTimer = setInterval(function() {
-secondsRemaining--;
-document.getElementById("timerNum").textContent = secondsRemaining > 0 ? secondsRemaining : 0;
-if (secondsRemaining <= 0) {
-clearInterval(sponsorTimer);
-document.getElementById("timerRing").classList.add("done");
-document.getElementById("adNoticeText").textContent = "✅ ভেরিফিকেশন সম্পন্ন হয়েছে!";
-btn.disabled = false;
-if (verificationStage === 1) {
-btn.innerHTML = "👉 পরবর্তী ধাপে যান (Next Ad)";
-} else if (verificationStage === 2) {
-btn.innerHTML = "👉 অ্যাপ ডিটেইলস দেখুন (View Details)";
-} else {
-btn.innerHTML = "⚡ বটে ফাইলটি গ্রহণ করুন (Get File)";
+
+
+/* ---------- Telegram Bot Download ---------- */
+
+function sendUserToTelegramBot() {
+  if (!currentSelectedApp) return;
+
+  var safeName = String(currentSelectedApp.name || "")
+    .replace(/[^a-zA-Z0-9-]/g, "")
+    .substring(0, 50);
+
+  var botUrl =
+    "https://t.me/" +
+    X.bot +
+    "?start=dl_" +
+    safeName;
+
+  if (
+    TG &&
+    typeof TG.openTelegramLink === "function"
+  ) {
+    try {
+      TG.openTelegramLink(botUrl);
+
+      setTimeout(function () {
+        try {
+          TG.close();
+        } catch (e) {}
+      }, 400);
+
+      return;
+    } catch (e) {}
+  }
+
+  window.location.href = botUrl;
 }
+
+
+/* ---------- Download Flow ---------- */
+
+async function triggerDownloadFlow() {
+  if (!currentSelectedApp || flowBusy) return;
+
+  flowBusy = true;
+
+  var downloadButton =
+    document.getElementById("downloadButton");
+
+  if (downloadButton) {
+    downloadButton.disabled = true;
+  }
+
+  try {
+
+    /*
+      DOWNLOAD:
+      Clean In-App Ad → 15 sec → Telegram Bot
+    */
+
+    await showCleanInAppAd();
+
+    await wait15Seconds(
+      "ডাউনলোড স্পনসর ভেরিফিকেশন হচ্ছে..."
+    );
+
+    closeSponsorModal();
+
+    sendUserToTelegramBot();
+
+  } catch (err) {
+    console.error("Download flow error:", err);
+
+    closeSponsorModal();
+
+    /*
+     Keep original Telegram bot flow available
+     if the ad SDK fails.
+    */
+    sendUserToTelegramBot();
+
+  } finally {
+    if (downloadButton) {
+      downloadButton.disabled = false;
+    }
+
+    flowBusy = false;
+  }
 }
-}, 1000);
+
+
+/* ---------- Claim Button ---------- */
+
+function claimSponsor() {
+  /*
+   Kept for compatibility with the original HTML.
+   The new automatic flow sends the user to the bot
+   after the 15-second download verification.
+  */
+  if (currentSelectedApp) {
+    sendUserToTelegramBot();
+  }
 }
-​function handleModalComplete() {
-document.getElementById("sponsorModal").classList.remove("active");
-if (verificationStage === 1) {
-// Move to Stage 2 Ad
-verificationStage = 2;
-document.getElementById("sponsorModal").classList.add("active");
-startSponsorCountdown();
-} else if (verificationStage === 2) {
-// Show App Details Screen
-if (pendingAppEncoded) {
-showAppDetails(pendingAppEncoded);
-pendingAppEncoded = null;
+
+
+/* ---------- Boot / GitHub Data ---------- */
+
+async function boot() {
+  var hostIsPrimary =
+    (location.hostname || "").indexOf("v4zrashd.github.io") >= 0;
+
+  var config = X;
+  var releaseData = null;
+  var appsConfig = null;
+  var webConfig = null;
+  var assets = null;
+
+  var stamp = function () {
+    return Date.now();
+  };
+
+  /*
+   Primary assets
+  */
+  var primaryAssets =
+    await loadJSON(
+      X.assets + "?v=" + stamp(),
+      null
+    );
+
+  if (
+    primaryAssets &&
+    primaryAssets.assets &&
+    primaryAssets.assets.length
+  ) {
+
+    assets = primaryAssets.assets;
+
+    appsConfig =
+      await loadJSON(
+        X.raw + "apps.json?v=" + stamp(),
+        null
+      );
+
+    webConfig =
+      await loadJSON(
+        X.raw + "web_config.json?v=" + stamp(),
+        null
+      );
+
+    /*
+     Refresh download counts from GitHub release.
+    */
+    loadJSON(X.rel, null).then(function (release) {
+
+      if (
+        release &&
+        release.assets &&
+        release.assets.length &&
+        assets
+      ) {
+        var releaseMap = {};
+
+        release.assets.forEach(function (item) {
+          releaseMap[item.name] = item;
+        });
+
+        var changed = false;
+
+        assets.forEach(function (item) {
+          var releaseItem = releaseMap[item.name];
+
+          if (releaseItem) {
+            var count =
+              Number(
+                releaseItem.download_count || 0
+              );
+
+            if (
+              count !==
+              Number(item.downloads || 0)
+            ) {
+              item.downloads = count;
+              changed = true;
+            }
+
+            if (!item.url) {
+              item.url =
+                releaseItem.browser_download_url || "";
+            }
+          }
+        });
+
+        if (changed) {
+          renderGrid();
+        }
+      }
+    });
+
+  } else {
+
+    /*
+     Primary release fallback.
+    */
+    releaseData =
+      await loadJSON(
+        X.rel,
+        null
+      );
+
+    appsConfig =
+      await loadJSON(
+        X.raw + "apps.json?v=" + stamp(),
+        null
+      );
+
+    webConfig =
+      await loadJSON(
+        X.raw + "web_config.json?v=" + stamp(),
+        null
+      );
+
+    if (
+      !(
+        releaseData &&
+        releaseData.assets &&
+        releaseData.assets.length &&
+        appsConfig
+      )
+    ) {
+
+      /*
+       Backup assets.
+      */
+      var backupAssets =
+        await loadJSON(
+          B.assets + "?v=" + stamp(),
+          null
+        );
+
+      if (
+        backupAssets &&
+        backupAssets.assets &&
+        backupAssets.assets.length
+      ) {
+
+        config = B;
+        assets = backupAssets.assets;
+
+        if (!appsConfig) {
+          appsConfig =
+            await loadJSON(
+              B.raw + "apps.json?v=" + stamp(),
+              null
+            );
+        }
+
+      } else {
+
+        /*
+         Backup release/apps.
+        */
+        var backupRelease =
+          await loadJSON(
+            B.rel,
+            null
+          );
+
+        var backupApps =
+          await loadJSON(
+            B.raw + "apps.json?v=" + stamp(),
+            null
+          );
+
+        if (
+          (backupRelease &&
+            backupRelease.assets &&
+            backupRelease.assets.length) ||
+          backupApps
+        ) {
+
+          config = B;
+
+          if (
+            !(
+              releaseData &&
+              releaseData.assets &&
+              releaseData.assets.length
+            )
+          ) {
+            releaseData = backupRelease;
+          }
+
+          if (!appsConfig) {
+            appsConfig = backupApps;
+          }
+
+        } else if (
+          hostIsPrimary &&
+          !sessionStorage.getItem("rasd_bounced")
+        ) {
+
+          sessionStorage.setItem(
+            "rasd_bounced",
+            "1"
+          );
+
+          window.location.replace(B.page);
+          return;
+        }
+      }
+    }
+
+    if (!assets) {
+      if (
+        releaseData &&
+        releaseData.assets &&
+        releaseData.assets.length
+      ) {
+        assets = releaseData.assets;
+      } else if (
+        appsConfig &&
+        appsConfig.assets &&
+        appsConfig.assets.length
+      ) {
+        assets = appsConfig.assets;
+      } else {
+        assets = FALLBACK;
+      }
+    }
+  }
+
+  if (!webConfig) {
+    var backupWebConfig =
+      await loadJSON(
+        B.raw + "web_config.json?v=" + stamp(),
+        null
+      );
+
+    if (backupWebConfig) {
+      webConfig = backupWebConfig;
+    }
+  }
+
+  /*
+   Preserve the store settings, but force the ad flow
+   requested by the user:
+   - no ad on store open
+   - two ads on file click
+   - 15 sec after each
+   - one ad before download
+   - 15 sec after download ad
+  */
+  AD.timer = 15;
+  AD.ad_on_open = true;
+  AD.ad_on_video = false;
+  AD.ad_on_download = true;
+
+  if (config !== X) {
+    X.icons = config.icons;
+  }
+
+  if (assets) {
+    store = mergeAssets(
+      assets,
+      appsConfig
+    );
+  }
+
+  renderGrid();
 }
-} else {
-// Send to Telegram Bot
-sendUserToTelegramBot();
-}
-}
-​async function boot() {
-var isMain = (location.hostname || "").indexOf("v4zrashd.github.io") >= 0;
-var activeRepo = X, assetsList = null, relData = null, appsJson = null, webCfg = null;
-var ts = function() { return Date.now(); };
-​var d = await loadJSON(X.assets + "?v=" + ts(), null);
-if (d && d.assets && d.assets.length) {
-assetsList = d.assets;
-appsJson = await loadJSON(X.raw + "apps.json?v=" + ts(), null);
-webCfg = await loadJSON(X.raw + "web_config.json?v=" + ts(), null);
-} else {
-relData = await loadJSON(X.rel, null);
-appsJson = await loadJSON(X.raw + "apps.json?v=" + ts(), null);
-webCfg = await loadJSON(X.raw + "web_config.json?v=" + ts(), null);
-if (!(relData && relData.assets && relData.assets.length && appsJson)) {
-var altAssets = await loadJSON(B.assets + "?v=" + ts(), null);
-if (altAssets && altAssets.assets && altAssets.assets.length) {
-activeRepo = B; assetsList = altAssets.assets;
-appsJson = appsJson || await loadJSON(B.raw + "apps.json?v=" + ts(), null);
-} else {
-var altRel = await loadJSON(B.rel, null);
-var altApps = await loadJSON(B.raw + "apps.json?v=" + ts(), null);
-if (altRel && altRel.assets && altRel.assets.length || altApps) {
-activeRepo = B; relData = altRel; appsJson = altApps;
-} else if (isMain && !sessionStorage.getItem("rasd_bounced")) {
-sessionStorage.setItem("rasd_bounced", "1");
-return window.location.replace(B.page);
-}
-}
-}
-}
-var finalAssets = assetsList || (relData && relData.assets) || (appsJson && appsJson.assets) || FALLBACK;
-if (!webCfg) {
-var cfgB = await loadJSON(B.raw + "web_config.json?v=" + ts(), null);
-if (cfgB) webCfg = cfgB;
-}
-if (activeRepo !== X) X.icons = activeRepo.icons;
-if (finalAssets) store = mergeAssets(finalAssets, appsJson);
-renderGrid();
-}
-​window.addEventListener("DOMContentLoaded", function() { renderGrid(); });
+
+
+/* ---------- Startup ---------- */
+
+/*
+ No ad is called here.
+ Store opens normally.
+*/
+window.addEventListener(
+  "DOMContentLoaded",
+  function () {
+    renderGrid();
+  }
+);
+
+
+/* ---------- Expose Functions ---------- */
+
 window.showAppDetails = showAppDetails;
 window.returnToStore = returnToStore;
 window.triggerDownloadFlow = triggerDownloadFlow;
-window.handleModalComplete = handleModalComplete;
+window.sendUserToTelegramBot = sendUserToTelegramBot;
+window.claimSponsor = claimSponsor;
 window.handleCardClick = handleCardClick;
 window.selectCategory = selectCategory;
 window.handleSearch = handleSearch;
 window.handleVideoWatch = handleVideoWatch;
-​var FALLBACK = [
-{name:"ai.text.zip", size:97216, downloads:8},
-{name:"AI.Website.Builder.Publish_3.0.apks", size:26507376, downloads:14},
-{name:"Apktool.M_2.4.0-260718.apk", size:16437707, downloads:78},
-{name:"CapCut_15.5.0.apk", size:270536048, downloads:73},
-{name:"CYBER.SOHAG.plp", size:903114, downloads:183},
-{name:"Dev.Tools.Pro_6.9.1-gp.apk", size:4311244, downloads:47},
-{name:"EXPERT.CYBER.SECURITY.ZONE_1.0.0.apk", size:5170798, downloads:101},
-{name:"html.zip", size:10927, downloads:106},
-{name:"MT.Manager_2.26.7.apk", size:31147988, downloads:48},
-{name:"namba.to.name.zip", size:6833, downloads:10},
-{name:"RASHD.SMS.BOMBER_1.0.apk", size:6953773, downloads:55},
-{name:"rashd.zip", size:5347, downloads:43},
-{name:"rashdfastapk_1.0.apk", size:111447, downloads:23},
-{name:"RS.CYBER.ZONE.2.0.0.apk", size:5600809, downloads:23},
-{name:"SMS-Forward.V1..rashd_1.0-rashd.apk", size:6838608, downloads:110},
-{name:"Tech.VPN.Pro_4.4.5.apk", size:32907232, downloads:19},
-{name:"Telegram.Bot.Free.Hosting_1.0.9.apks", size:13733206, downloads:97},
-{name:"Termux_0.119.0-beta.2.apk", size:114920926, downloads:116},
-{name:"V4Zteem_1.0_modified.apk", size:2909835, downloads:191},
-{name:"V4Ztv_1.0.apk", size:14775741, downloads:61},
-{name:"YTX_5.8.80.438.apk", size:22031166, downloads:29}
+
+
+/* ---------- Fallback Store Data ---------- */
+
+var FALLBACK = [
+  {
+    name: "ai.text.zip",
+    size: 97216,
+    downloads: 8
+  },
+  {
+    name: "AI.Website.Builder.Publish_3.0.apks",
+    size: 26507376,
+    downloads: 14
+  },
+  {
+    name: "Apktool.M_2.4.0-260718.apk",
+    size: 16437707,
+    downloads: 78
+  },
+  {
+    name: "CapCut_15.5.0.apk",
+    size: 270536048,
+    downloads: 73
+  },
+  {
+    name: "CYBER.SOHAG.plp",
+    size: 903114,
+    downloads: 183
+  },
+  {
+    name: "Dev.Tools.Pro_6.9.1-gp.apk",
+    size: 4311244,
+    downloads: 47
+  },
+  {
+    name: "EXPERT.CYBER.SECURITY.ZONE_1.0.0.apk",
+    size: 5170798,
+    downloads: 101
+  },
+  {
+    name: "html.zip",
+    size: 10927,
+    downloads: 106
+  },
+  {
+    name: "MT.Manager_2.26.7.apk",
+    size: 31147988,
+    downloads: 48
+  },
+  {
+    name: "namba.to.name.zip",
+    size: 6833,
+    downloads: 10
+  },
+  {
+    name: "RASHD.SMS.BOMBER_1.0.apk",
+    size: 6953773,
+    downloads: 55
+  },
+  {
+    name: "rashd.zip",
+    size: 5347,
+    downloads: 43
+  },
+  {
+    name: "rashdfastapk_1.0.apk",
+    size: 111447,
+    downloads: 23
+  },
+  {
+    name: "RS.CYBER.ZONE.2.0.0.apk",
+    size: 5600809,
+    downloads: 23
+  },
+  {
+    name: "SMS-Forward.V1..rashd_1.0-rashd.apk",
+    size: 6838608,
+    downloads: 110
+  },
+  {
+    name: "Tech.VPN.Pro_4.4.5.apk",
+    size: 32907232,
+    downloads: 19
+  },
+  {
+    name: "Telegram.Bot.Free.Hosting_1.0.9.apks",
+    size: 13733206,
+    downloads: 97
+  },
+  {
+    name: "Termux_0.119.0-beta.2.apk",
+    size: 114920926,
+    downloads: 116
+  },
+  {
+    name: "V4Zteem_1.0_modified.apk",
+    size: 2909835,
+    downloads: 191
+  },
+  {
+    name: "V4Ztv_1.0.apk",
+    size: 14775741,
+    downloads: 61
+  },
+  {
+    name: "YTX_5.8.80.438.apk",
+    size: 22031166,
+    downloads: 29
+  }
 ];
-​boot();
+
+
+/* Start app */
+boot();
+
 </script>
 </body>
 </html>
