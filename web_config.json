@@ -1,7 +1,7 @@
 {
   "timer": 20,
-  "ad_on_load": true,
-  "ad_on_open": true,
-  "ad_on_video": true,
-  "ad_on_download": true
+  "ad_on_load": false,
+  "ad_on_open": false,
+  "ad_on_video": false,
+  "ad_on_download": false
 }
