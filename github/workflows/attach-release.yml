@@ -1,0 +1,30 @@
+name: Attach uploads to v1.0 release
+on:
+  push:
+    branches: [main]
+    paths: ['pending/**']
+jobs:
+  attach:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Attach files to release v1.0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ok=0
+          for f in pending/*; do
+            [ -f "$f" ] || continue
+            if gh release upload v1.0 "$f" --clobber; then
+              git rm -q "$f" && ok=1
+            else
+              echo "upload failed: $f"
+            fi
+          done
+          if [ "$ok" = "1" ]; then
+            git config user.name "v4z-admin"
+            git config user.email "admin@rashd.store"
+            git commit -q -m "Admin: uploaded files attached to v1.0" && git push -q || true
+          fi
