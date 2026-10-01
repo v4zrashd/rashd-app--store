@@ -12,7 +12,10 @@
     },
     "Youtube.Pro_1.0.apk": {
       "logo": "https://ibb.co.com/hJ8Yg7S9",
-      "hidden": false
+      "hidden": false,
+      "label": "",
+      "desc": "",
+      "video": ""
     }
   },
   "custom": []
