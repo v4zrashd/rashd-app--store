@@ -1,64 +1,69 @@
-# chunked-upload-v2
-name: Attach uploads to v1.0 release
+# auto-resolve-logo-links
+# imgbb পেজ লিংক (ibb.co.com/xxx) অটো Direct link (i.ibb.co/...) বানায়।
+# apps.json / config.json-এ পেজ লিংক সেভ হলেই ১-২ মিনিটে ঠিক হয়ে যাবে।
+name: Auto-resolve imgbb page links
 on:
   push:
     branches: [main]
-    paths: ['pending/**']
+    paths: ['apps.json', 'config.json']
 jobs:
-  attach:
+  resolve:
+    if: "!contains(github.event.head_commit.message, 'auto-resolve logos')"
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Attach files to release v1.0
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Resolve page links to direct image links
         run: |
-          ok=0
-          # 1) chunked uploads (*.done manifests)
-          for done in pending/*.done; do
-            [ -f "$done" ] || continue
-            base=$(basename "$done" .done)
-            name=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('name',''))" "$done")
-            if [ -z "$name" ]; then
-              name=$(python3 -c "import urllib.parse,sys; print(urllib.parse.unquote(sys.argv[1]))" "$base")
-            fi
-            n=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('chunks',0))" "$done")
-            have=$(ls "pending/$base"/chunk-* 2>/dev/null | wc -l)
-            tmp="/tmp/$base.bin"
-            rm -f "$tmp"
-            if [ "$have" -eq "$n" ] && [ "$n" -gt 0 ]; then
-              cat "pending/$base"/chunk-* > "$tmp"
-              cp "$tmp" "/tmp/$name"
-              if gh release upload v1.0 "/tmp/$name" --clobber; then
-                git rm -rq "pending/$base" "$done" && ok=1
-              else
-                echo "release upload failed: $name"
-              fi
-              rm -f "$tmp" "/tmp/$name"
-            else
-              echo "incomplete chunks for $name ($have/$n) - waiting"
-              rm -f "$tmp"
-            fi
-          done
-          # 2) single files directly in pending/
-          for f in pending/*; do
-            [ -f "$f" ] || continue
-            case "$f" in *.done) continue;; esac
-            enc=$(basename "$f")
-            name=$(python3 -c "import urllib.parse,sys; print(urllib.parse.unquote(sys.argv[1]))" "$enc")
-            [ -n "$name" ] || continue
-            cp "$f" "/tmp/$name"
-            if gh release upload v1.0 "/tmp/$name" --clobber; then
-              git rm -q "$f" && ok=1
-            else
-              echo "release upload failed: $f"
-            fi
-            rm -f "/tmp/$name"
-          done
-          if [ "$ok" = "1" ]; then
-            git config user.name "v4z-admin"
-            git config user.email "admin@rashd.store"
-            git commit -q -m "Admin: uploaded files attached to v1.0" && git push -q || true
-          fi
+          python3 - <<'PYEOF'
+          import json, re, urllib.request
+          PAGE_RX = re.compile(r'https?://(?:www\.)?(?:ibb\.co\.com|imgbb\.com)/[A-Za-z0-9]+/?$')
+          OG1 = re.compile(r'''property=["']og:image["'][^>]*content=["']([^"']+)["']''', re.I)
+          OG2 = re.compile(r'''content=["']([^"']+)["'][^>]*property=["']og:image["']''', re.I)
+          def resolve(url):
+              try:
+                  req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Linux; Android 14)'})
+                  html = urllib.request.urlopen(req, timeout=30).read().decode('utf-8', 'replace')
+                  m = OG1.search(html) or OG2.search(html)
+                  return m.group(1) if m else None
+              except Exception as e:
+                  print('FAILED', url, e)
+                  return None
+          def fix(obj):
+              n = 0
+              if isinstance(obj, dict):
+                  for k, v in obj.items():
+                      if k == 'logo' and isinstance(v, str) and PAGE_RX.match(v.strip()):
+                          d = resolve(v.strip())
+                          if d:
+                              obj[k] = d
+                              n += 1
+                              print('OK', v.strip(), '->', d[:70])
+                      else:
+                          n += fix(v)
+              elif isinstance(obj, list):
+                  for x in obj:
+                      n += fix(x)
+              return n
+          total = 0
+          for path in ('apps.json', 'config.json'):
+              try:
+                  with open(path, encoding='utf-8') as f:
+                      data = json.load(f)
+              except FileNotFoundError:
+                  continue
+              c = fix(data)
+              if c:
+                  with open(path, 'w', encoding='utf-8') as f:
+                      json.dump(data, f, indent=2, ensure_ascii=False)
+                      f.write('\n')
+              total += c
+          print('RESOLVED' if total else 'NO CHANGE', total)
+          PYEOF
+      - name: Commit resolved links
+        run: |
+          git config user.name "v4z-bot"
+          git config user.email "v4z-bot@users.noreply.github.com"
+          git add apps.json config.json
+          git diff --cached --quiet || git commit -q -m "auto-resolve logos: imgbb page links -> direct links" && git push -q || true
