@@ -34,7 +34,6 @@ header{text-align:center;margin-bottom:14px}
 .logo-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#060e1e;display:block}
 h1{font-family:var(--mono);font-size:22px;letter-spacing:2px;text-shadow:0 0 14px var(--cyan)}
 .sub{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:1px;margin-top:4px}
-#livebar{display:flex;align-items:center;gap:9px;margin:10px 12px 0;padding:9px 13px;background:rgba(0,40,20,.55);border:1px solid #1f7a3d;border-radius:12px;font-size:13px;color:#c9f7d4;overflow:hidden;backdrop-filter:blur(4px)}
 .pulse{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:#ff3b3b;animation:pl 1.4s infinite}
 @keyframes pl{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,59,59,.55)}50%{opacity:.55;box-shadow:0 0 0 7px rgba(255,59,59,0)}}
 #liveTxt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -124,8 +123,6 @@ footer a{color:var(--cyan);text-decoration:none;font-family:var(--mono)}
     <h1 id="siteTitle">RASHD APP STORE</h1>
     <div class="sub" id="siteSub">V4Z RASHD • CYBER APP COLLECTION</div>
   </header>
-
-  <div id="livebar"><span class="pulse"></span><span id="liveTxt">🔴 লাইভ — ডাউনলোড মনিটর চালু হচ্ছে...</span></div>
 
   <div id="announce" style="display:none"></div>
 
@@ -487,7 +484,7 @@ function render(){
   var tot=apps.reduce(function(s,a){return s+Number(a.downloads||0);},0);
   document.getElementById("stDls").textContent = tot.toLocaleString();
 }
-var curDl = "", curApp = null;
+var curDl = "";
 function openAppIdx(i){ var a=apps[i]; if(a) openApp(a.name); }
 function openApp(name){
   var a=null; apps.forEach(function(x){ if(x.name===name) a=x; });
@@ -502,7 +499,7 @@ function openApp(name){
   document.getElementById("dDesc").textContent=a.desc;
   var v=document.getElementById("dVid");
   if(a.video){ v.style.display="block"; v.href=a.video; } else v.style.display="none";
-  curDl = a.url||""; curApp = a;
+  curDl = a.url||"";
   document.getElementById("modal").classList.add("open");
   document.body.style.overflow="hidden";
 }
@@ -512,46 +509,9 @@ function closeModal(){
 }
 function doDownload(){
   if(!curDl){ alert("ডাউনলোড লিংক পাওয়া যায়নি।"); return; }
-  if(curApp){ dlFeed=[{name:curApp.name,t:Date.now(),me:true}].concat(dlFeed).slice(0,10); liveIdx=0; renderLive(); }
   window.open(curDl,"_blank"); /* no login needed — simple download */
 }
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ closeModal(); closeAuth(); } });
-/* ===== LIVE download ticker: no login, near-real-time (polls every 90s) ===== */
-var dlSnap=null, dlFeed=[], liveIdx=0;
-function relTime(t){ var s=Math.floor((Date.now()-t)/1000); if(s<10) return "এখনই"; if(s<60) return s+" সেকেন্ড আগে"; var m=Math.floor(s/60); return m<60 ? m+" মিনিট আগে" : Math.floor(m/60)+" ঘণ্টা আগে"; }
-function renderLive(){
-  var el=document.getElementById("liveTxt"); if(!el) return;
-  if(!dlFeed.length){ el.textContent="🔴 লাইভ — কেউ ডাউনলোড করলেই এখানে দেখা যাবে"; return; }
-  var e=dlFeed[liveIdx%dlFeed.length];
-  el.textContent = e.me ? "📥 "+dispName({name:e.name})+" ডাউনলোড হচ্ছে • এখনই"
-                        : "📥 "+dispName({name:e.name})+" ডাউনলোড হয়েছে • "+relTime(e.t);
-}
-function refreshCounts(){
-  var f=filtered(), cards=document.getElementById("grid").children, i, m;
-  for(i=0;i<f.length&&i<cards.length;i++){ m=cards[i].querySelector(".meta span"); if(m) m.textContent="⬇ "+Number(f[i].downloads).toLocaleString(); }
-  var tot=apps.reduce(function(x,a){return x+Number(a.downloads||0);},0);
-  var sd=document.getElementById("stDls"); if(sd) sd.textContent=tot.toLocaleString();
-}
-function pollDl(){
-  get("https://api.github.com/repos/"+REPO+"/releases/tags/v1.0", null).then(function(rel){
-    if(!rel||!rel.assets) return;
-    var ev=[], i, a, cur, j, app;
-    for(i=0;i<rel.assets.length;i++){ a=rel.assets[i]; cur=Number(a.download_count||0);
-      if(dlSnap&&dlSnap[a.name]!==undefined&&cur>dlSnap[a.name]){
-        for(j=0;j<Math.min(cur-dlSnap[a.name],5);j++) ev.push({name:a.name,t:Date.now()});
-      }
-      if(!dlSnap) dlSnap={}; dlSnap[a.name]=cur;
-      app=null; for(j=0;j<apps.length;j++) if(apps[j].name===a.name){ app=apps[j]; break; }
-      if(app) app.downloads=cur;
-    }
-    if(ev.length){ dlFeed=ev.concat(dlFeed).slice(0,10); liveIdx=0; refreshCounts(); }
-    renderLive();
-  }).catch(function(){});
-}
-setInterval(pollDl, 90000);
-setInterval(function(){ if(dlFeed.length>1){ liveIdx=(liveIdx+1)%Math.min(dlFeed.length,8); } renderLive(); }, 6000);
-document.addEventListener("visibilitychange", function(){ if(!document.hidden) pollDl(); });
-setTimeout(pollDl, 5000);
 boot();
 </script>
 </body>
