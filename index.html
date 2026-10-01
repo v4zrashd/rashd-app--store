@@ -376,6 +376,7 @@ function applySiteConfig(s){
     if(s.telegram){ var t=document.getElementById("tgLink"); if(t){ t.href=s.telegram; t.textContent=s.telegramLabel||s.telegram; } }
     if(s.footer){ var f=document.getElementById("footTxt"); if(f) f.textContent=s.footer; }
     if(s.announce){ var an=document.getElementById("announce"); if(an){ an.textContent=s.announce; an.style.display="block"; } }
+    if(s.logo){ var li=document.querySelector(".logo-ring img"); if(li){ li.src=s.logo; } try{ SITE_LOGO=s.logo; }catch(e){} }
   }catch(e){}
 }
 async function boot(){
