@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-02T01:55:00+06:00",
+  "updated": "2026-10-01T20:02:11.110Z",
   "assets": [
     {
       "name": "ai.text.zip",
@@ -62,12 +62,6 @@
       "url": "https://github.com/v4zrashd/rashd-app--store/releases/download/v1.0/namba.to.name.zip"
     },
     {
-      "name": "RASHD.SMS.BOMBER_1.0.apk",
-      "size": 6953773,
-      "downloads": 56,
-      "url": "https://github.com/v4zrashd/rashd-app--store/releases/download/v1.0/RASHD.SMS.BOMBER_1.0.apk"
-    },
-    {
       "name": "rashd.zip",
       "size": 5347,
       "downloads": 44,
@@ -126,12 +120,6 @@
       "size": 22031166,
       "downloads": 30,
       "url": "https://github.com/v4zrashd/rashd-app--store/releases/download/v1.0/YTX_5.8.80.438.apk"
-    },
-    {
-      "name": "Youtube.Pro_1.0.apk",
-      "size": 50062,
-      "downloads": 0,
-      "url": "https://github.com/v4zrashd/rashd-app--store/releases/download/v1.0/Youtube.Pro_1.0.apk"
     }
   ]
 }
