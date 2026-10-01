@@ -412,7 +412,7 @@ function filtered(){
   });
 }
 function cardHTML(a){
-  return '<div class="card" onclick="openApp('+JSON.stringify(a.name)+')">'+
+  return '<div class="card" onclick="openAppIdx('+apps.indexOf(a)+')">'+
     '<span class="badge">'+extOf(a.name)+'</span>'+
     '<img loading="lazy" src="'+iconFor(a.name)+'" onerror="this.src=SITE_LOGO" alt="">'+
     '<h3>'+cleanName(a.name)+'</h3>'+
@@ -427,7 +427,7 @@ function render(){
   if(cat==="ALL" && !(document.getElementById("q").value||"").trim() && apps.length){
     ts.style.display="block";
     document.getElementById("trend").innerHTML = apps.slice(0,3).map(function(a,i){
-      return '<div class="trend" onclick="openApp('+JSON.stringify(a.name)+')">'+
+      return '<div class="trend" onclick="openAppIdx('+apps.indexOf(a)+')">'+
         '<div class="rank">'+(i+1)+'</div>'+
         '<img loading="lazy" src="'+iconFor(a.name)+'" onerror="this.src=SITE_LOGO" alt="">'+
         '<div><h3>'+cleanName(a.name)+'</h3><p>⬇ '+Number(a.downloads).toLocaleString()+' • '+fmtSize(a.size)+'</p></div></div>';
@@ -438,6 +438,7 @@ function render(){
   document.getElementById("stDls").textContent = tot.toLocaleString();
 }
 var curDl = "";
+function openAppIdx(i){ var a=apps[i]; if(a) openApp(a.name); }
 function openApp(name){
   var a=null; apps.forEach(function(x){ if(x.name===name) a=x; });
   if(!a) return;
