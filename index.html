@@ -207,6 +207,7 @@ var FIREBASE_CONFIG = null; // { apiKey:"...", authDomain:"...", projectId:"..."
 
 var REPO = "v4zrashd/rashd-app--store";
 var apps = [];
+var LOGO_MAP = {};
 var cat = "ALL";
 var BLOCKED = [/bomber/i];
 var pendingDl = null;
@@ -227,7 +228,7 @@ function extOf(n){ var m=/\.([a-z0-9]+)$/i.exec(n||""); return m?m[1].toUpperCas
 function cleanName(n){ return (n||"").replace(/\.[a-z0-9]+$/i,"").replace(/[._-]+/g," ").trim(); }
 function dispName(a){ return (a && a.label) ? a.label : cleanName(a ? a.name : ""); }
 function catOf(n){ var e=extOf(n); return (e==="APK"||e==="APKS"||e==="ZIP")?e:"OTHER"; }
-function iconFor(n){ return (window.APP_ICONS&&APP_ICONS[n])||"icons/"+encodeURIComponent(n)+".png"; }
+function iconFor(n){ return (LOGO_MAP&&LOGO_MAP[n])||(window.APP_ICONS&&APP_ICONS[n])||"icons/"+encodeURIComponent(n)+".png"; }
 async function get(url, fb){
   try{ var r=await fetch(url); if(r.ok) return await r.json(); }catch(e){}
   return fb;
@@ -392,15 +393,28 @@ async function boot(){
   get("https://api.github.com/repos/"+REPO+"/releases/tags/v1.0", null).then(function(rel){
     if(rel && rel.assets){
       var map={}; rel.assets.forEach(function(a){ map[a.name]=a; });
-      var ch=false;
-      apps.forEach(function(a){ var r=map[a.name];
+      var ch=false, have={};
+      apps.forEach(function(a){ have[a.name]=1; var r=map[a.name];
         if(r){ var c=Number(r.download_count||0); if(c!==Number(a.downloads||0)){a.downloads=c;ch=true;}
                if(!a.url) a.url=r.browser_download_url||a.url; } });
-      if(ch) render();
+      rel.assets.forEach(function(r){
+        if(have[r.name]) return;
+        if(BLOCKED.some(function(rx){ return rx.test(r.name); })) return;
+        var d = descMap[r.name] || {};
+        if(d.hidden) return;
+        if(d.logo) LOGO_MAP[r.name]=d.logo;
+        apps.push({ name:r.name, size:Number(r.size||0), downloads:Number(r.download_count||0),
+                    url:r.browser_download_url||"", label:d.label||"",
+                    desc:d.desc||"ফাইলটি টেস্টেড ও নিরাপদ। ✅",
+                    video:d.video||"" });
+        ch=true;
+      });
+      if(ch){ apps.sort(function(a,b){ return b.downloads-a.downloads; }); render(); }
     }
   });
   var descMap={};
   if(cfg && cfg.apps) for(var k in cfg.apps) descMap[k]=cfg.apps[k];
+  for(var lk in descMap) if(descMap[lk] && descMap[lk].logo) LOGO_MAP[lk]=descMap[lk].logo;
   list.forEach(function(a){
     if(BLOCKED.some(function(rx){ return rx.test(a.name); })) return;
     var d = descMap[a.name] || {};
@@ -412,6 +426,7 @@ async function boot(){
   });
   if(cfg && cfg.custom) cfg.custom.forEach(function(c){
     if(!c || !c.name || !c.url) return;
+    if(c.logo) LOGO_MAP[c.name]=c.logo;
     apps.push({ name:c.name, size:Number(c.size||0), downloads:0,
                 url:c.url, label:c.label||"",
                 desc:c.desc||"ফাইলটি টেস্টেড ও নিরাপদ। ✅",
