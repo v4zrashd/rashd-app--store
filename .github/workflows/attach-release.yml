@@ -1,3 +1,4 @@
+# chunked-upload-v2
 name: Attach uploads to v1.0 release
 on:
   push:
@@ -15,13 +16,46 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ok=0
+          # 1) chunked uploads (*.done manifests)
+          for done in pending/*.done; do
+            [ -f "$done" ] || continue
+            base=$(basename "$done" .done)
+            name=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('name',''))" "$done")
+            if [ -z "$name" ]; then
+              name=$(python3 -c "import urllib.parse,sys; print(urllib.parse.unquote(sys.argv[1]))" "$base")
+            fi
+            n=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('chunks',0))" "$done")
+            have=$(ls "pending/$base"/chunk-* 2>/dev/null | wc -l)
+            tmp="/tmp/$base.bin"
+            rm -f "$tmp"
+            if [ "$have" -eq "$n" ] && [ "$n" -gt 0 ]; then
+              cat "pending/$base"/chunk-* > "$tmp"
+              cp "$tmp" "/tmp/$name"
+              if gh release upload v1.0 "/tmp/$name" --clobber; then
+                git rm -rq "pending/$base" "$done" && ok=1
+              else
+                echo "release upload failed: $name"
+              fi
+              rm -f "$tmp" "/tmp/$name"
+            else
+              echo "incomplete chunks for $name ($have/$n) - waiting"
+              rm -f "$tmp"
+            fi
+          done
+          # 2) single files directly in pending/
           for f in pending/*; do
             [ -f "$f" ] || continue
-            if gh release upload v1.0 "$f" --clobber; then
+            case "$f" in *.done) continue;; esac
+            enc=$(basename "$f")
+            name=$(python3 -c "import urllib.parse,sys; print(urllib.parse.unquote(sys.argv[1]))" "$enc")
+            [ -n "$name" ] || continue
+            cp "$f" "/tmp/$name"
+            if gh release upload v1.0 "/tmp/$name" --clobber; then
               git rm -q "$f" && ok=1
             else
-              echo "upload failed: $f"
+              echo "release upload failed: $f"
             fi
+            rm -f "/tmp/$name"
           done
           if [ "$ok" = "1" ]; then
             git config user.name "v4z-admin"
