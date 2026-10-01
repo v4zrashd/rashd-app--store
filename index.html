@@ -487,7 +487,7 @@ function render(){
   var tot=apps.reduce(function(s,a){return s+Number(a.downloads||0);},0);
   document.getElementById("stDls").textContent = tot.toLocaleString();
 }
-var curDl = "";
+var curDl = "", curApp = null;
 function openAppIdx(i){ var a=apps[i]; if(a) openApp(a.name); }
 function openApp(name){
   var a=null; apps.forEach(function(x){ if(x.name===name) a=x; });
@@ -502,7 +502,7 @@ function openApp(name){
   document.getElementById("dDesc").textContent=a.desc;
   var v=document.getElementById("dVid");
   if(a.video){ v.style.display="block"; v.href=a.video; } else v.style.display="none";
-  curDl = a.url||"";
+  curDl = a.url||""; curApp = a;
   document.getElementById("modal").classList.add("open");
   document.body.style.overflow="hidden";
 }
@@ -512,6 +512,7 @@ function closeModal(){
 }
 function doDownload(){
   if(!curDl){ alert("ডাউনলোড লিংক পাওয়া যায়নি।"); return; }
+  if(curApp){ dlFeed=[{name:curApp.name,t:Date.now(),me:true}].concat(dlFeed).slice(0,10); liveIdx=0; renderLive(); }
   window.open(curDl,"_blank"); /* no login needed — simple download */
 }
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ closeModal(); closeAuth(); } });
@@ -522,7 +523,8 @@ function renderLive(){
   var el=document.getElementById("liveTxt"); if(!el) return;
   if(!dlFeed.length){ el.textContent="🔴 লাইভ — কেউ ডাউনলোড করলেই এখানে দেখা যাবে"; return; }
   var e=dlFeed[liveIdx%dlFeed.length];
-  el.textContent="📥 "+dispName({name:e.name})+" ডাউনলোড হয়েছে • "+relTime(e.t);
+  el.textContent = e.me ? "📥 "+dispName({name:e.name})+" ডাউনলোড হচ্ছে • এখনই"
+                        : "📥 "+dispName({name:e.name})+" ডাউনলোড হয়েছে • "+relTime(e.t);
 }
 function refreshCounts(){
   var f=filtered(), cards=document.getElementById("grid").children, i, m;
