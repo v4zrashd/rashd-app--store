@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — Page Not Found</title>
+<style>
+:root{--bg:#050807;--green:#00ff88;--cyan:#00e5ff;--red:#ff2d55;--muted:#8fa89a;--card:#0a0f0c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:#d7ffe9;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.wrap{max-width:900px;margin:0 auto;padding:18px}
+/* ---- fake 404 ---- */
+.f404{min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;user-select:none}
+.f404 h1{font-size:110px;color:var(--red);text-shadow:0 0 40px rgba(255,45,85,.5);font-family:monospace;letter-spacing:6px;cursor:pointer}
+.f404 .term{background:#000;border:1px solid #1d2b23;border-radius:10px;padding:16px 18px;margin-top:22px;max-width:520px;width:100%;text-align:left;font-family:monospace;font-size:13px;line-height:1.9;color:#9dffc9}
+.f404 .term .r{color:var(--red)} .f404 .term .g{color:var(--green)} .f404 .term .y{color:#ffd60a}
+.f404 .fy{margin-top:20px;font-size:22px;color:#fff}
+.f404 .bn{margin-top:8px;color:var(--muted);font-size:14px}
+.blink{animation:bl 1s steps(1) infinite}@keyframes bl{50%{opacity:0}}
+/* ---- unlock ---- */
+#unlock{display:none;min-height:92vh;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px}
+#unlock .box{background:var(--card);border:1px solid #1d2b23;border-radius:14px;padding:26px;width:100%;max-width:380px}
+#unlock h2{font-size:40px;margin-bottom:10px}
+#unlock p{color:var(--muted);font-size:13px;margin-bottom:14px}
+/* ---- panel ---- */
+#panel{display:none}
+header.p{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+header.p h1{font-size:20px;color:var(--green);text-shadow:0 0 18px rgba(0,255,136,.4)}
+.badge{font-size:11px;color:var(--muted);border:1px solid #1d2b23;padding:4px 10px;border-radius:20px}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tab{flex:1;min-width:100px;background:#0a0f0c;border:1px solid #1d2b23;color:var(--muted);padding:10px;border-radius:10px;font-size:14px;cursor:pointer}
+.tab.on{border-color:var(--green);color:var(--green);box-shadow:0 0 12px rgba(0,255,136,.15)}
+.card{background:var(--card);border:1px solid #1d2b23;border-radius:12px;padding:14px;margin-bottom:12px}
+.card h3{font-size:13px;color:var(--cyan);font-family:monospace;word-break:break-all;margin-bottom:10px}
+label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px}
+input[type=text],textarea{width:100%;background:#060a08;border:1px solid #1d2b23;color:#d7ffe9;border-radius:8px;padding:9px 10px;font-size:14px;font-family:inherit}
+textarea{min-height:56px;resize:vertical}
+input:focus,textarea:focus{outline:none;border-color:var(--green)}
+.row{display:flex;gap:10px;align-items:center}
+.hideline{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;color:var(--muted)}
+.hideline input{width:18px;height:18px;accent-color:var(--red)}
+.btn{display:block;width:100%;background:linear-gradient(135deg,#00ff88,#00e5ff);border:none;color:#02120a;font-weight:700;font-size:15px;padding:13px;border-radius:10px;cursor:pointer;margin-top:14px}
+.btn.ghost{background:none;border:1px solid var(--red);color:var(--red);margin-top:10px}
+.btn.small{width:auto;display:inline-block;padding:8px 16px;font-size:13px;margin-top:10px}
+.btn:disabled{opacity:.5}
+#status{position:sticky;bottom:12px;margin-top:14px;background:#060a08;border:1px solid #1d2b23;border-radius:10px;padding:10px 14px;font-size:13px;display:none}
+#status.ok{display:block;border-color:var(--green);color:var(--green)}
+#status.err{display:block;border-color:var(--red);color:var(--red)}
+.stats{display:flex;gap:10px;margin-bottom:14px}
+.stat{flex:1;background:var(--card);border:1px solid #1d2b23;border-radius:10px;padding:10px;text-align:center}
+.stat b{display:block;font-size:20px;color:var(--green)} .stat span{font-size:11px;color:var(--muted)}
+.del{background:none;border:1px solid var(--red);color:var(--red);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;margin-top:8px}
+.guide{font-size:13px;color:var(--muted);line-height:2;background:var(--card);border:1px solid #1d2b23;border-radius:12px;padding:14px}
+.guide b{color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ FAKE 404 ============ -->
+  <div class="f404" id="fake404">
+    <h1 id="e404">404</h1>
+    <div class="term">
+      <div><span class="g">$</span> locate /v4z-ctrl-7x2q9.html</div>
+      <div><span class="r">✖ not found.</span> এই নামে কোনো পেজ নেই।</div>
+      <div><span class="y">⚠ intruder detected</span> — IP লগ করা হয়েছে <span class="blink">▊</span></div>
+    </div>
+    <div class="fy">fuck you bro 😎</div>
+    <div class="bn">ভুল ঠিকানায় এসেছো বন্ধু। ফিরে যাও, এখানে কিছু নেই।</div>
+  </div>
+
+  <!-- ============ UNLOCK ============ -->
+  <div id="unlock">
+    <div class="box">
+      <h2>🔐</h2>
+      <p>ডিভাইস আনলক করতে তোমার GitHub token দাও।<br>token শুধু এই ফোনের browser-এ থাকবে।</p>
+      <input type="password" id="tokIn" placeholder="ghp_xxxx বা github_pat_xxxx" autocomplete="off">
+      <button class="btn" id="unlockBtn">UNLOCK</button>
+      <div id="unlockErr" style="color:var(--red);font-size:13px;margin-top:10px;display:none"></div>
+    </div>
+  </div>
+
+  <!-- ============ ADMIN PANEL ============ -->
+  <div id="panel">
+    <header class="p">
+      <h1>⚙ RASHD CONTROL</h1>
+      <span class="badge" id="devBadge">📱 this device</span>
+    </header>
+    <div class="stats">
+      <div class="stat"><b id="stA">–</b><span>মোট অ্যাপ</span></div>
+      <div class="stat"><b id="stD">–</b><span>মোট ডাউনলোড</span></div>
+      <div class="stat"><b id="stH">–</b><span>লুকানো</span></div>
+    </div>
+    <div class="tabs">
+      <button class="tab on" data-t="apps" onclick="showTab('apps',this)">📱 অ্যাপ</button>
+      <button class="tab" data-t="add" onclick="showTab('add',this)">➕ নতুন অ্যাপ</button>
+      <button class="tab" data-t="set" onclick="showTab('set',this)">🎨 সাইট সেটিং</button>
+    </div>
+
+    <div id="tab-apps"></div>
+
+    <div id="tab-add" style="display:none">
+      <div class="card">
+        <h3>নতুন অ্যাপ যোগ করো</h3>
+        <label>ফাইল নাম (যেমন MyApp_1.0.apk)</label>
+        <input type="text" id="na_name" placeholder="MyApp_1.0.apk">
+        <label>ডাউনলোড লিংক (URL)</label>
+        <input type="text" id="na_url" placeholder="https://...">
+        <label>সাইজ (bytes, ঐচ্ছিক)</label>
+        <input type="text" id="na_size" placeholder="12345678">
+        <label>দেখানোর নাম (ঐচ্ছিক)</label>
+        <input type="text" id="na_label" placeholder="My App">
+        <label>বর্ণনা</label>
+        <textarea id="na_desc" placeholder="অ্যাপের বর্ণনা..."></textarea>
+        <button class="btn" onclick="addCustomApp()">➕ অ্যাপ যোগ করো</button>
+      </div>
+      <div id="customList"></div>
+    </div>
+
+    <div id="tab-set" style="display:none">
+      <div class="card">
+        <h3>সাইট সেটিংস</h3>
+        <label>Browser tab title</label><input type="text" id="s_title">
+        <label>বড় হেডিং</label><input type="text" id="s_heading">
+        <label>সাব-টাইটেল</label><input type="text" id="s_subtitle">
+        <label>Telegram লিংক</label><input type="text" id="s_telegram">
+        <label>Telegram বাটন লেখা</label><input type="text" id="s_telegramLabel">
+        <label>ফুটার লেখা</label><input type="text" id="s_footer">
+        <label>ঘোষণা ব্যানার (খালি রাখলে লুকানো থাকবে)</label><input type="text" id="s_announce">
+        <button class="btn" onclick="saveConfig()">💾 সেটিংস সেভ করো</button>
+      </div>
+      <div class="guide">
+        <b>ℹ নোট:</b> ইউজারদের লগইন অ্যাকাউন্ট Firebase চালু হলে Firebase console থেকে ম্যানেজ করবে।<br>
+        ডাউনলোড সংখ্যা GitHub release থেকে অটো আসে — এটা এডিট করা যায় না।
+      </div>
+    </div>
+
+    <button class="btn ghost" onclick="lockPanel()">🔒 লক করো (404 মোড)</button>
+    <div id="status"></div>
+  </div>
+
+</div>
+
+<script>
+var REPO = "v4zrashd/rashd-app--store";
+var LS_OK = "v4z_admin_ok", LS_TOK = "v4z_admin_tok";
+var token = localStorage.getItem(LS_TOK) || "";
+var A = { assets: [], appsJson: {apps:{}, custom:[]}, config: {}, files: {} };
+
+function $(id){ return document.getElementById(id); }
+function status(msg, ok){
+  var s = $("status"); s.textContent = msg;
+  s.className = ok ? "ok" : "err";
+  setTimeout(function(){ s.className=""; s.style.display="none"; }, 5000);
+  s.style.display = "block";
+}
+function b64encodeUnicode(str){
+  var bytes = new TextEncoder().encode(str), bin = "", CH = 0x8000;
+  for(var i=0;i<bytes.length;i+=CH) bin += String.fromCharCode.apply(null, bytes.subarray(i,i+CH));
+  return btoa(bin);
+}
+
+/* ---------- fake 404: 7 taps on "404" ---------- */
+var taps = 0, lastTap = 0;
+$("e404").addEventListener("click", function(){
+  var now = Date.now();
+  if(now - lastTap > 1500) taps = 0;
+  lastTap = now; taps++;
+  if(taps >= 7){ taps = 0; openUnlock(); }
+});
+function openUnlock(){
+  $("fake404").style.display = "none";
+  $("unlock").style.display = "flex";
+  if(token) $("tokIn").value = token;
+}
+$("unlockBtn").addEventListener("click", function(){
+  var t = $("tokIn").value.trim();
+  if(!t){ return err("token দাও ভাই!"); }
+  $("unlockBtn").disabled = true;
+  fetch("https://api.github.com/repos/"+REPO, {headers:{"Authorization":"Bearer "+t}})
+    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .then(function(){
+      token = t;
+      localStorage.setItem(LS_TOK, t);
+      localStorage.setItem(LS_OK, "1");
+      enterPanel();
+    })
+    .catch(function(){ err("❌ ভুল token! আবার চেষ্টা করো।"); })
+    .finally(function(){ $("unlockBtn").disabled = false; });
+  function err(m){ var e=$("unlockErr"); e.textContent=m; e.style.display="block"; }
+});
+function lockPanel(){
+  localStorage.removeItem(LS_OK);
+  location.reload();
+}
+
+/* ---------- boot ---------- */
+(function(){
+  if(localStorage.getItem(LS_OK)==="1" && token){
+    $("fake404").style.display="none";
+    enterPanel();
+  }
+})();
+
+function enterPanel(){
+  $("fake404").style.display="none";
+  $("unlock").style.display="none";
+  $("panel").style.display="block";
+  loadAll();
+}
+
+function showTab(t, el){
+  var tabs = document.querySelectorAll(".tab");
+  for(var i=0;i<tabs.length;i++) tabs[i].classList.remove("on");
+  el.classList.add("on");
+  $("tab-apps").style.display = t==="apps" ? "block" : "none";
+  $("tab-add").style.display = t==="add" ? "block" : "none";
+  $("tab-set").style.display = t==="set" ? "block" : "none";
+}
+
+function loadAll(){
+  status("⏳ লোড হচ্ছে...", true);
+  var base = "https://raw.githubusercontent.com/"+REPO+"/main/";
+  Promise.all([
+    fetch(base+"assets.json").then(function(r){return r.json();}),
+    fetch(base+"apps.json").then(function(r){return r.json();}),
+    fetch(base+"config.json").then(function(r){return r.json();}).catch(function(){return {};})
+  ]).then(function(rs){
+    A.assets = (rs[0] && rs[0].assets) ? rs[0].assets : [];
+    A.appsJson = rs[1] || {apps:{}, custom:[]};
+    if(!A.appsJson.apps) A.appsJson.apps = {};
+    if(!A.appsJson.custom) A.appsJson.custom = [];
+    A.config = rs[2] || {};
+    renderApps(); renderCustom(); renderConfig(); renderStats();
+    status("✅ লোড হয়েছে", true);
+  }).catch(function(){ status("❌ লোড ব্যর্থ! নেট চেক করো।", false); });
+}
+
+function renderStats(){
+  var hid = 0;
+  for(var k in A.appsJson.apps) if(A.appsJson.apps[k].hidden) hid++;
+  var dls = 0;
+  A.assets.forEach(function(a){ dls += Number(a.downloads||0); });
+  $("stA").textContent = A.assets.length + A.appsJson.custom.length;
+  $("stD").textContent = dls.toLocaleString();
+  $("stH").textContent = hid;
+}
+
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function renderApps(){
+  var box = $("tab-apps"); box.innerHTML = "";
+  A.assets.forEach(function(a, i){
+    var d = A.appsJson.apps[a.name] || {};
+    var card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      '<h3>'+esc(a.name)+'</h3>'+
+      '<label>দেখানোর নাম (খালি = অটো)</label>'+
+      '<input type="text" data-f="label" data-i="'+i+'" value="'+esc(d.label||"")+'">'+
+      '<label>বর্ণনা</label>'+
+      '<textarea data-f="desc" data-i="'+i+'">'+esc(d.desc||"")+'</textarea>'+
+      '<label>ভিডিও লিংক (YouTube, ঐচ্ছিক)</label>'+
+      '<input type="text" data-f="video" data-i="'+i+'" value="'+esc(d.video||"")+'">'+
+      '<div class="hideline"><input type="checkbox" data-f="hidden" data-i="'+i+'"'+(d.hidden?" checked":"")+'> <span>🚫 সাইটে লুকিয়ে রাখো</span></div>';
+    box.appendChild(card);
+  });
+  var b = document.createElement("button");
+  b.className = "btn"; b.textContent = "💾 সব অ্যাপ সেভ করো";
+  b.onclick = saveApps;
+  box.appendChild(b);
+}
+
+function collectApps(){
+  var inputs = document.querySelectorAll("#tab-apps [data-f]");
+  for(var i=0;i<inputs.length;i++){
+    var el = inputs[i], idx = +el.getAttribute("data-i"), f = el.getAttribute("data-f");
+    var name = A.assets[idx].name;
+    if(!A.appsJson.apps[name]) A.appsJson.apps[name] = {};
+    var d = A.appsJson.apps[name];
+    if(f==="hidden") d.hidden = el.checked;
+    else d[f] = el.value.trim();
+    if(!d.desc && !d.video && !d.label && !d.hidden) delete A.appsJson.apps[name];
+  }
+}
+
+function saveApps(){
+  collectApps();
+  ghPut("apps.json", A.appsJson, "Admin: update apps")
+    .then(function(){ status("✅ অ্যাপ সেভ হয়েছে! ১-২ মিনিটে সাইটে দেখা যাবে।", true); renderStats(); })
+    .catch(function(e){ status("❌ সেভ ব্যর্থ: "+e, false); });
+}
+
+function renderCustom(){
+  var box = $("customList"); box.innerHTML = "";
+  if(!A.appsJson.custom.length){ box.innerHTML = '<div class="guide">এখনো কাস্টম অ্যাপ নেই।</div>'; return; }
+  A.appsJson.custom.forEach(function(c, i){
+    var card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = '<h3>'+esc(c.name)+'</h3><div style="font-size:12px;color:var(--muted)">'+esc(c.url||"")+'</div>';
+    var del = document.createElement("button");
+    del.className = "del"; del.textContent = "🗑 ডিলিট";
+    del.onclick = function(){
+      if(!confirm("ডিলিট করবে?")) return;
+      A.appsJson.custom.splice(i,1);
+      ghPut("apps.json", A.appsJson, "Admin: remove custom app")
+        .then(function(){ renderCustom(); renderStats(); status("✅ ডিলিট হয়েছে", true); })
+        .catch(function(e){ status("❌ ব্যর্থ: "+e, false); });
+    };
+    card.appendChild(del);
+    box.appendChild(card);
+  });
+}
+
+function addCustomApp(){
+  var name = $("na_name").value.trim(), url = $("na_url").value.trim();
+  if(!name || !url){ status("❌ নাম + লিংক দুটোই দাও!", false); return; }
+  A.appsJson.custom.push({
+    name: name, url: url,
+    size: Number($("na_size").value.trim()||0),
+    label: $("na_label").value.trim(),
+    desc: $("na_desc").value.trim(),
+    video: ""
+  });
+  ghPut("apps.json", A.appsJson, "Admin: add custom app "+name)
+    .then(function(){
+      status("✅ অ্যাপ যোগ হয়েছে!", true);
+      ["na_name","na_url","na_size","na_label","na_desc"].forEach(function(id){ $(id).value=""; });
+      renderCustom(); renderStats();
+    })
+    .catch(function(e){ status("❌ ব্যর্থ: "+e, false); });
+}
+
+function renderConfig(){
+  var c = A.config;
+  $("s_title").value = c.title||"";
+  $("s_heading").value = c.heading||"";
+  $("s_subtitle").value = c.subtitle||"";
+  $("s_telegram").value = c.telegram||"";
+  $("s_telegramLabel").value = c.telegramLabel||"";
+  $("s_footer").value = c.footer||"";
+  $("s_announce").value = c.announce||"";
+}
+
+function saveConfig(){
+  A.config = {
+    title: $("s_title").value.trim(),
+    heading: $("s_heading").value.trim(),
+    subtitle: $("s_subtitle").value.trim(),
+    telegram: $("s_telegram").value.trim(),
+    telegramLabel: $("s_telegramLabel").value.trim(),
+    footer: $("s_footer").value.trim(),
+    announce: $("s_announce").value.trim()
+  };
+  ghPut("config.json", A.config, "Admin: update site config")
+    .then(function(){ status("✅ সেটিংস সেভ হয়েছে!", true); })
+    .catch(function(e){ status("❌ ব্যর্থ: "+e, false); });
+}
+
+/* ---------- GitHub API ---------- */
+function ghGet(path){
+  return fetch("https://api.github.com/repos/"+REPO+"/contents/"+path, {
+    headers:{"Authorization":"Bearer "+token, "Accept":"application/vnd.github+json"}
+  }).then(function(r){
+    if(r.status===401) throw "token ভুল/মেয়াদ শেষ — আবার unlock করো";
+    if(!r.ok) throw "GitHub error "+r.status;
+    return r.json();
+  });
+}
+function ghPut(path, obj, msg){
+  return ghGet(path).then(function(f){
+    return fetch("https://api.github.com/repos/"+REPO+"/contents/"+path, {
+      method:"PUT",
+      headers:{"Authorization":"Bearer "+token, "Accept":"application/vnd.github+json", "Content-Type":"application/json"},
+      body: JSON.stringify({message:msg, content:b64encodeUnicode(JSON.stringify(obj,null,2)+"\n"), sha:f.sha})
+    });
+  }).then(function(r){
+    if(r.status===401) throw "token ভুল/মেয়াদ শেষ";
+    if(!r.ok) throw "GitHub error "+r.status;
+    return r.json();
+  });
+}
+</script>
+</body>
+</html>
