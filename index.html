@@ -230,7 +230,11 @@ function dispName(a){ return (a && a.label) ? a.label : cleanName(a ? a.name : "
 function catOf(n){ var e=extOf(n); return (e==="APK"||e==="APKS"||e==="ZIP")?e:"OTHER"; }
 function iconFor(n){ return (LOGO_MAP&&LOGO_MAP[n])||(window.APP_ICONS&&APP_ICONS[n])||"icons/"+encodeURIComponent(n)+".png"; }
 async function get(url, fb){
-  try{ var r=await fetch(url); if(r.ok) return await r.json(); }catch(e){}
+  try{
+    var u = url;
+    if(u.indexOf("http")!==0) u += (u.indexOf("?")<0?"?":"&") + "v=" + Date.now();
+    var r=await fetch(u); if(r.ok) return await r.json();
+  }catch(e){}
   return fb;
 }
 
