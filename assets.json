@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-02T02:09:31.710411+00:00",
+  "updated": "2026-10-02T02:10:24.014608+00:00",
   "assets": [
     {
       "name": "ai.text.zip",
@@ -54,12 +54,6 @@
       "size": 31147988,
       "downloads": 49,
       "url": "https://github.com/v4zrashd/rashd-app--store/releases/download/v1.0/MT.Manager_2.26.7.apk"
-    },
-    {
-      "name": "RASHD.SMS.BOMBER_1.0.apk",
-      "size": 6953773,
-      "downloads": 56,
-      "url": "https://github.com/v4zrashd/rashd-app--store/releases/download/v1.0/RASHD.SMS.BOMBER_1.0.apk"
     },
     {
       "name": "rashd.zip",
