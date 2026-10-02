@@ -39,5 +39,15 @@
       "hidden": false
     }
   },
-  "custom": []
+  "custom": [
+    {
+      "name": "Test",
+      "url": "https://gofile.io/d/aMSOiEhu",
+      "size": 0,
+      "label": "Rashd",
+      "desc": "V4zrashd",
+      "video": "",
+      "logo": ""
+    }
+  ]
 }
