@@ -149,6 +149,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   color:var(--green);font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
 .youcard h2{font-size:17px}
 .youcard p{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.6}
+.authlogo{width:94px;height:94px;border-radius:26px;object-fit:cover;display:block;margin:2px auto 12px;
+  border:2px solid var(--green);background:#06130c;box-shadow:0 0 26px rgba(0,230,118,.45),0 0 64px rgba(0,230,118,.14)}
+.auth-head{font-size:15px !important;font-weight:800;color:var(--text) !important;margin-top:10px !important}
+body.gated .bottomnav{display:none}
+body.gated .shell{padding-bottom:24px}
 .tabs{display:flex;gap:8px;margin:16px 14px 0}
 .tab{flex:1;text-align:center;padding:12px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;
   background:var(--surface);border:1px solid var(--border);color:var(--muted)}
@@ -249,9 +254,11 @@ footer a{color:var(--green);text-decoration:none;font-family:var(--mono);font-si
 <!-- ============ YOU ============ -->
 <div class="view" id="view-you">
   <div class="youcard">
-    <div class="bigav" id="youAv">👤</div>
-    <h2 id="youName">অতিথি</h2>
-    <p id="youSub">লগইন ঐচ্ছিক — ডাউনলোড করতে কোনো অ্যাকাউন্ট লাগে না ✅</p>
+    <img class="authlogo" id="authLogo" src="https://i.ibb.co/JjtT2xGp/file-0000000067588208af45644379a28d97.png" alt="RASHD APP STORE" onerror="this.style.display='none'">
+    <div class="bigav" id="youAv" style="display:none">👤</div>
+    <h2 id="youName">RASHD APP STORE</h2>
+    <p class="auth-head" id="authHead">👋 স্বাগতম!</p>
+    <p id="youSub">অ্যাপ দেখতে ও ডাউনলোড করতে আগে একাউন্ট খুলুন / লগইন করুন 👇</p>
     <div id="youBtns"></div>
   </div>
   <div id="authBox">
@@ -281,6 +288,7 @@ footer a{color:var(--green);text-decoration:none;font-family:var(--mono);font-si
   <div class="statgrid">
     <div class="stat"><b id="stApps">–</b><span>মোট অ্যাপ</span></div>
     <div class="stat"><b id="stDls">–</b><span>মোট ডাউনলোড</span></div>
+    <div class="stat"><b id="stUsers">–</b><span>মোট ইউজার</span></div>
   </div>
 </div>
 
@@ -401,6 +409,10 @@ function refreshAcctBtn(){
   var b=document.getElementById("acctBtn");
   if(b) b.textContent = u ? u.charAt(0).toUpperCase() : "👤";
   renderYou();
+  var wasGated=document.body.classList.contains("gated");
+  document.body.classList.toggle("gated", !u);
+  if(!u){ if(typeof view==="undefined" || view!=="you") showView("you"); }
+  else if(wasGated){ showView("apps"); }
 }
 function setTab(t){
   document.getElementById("tabLogin").classList.toggle("on", t==="login");
@@ -453,19 +465,32 @@ function renderYou(){
   var u = useFirebase()? fbName() : sessGet();
   var nm=document.getElementById("youName"), av=document.getElementById("youAv"),
       box=document.getElementById("authBox"), btns=document.getElementById("youBtns"),
-      sub=document.getElementById("youSub");
+      sub=document.getElementById("youSub"),
+      lg=document.getElementById("authLogo"), hd=document.getElementById("authHead");
   if(!nm) return;
   if(u){
-    nm.textContent=u; av.textContent=u.charAt(0).toUpperCase();
+    nm.textContent=u;
+    if(lg) lg.style.display="none";
+    if(av){ av.style.display="flex"; av.textContent=u.charAt(0).toUpperCase(); }
+    if(hd) hd.style.display="none";
     sub.textContent="লগইন অবস্থায় আছেন ✅";
     if(box) box.style.display="none";
     if(btns) btns.innerHTML='<button class="auth-go" style="margin-top:14px" onclick="doLogout()">লগআউট</button>';
   } else {
-    nm.textContent="অতিথি"; av.textContent="👤";
-    sub.textContent="লগইন ঐচ্ছিক — ডাউনলোড করতে কোনো অ্যাকাউন্ট লাগে না ✅";
+    var storeName="RASHD APP STORE";
+    try{ if(window.cfg && cfg.heading) storeName=cfg.heading; }catch(e){}
+    nm.textContent=storeName;
+    if(av) av.style.display="none";
+    if(lg){ var tl=document.getElementById("topLogo"); if(tl && tl.src) lg.src=tl.src; lg.style.display="block"; }
+    var hasAcct = useFirebase();
+    if(!hasAcct){ try{ hasAcct = Object.keys(dbGet()).length>0; }catch(e){} }
+    if(hd){ hd.style.display="block"; hd.textContent = hasAcct ? "🔐 একাউন্ট আছে? লগইন করুন" : "👋 স্বাগতম! নতুন একাউন্ট খুলুন"; }
+    sub.textContent="অ্যাপ দেখতে ও ডাউনলোড করতে আগে একাউন্ট খুলুন / লগইন করুন 👇";
     if(box) box.style.display="block";
     if(btns) btns.innerHTML="";
+    setTab(hasAcct ? "login" : "signup");
   }
+  updateUserStat();
 }
 
 /* ---------- site config ---------- */
@@ -477,12 +502,13 @@ function applySiteConfig(s){
     if(s.telegram){ var t2=document.getElementById("tgLink"); if(t2){ t2.href=s.telegram; t2.textContent=s.telegramLabel||s.telegram; } }
     if(s.footer){ var f=document.getElementById("footTxt"); if(f) f.textContent=s.footer; }
     if(s.announce){ var an=document.getElementById("announce"); if(an){ an.textContent=s.announce; an.style.display="block"; } }
-    if(s.logo){ var li=document.getElementById("topLogo"); if(li){ li.src=s.logo; li.style.visibility="visible"; } try{ SITE_LOGO=s.logo; }catch(e){} }
+    if(s.logo){ var li=document.getElementById("topLogo"); if(li){ li.src=s.logo; li.style.visibility="visible"; } var al=document.getElementById("authLogo"); if(al){ al.src=s.logo; } try{ SITE_LOGO=s.logo; }catch(e){} }
   }catch(e){}
 }
 
 /* ---------- views ---------- */
 function showView(v){
+  if(document.body.classList.contains("gated") && v!=="you") v="you";
   view=v;
   ["apps","charts","search","you"].forEach(function(x){
     document.getElementById("view-"+x).classList.toggle("on", x===v);
@@ -594,10 +620,18 @@ function lrowHTML(a){
 function render(){
   renderHome(); renderCharts(); renderSearch(); renderStats();
 }
+function updateUserStat(){
+  var el=document.getElementById("stUsers");
+  if(!el) return;
+  if(useFirebase()){ el.textContent="—"; return; }
+  try{ el.textContent=Object.keys(dbGet()).length.toLocaleString(); }
+  catch(e){ el.textContent="0"; }
+}
 function renderStats(){
   var sa=document.getElementById("stApps"), sd=document.getElementById("stDls");
   if(sa) sa.textContent=apps.length;
   if(sd) sd.textContent=apps.reduce(function(s,a){return s+Number(a.downloads||0);},0).toLocaleString();
+  updateUserStat();
 }
 function renderHome(){
   var f=filtered(true);
