@@ -410,7 +410,7 @@ async function initFirebase(){
     firebase.initializeApp(FIREBASE_CONFIG);
     auth = firebase.auth();
     try{ if(firebase.database) fbDb = firebase.database(); }catch(e){ fbDb=null; }
-    auth.onAuthStateChanged(function(u){ fbUser = u || null; refreshAcctBtn(); });
+    auth.onAuthStateChanged(function(u){ fbUser = u || null; if(u) saveUserProfile(u); refreshAcctBtn(); });
     return true;
   }catch(e){ auth=null; return false; }
 }
@@ -633,6 +633,17 @@ function lrowHTML(a){
 }
 function render(){
   renderHome(); renderCharts(); renderSearch(); renderStats();
+}
+function saveUserProfile(u){
+  if(!u || !fbDb) return;
+  try{
+    var nm = email2uname(u.email || '');
+    var ref = fbDb.ref('users/' + u.uid);
+    ref.once('value').then(function(s){
+      if(s.exists()) ref.update({name: nm});
+      else ref.set({name: nm, t: Date.now()});
+    }).catch(function(){});
+  }catch(e){}
 }
 function updateUserStat(){
   var el=document.getElementById("stUsers");
