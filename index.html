@@ -137,6 +137,23 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   border-radius:28px;padding:15px;font-size:16px;font-weight:800;cursor:pointer;font-family:var(--sans);
   box-shadow:0 6px 22px rgba(0,230,118,.35)}
 .d-install:active{transform:scale(.98)}
+.favb{flex:0 0 auto;background:none;border:none;font-size:19px;cursor:pointer;padding:6px;line-height:1}
+.stars{display:flex;gap:4px;margin-top:8px}
+.stars button{background:none;border:none;font-size:34px;cursor:pointer;color:var(--muted);padding:2px;line-height:1}
+.stars button.on{color:#ffb300}
+.rate-avg{font-size:15px;font-weight:700;color:#ffb300}
+.cm{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.cm-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00e676,#00e5ff);color:#02120a;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.cm-bd{flex:1;min-width:0}
+.cm-hd{display:flex;align-items:center;gap:8px}
+.cm-hd b{font-size:13px}
+.cm-hd span{font-size:11px;color:var(--muted)}
+.cm-del{margin-left:auto;background:none;border:none;cursor:pointer;font-size:14px}
+.cm-tx{font-size:13.5px;color:#d7e3ea;margin-top:2px;word-break:break-word}
+.cm-empty{font-size:13px;color:var(--muted);padding:10px 0}
+.cmbox{display:flex;gap:8px;margin-top:12px}
+.cmbox input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px;color:#fff;font-size:14px}
+.cmbox button{background:var(--green);color:#04120a;border:none;border-radius:10px;padding:0 18px;font-weight:800;cursor:pointer}
 .d-sec{margin:22px 16px 0}
 .d-sec h3{font-size:15px;margin-bottom:10px}
 .d-desc{font-size:13.5px;line-height:1.75;color:#c4cdd8;background:var(--surface);
@@ -209,6 +226,7 @@ footer a{color:var(--green);text-decoration:none;font-family:var(--mono);font-si
   <button class="pill" data-c="APKS" onclick="setCat('APKS',this)">APKS</button>
   <button class="pill" data-c="ZIP" onclick="setCat('ZIP',this)">ZIP</button>
   <button class="pill" data-c="OTHER" onclick="setCat('OTHER',this)">অন্যান্য</button>
+  <button class="pill" data-c="FAV" onclick="setCat('FAV',this)">❤️ ফেভারিট</button>
 </div>
 
 <div id="announce"></div>
@@ -334,6 +352,10 @@ footer a{color:var(--green);text-decoration:none;font-family:var(--mono);font-si
     <button class="d-install" onclick="doDownload()">⬇ ইনস্টল</button>
     <a class="d-vid" id="dVid" href="#" target="_blank" style="display:none">▶️ ভিডিও টিউটোরিয়াল</a>
     <div class="d-sec"><h3>ℹ️ এই অ্যাপ সম্পর্কে</h3><div class="d-desc" id="dDesc"></div></div>
+    <div class="d-sec"><h3>⭐ রেটিং</h3><div class="rate-avg" id="rateAvg"></div><div class="stars" id="rateStars"></div></div>
+    <div class="d-sec"><h3>💬 মতামত (<span id="cmCount">0</span>)</h3><div id="cmList"></div>
+      <div class="cmbox"><input id="cmText" maxlength="300" placeholder="তোমার মতামত লিখো..."><button onclick="postComment()">পাঠাও</button></div>
+    </div>
   </div>
 </div>
 <script>
@@ -410,7 +432,7 @@ async function initFirebase(){
     firebase.initializeApp(FIREBASE_CONFIG);
     auth = firebase.auth();
     try{ if(firebase.database) fbDb = firebase.database(); }catch(e){ fbDb=null; }
-    auth.onAuthStateChanged(function(u){ fbUser = u || null; if(u) saveUserProfile(u); refreshAcctBtn(); });
+    auth.onAuthStateChanged(function(u){ fbUser = u || null; if(u){ saveUserProfile(u); checkBan(u); loadFavs(); loadRates(); } refreshAcctBtn(); });
     return true;
   }catch(e){ auth=null; return false; }
 }
@@ -537,7 +559,7 @@ function showView(v){
 
 /* ---------- data boot ---------- */
 async function boot(){
-  if(FIREBASE_CONFIG){ await initFirebase(); }
+  if(FIREBASE_CONFIG){ await initFirebase(); loadRates(); }
   refreshAcctBtn();
   var aj = await get("assets.json", null);
   var cfg = await get("apps.json", null);
@@ -599,7 +621,8 @@ function setCat(c, el){
 function filtered(ignoreQ){
   var q = ignoreQ ? "" : (document.getElementById("q").value||"").toLowerCase();
   return apps.filter(function(a){
-    if(cat!=="ALL" && catOf(a.name)!==cat) return false;
+    if(cat==="FAV"){ if(!hasFav(a)) return false; }
+    else if(cat!=="ALL" && catOf(a.name)!==cat) return false;
     if(q && (a.name+" "+(a.label||"")+" "+a.desc).toLowerCase().indexOf(q)<0) return false;
     return true;
   });
@@ -617,19 +640,19 @@ function rankHTML(a,i){
   return '<div class="rank" onclick="openAppIdx('+apps.indexOf(a)+')">'+
     '<div class="n">'+(i+1)+'</div>'+
     '<img loading="lazy" src="'+iconFor(a.name)+'" onerror="this.src=SITE_LOGO" alt="">'+
-    '<div class="inf"><b>'+esc(dispName(a))+'</b><span>V4Z RASHD • ⬇ '+Number(a.downloads).toLocaleString()+' • '+fmtSize(a.size)+'</span></div>'+
-    '<div class="chev">›</div></div>';
+    '<div class="inf"><b>'+esc(dispName(a))+'</b><span>V4Z RASHD • ⬇ '+Number(a.downloads).toLocaleString()+' • '+fmtSize(a.size)+rateTag(a)+'</span></div>'+
+    '<button class="favb" onclick="event.stopPropagation();toggleFavIdx('+apps.indexOf(a)+')">'+(hasFav(a)?"❤️":"🤍")+'</button><div class="chev">›</div></div>';
 }
 function hcardHTML(a){
   return '<div class="hcard" onclick="openAppIdx('+apps.indexOf(a)+')">'+
     '<img loading="lazy" src="'+iconFor(a.name)+'" onerror="this.src=SITE_LOGO" alt="">'+
-    '<b>'+esc(dispName(a))+'</b><span>⬇ '+kfmt(a.downloads)+' • '+fmtSize(a.size)+'</span></div>';
+    '<b>'+esc(dispName(a))+'</b><span>⬇ '+kfmt(a.downloads)+' • '+fmtSize(a.size)+rateTag(a)+'</span></div>';
 }
 function lrowHTML(a){
   return '<div class="lrow" onclick="openAppIdx('+apps.indexOf(a)+')">'+
     '<img loading="lazy" src="'+iconFor(a.name)+'" onerror="this.src=SITE_LOGO" alt="">'+
-    '<div class="inf"><b>'+esc(dispName(a))+'</b><span>V4Z RASHD • '+extOf(a.name)+' • '+fmtSize(a.size)+'</span></div>'+
-    '<button class="dlmini" onclick="event.stopPropagation();quickDl('+apps.indexOf(a)+')">⬇ '+kfmt(a.downloads)+'</button></div>';
+    '<div class="inf"><b>'+esc(dispName(a))+'</b><span>V4Z RASHD • '+extOf(a.name)+' • '+fmtSize(a.size)+rateTag(a)+'</span></div>'+
+    '<button class="favb" onclick="event.stopPropagation();toggleFavIdx('+apps.indexOf(a)+')">'+(hasFav(a)?"❤️":"🤍")+'</button><button class="dlmini" onclick="event.stopPropagation();quickDl('+apps.indexOf(a)+')">⬇ '+kfmt(a.downloads)+'</button></div>';
 }
 function render(){
   renderHome(); renderCharts(); renderSearch(); renderStats();
@@ -708,6 +731,7 @@ function openApp(name){
   var v=document.getElementById("dVid");
   if(a.video){ v.style.display="block"; v.href=a.video; } else v.style.display="none";
   curDl = a.url||"";
+  drawRateUI(); loadComments(a.name);
   document.getElementById("detail").classList.add("open");
   document.body.style.overflow="hidden";
 }
@@ -733,6 +757,104 @@ setInterval(function(){
   var idx=Math.round(nx/w);
   for(var i=0;i<dots.length;i++) dots[i].classList.toggle("on", i===idx%dots.length);
 }, 4500);
+
+/* ---------- favs / ratings / comments / ban ---------- */
+var FAVK = {}, RAT = {}, MYR = {};
+function rk(s){ return String(s||"").replace(/[.$#\[\]\/]/g, function(c){ return "%" + c.charCodeAt(0).toString(16).toUpperCase(); }); }
+function hasFav(a){ return !!FAVK[rk(a.name)]; }
+function rateTag(a){ var r = RAT[rk(a.name)]; return (r && r.n) ? " • ★ " + (r.sum / r.n).toFixed(1) : ""; }
+function loadFavs(){
+  if(!fbDb || !fbUser) return;
+  fbDb.ref("favs/" + fbUser.uid).once("value").then(function(s){ FAVK = s.val() || {}; render(); }).catch(function(){});
+}
+function toggleFavIdx(i){
+  var a = apps[i]; if(!a) return;
+  if(!useFirebase() || !fbUser){ alert("ফেভারিট করতে আগে লগইন করো ❤️"); return; }
+  var k = rk(a.name);
+  if(FAVK[k]){ delete FAVK[k]; try{ fbDb.ref("favs/" + fbUser.uid + "/" + k).remove(); }catch(e){} }
+  else { FAVK[k] = true; try{ fbDb.ref("favs/" + fbUser.uid + "/" + k).set(true); }catch(e){} }
+  render();
+}
+function loadRates(){
+  if(!fbDb) return;
+  fbDb.ref("ratings").once("value").then(function(s){
+    RAT = {}; MYR = {};
+    var v = s.val() || {};
+    Object.keys(v).forEach(function(k){
+      var m = v[k] || {}, sum = 0, n = 0;
+      Object.keys(m).forEach(function(uid){ var r = Number((m[uid] || {}).r) || 0; if(r >= 1 && r <= 5){ sum += r; n++; } });
+      RAT[k] = {sum: sum, n: n};
+      if(fbUser && m[fbUser.uid]) MYR[k] = Number(m[fbUser.uid].r) || 0;
+    });
+    render();
+  }).catch(function(){});
+}
+function drawRateUI(){
+  var av = document.getElementById("rateAvg"), st = document.getElementById("rateStars");
+  if(!av || !st || !curApp) return;
+  var k = rk(curApp.name), r = RAT[k], my = MYR[k] || 0;
+  av.textContent = (r && r.n) ? ("★ " + (r.sum / r.n).toFixed(1) + " • " + r.n + "টি রেটিং") : "এখনো কেউ রেটিং দেয়নি — প্রথমটা তুমি দাও!";
+  var show = my || (r && r.n ? Math.round(r.sum / r.n) : 0);
+  var h = "";
+  for(var i = 1; i <= 5; i++) h += '<button class="' + (i <= show ? "on" : "") + '" onclick="rateApp(' + i + ')">' + (i <= show ? "★" : "☆") + '</button>';
+  st.innerHTML = h;
+}
+function rateApp(n){
+  if(!curApp) return;
+  if(!useFirebase() || !fbUser){ alert("রেটিং দিতে আগে লগইন করো ⭐"); return; }
+  var k = rk(curApp.name), old = MYR[k] || 0;
+  fbDb.ref("ratings/" + k + "/" + fbUser.uid).set({r: n, t: Date.now()}).then(function(){
+    var r = RAT[k] || (RAT[k] = {sum: 0, n: 0});
+    r.sum += n - old; if(!old) r.n++;
+    MYR[k] = n;
+    drawRateUI(); render();
+  }).catch(function(){ alert("রেটিং সেভ হয়নি — আবার চেষ্টা করো।"); });
+}
+function loadComments(name){
+  var box = document.getElementById("cmList"), cnt = document.getElementById("cmCount");
+  if(!box) return;
+  if(!fbDb){ box.innerHTML = '<div class="cm-empty">মন্তব্য লোড হয়নি</div>'; return; }
+  box.innerHTML = '<div class="cm-empty">⏳ লোড হচ্ছে…</div>';
+  fbDb.ref("comments/" + rk(name)).once("value").then(function(s){
+    var v = s.val() || {};
+    var arr = Object.keys(v).map(function(cid){ var c = v[cid] || {}; return {cid: cid, uid: c.uid || "", name: c.name || "?", text: c.text || "", t: c.t || 0}; });
+    arr.sort(function(a, b){ return b.t - a.t; });
+    if(cnt) cnt.textContent = arr.length;
+    if(!arr.length){ box.innerHTML = '<div class="cm-empty">এখনো কোনো মন্তব্য নেই — প্রথম মন্তব্যটা তুমি করো 💬</div>'; return; }
+    box.innerHTML = arr.map(function(c){
+      var own = fbUser && c.uid === fbUser.uid;
+      return '<div class="cm"><div class="cm-av">' + esc((c.name || "?").charAt(0).toUpperCase()) + '</div>'
+        + '<div class="cm-bd"><div class="cm-hd"><b>' + esc(c.name) + '</b><span>' + (c.t ? new Date(c.t).toLocaleDateString("en-GB", {day: "2-digit", month: "short"}) : "") + '</span>'
+        + (own ? '<button class="cm-del" onclick="delComment(\'' + c.cid + '\')">🗑</button>' : '') + '</div>'
+        + '<div class="cm-tx">' + esc(c.text) + '</div></div></div>';
+    }).join("");
+  }).catch(function(){ box.innerHTML = '<div class="cm-empty">মন্তব্য পড়া যাচ্ছে না</div>'; });
+}
+function postComment(){
+  if(!curApp) return;
+  if(!useFirebase() || !fbUser){ alert("মন্তব্য করতে আগে লগইন করো 💬"); return; }
+  var inp = document.getElementById("cmText"), tx = (inp.value || "").trim();
+  if(!tx) return;
+  var nm = curApp.name;
+  fbDb.ref("comments/" + rk(nm)).push({uid: fbUser.uid, name: fbName(), text: tx, t: Date.now()}).then(function(){
+    inp.value = ""; loadComments(nm);
+  }).catch(function(){ alert("মন্তব্য যায়নি — আবার চেষ্টা করো।"); });
+}
+function delComment(cid){
+  if(!curApp || !fbUser) return;
+  fbDb.ref("comments/" + rk(curApp.name) + "/" + cid).remove().then(function(){ loadComments(curApp.name); }).catch(function(){});
+}
+function checkBan(u){
+  if(!u || !fbDb) return;
+  fbDb.ref("banned/" + u.uid).once("value").then(function(s){
+    if(s.val()){
+      try{ auth.signOut(); }catch(e){}
+      fbUser = null; sessSet("");
+      alert("🚫 এই অ্যাকাউন্টটি অ্যাডমিন ব্যান করেছে।");
+      refreshAcctBtn();
+    }
+  }).catch(function(){});
+}
 
 boot();
 </script>
