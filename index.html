@@ -823,7 +823,7 @@ function showDlProg(t, done){ var p=document.getElementById("dlProg"), tx=docume
 function hideDlProg(){ var p=document.getElementById("dlProg"); if(p) p.style.display="none"; var bar=document.getElementById("dlBar"); if(bar) bar.classList.remove("done"); }
 function drawDlState(){
   var b=document.getElementById("dInstall"); if(!b || !curApp) return;
-  if(!useFirebase() || !fbUser || isAdminUser()){ b.textContent="⬇ Install"; b.classList.remove("done"); return; }
+  if(!useFirebase() || !fbUser){ b.textContent="⬇ Install"; b.classList.remove("done"); return; }
   var key=rk(curApp.name);
   if(myDL.downloadedApps && myDL.downloadedApps[key]){ b.textContent="✓ Downloaded"; b.classList.add("done"); return; }
   b.textContent="⬇ Install";
@@ -841,9 +841,7 @@ function dlStartedUI(){
 async function doDownload(){
   if(!curDl){ toast("ডাউনলোড লিংক পাওয়া যায়নি।"); return; }
   var a=curApp;
-  /* ADMIN BYPASS — এটাই একমাত্র ছাড়: মালিকের নিজের অ্যাকাউন্ট (rashedbro123@rashdstore.app)
-     কি ছাড়াই সরাসরি ডাউনলোড করতে পারে। বাকি সবার জন্য নিচের STRICT KEY GATE প্রযোজ্য। */
-  if(isAdminUser()){ window.open(curDl, "_blank"); return; }
+  /* STRICT KEY GATE — সবার জন্য (admin-সহ): অব্যবহৃত কি ছাড়া কোনো ডাউনলোডই হবে না। কোনো bypass নেই। */
   if(!useFirebase() || !fbUser || !fbDb || !a){ toast("ডাউনলোড করতে আগে লগইন করো 🔐"); return; }
   if(dlBusy) return; dlBusy=true;
   showDlProg("⏳ যাচাই করা হচ্ছে...");
@@ -1049,7 +1047,6 @@ function loadUserData(u){
   fbDb.ref("users/" + u.uid).once("value").then(function(s){
     var d = s.val() || {};
     myDL = { joinedTg: !!d.joinedTg, downloadsUsed: Number(d.downloadsUsed) || 0, downloadedApps: d.downloadedApps || {} };
-    if(isAdminUser()) myDL.joinedTg = true;
     showTgGate(!myDL.joinedTg);
     renderKeyBox(); renderMyDownloads(); drawDlState();
   }).catch(function(){ myDL.joinedTg = true; showTgGate(false); });
