@@ -130,6 +130,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .d-hero .dev{color:var(--green);font-size:13.5px;font-weight:700;margin-top:5px}
 .d-hero .pkg{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:3px;word-break:break-all}
 .d-stats{display:flex;margin:16px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface)}
+.tchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 16px 14px}
+.tchips .chipp{font-size:11px}
 .d-stat{flex:1;text-align:center;padding:12px 6px}
 .d-stat+.d-stat{border-left:1px solid var(--border)}
 .d-stat b{display:block;font-family:var(--mono);font-size:15px;color:var(--green)}
@@ -404,6 +406,7 @@ footer a{color:var(--green);text-decoration:none;font-family:var(--mono);font-si
       <div class="d-stat"><b id="dSize"></b><span>সাইজ</span></div>
       <div class="d-stat"><b id="dFmt"></b><span>ফরম্যাট</span></div>
     </div>
+    <div class="tchips" id="dTrust" style="display:none"></div>
     <button class="d-install" id="dInstall" onclick="doDownload()">⬇ Install</button>
     <div class="dlprog" id="dlProg" style="display:none"><div class="dlbar" id="dlBar"><i></i></div><p id="dlProgTx"></p></div>
     <a class="d-vid" id="dVid" href="#" target="_blank" rel="noopener" style="display:none">▶️ ভিডিও টিউটোরিয়াল</a>
@@ -805,6 +808,12 @@ function openApp(name){
   document.getElementById("dSize").textContent=fmtSize(a.size);
   document.getElementById("dDls").textContent=Number(a.downloads).toLocaleString();
   document.getElementById("dFmt").textContent=extOf(a.name);
+  var tch=[];
+  if(Number(a.downloads)>0) tch.push('<span class="chipp">⬇ '+Number(a.downloads).toLocaleString()+' বার ডাউনলোড হয়েছে</span>');
+  if(Number(a.size)>0) tch.push('<span class="chipp">📦 '+fmtSize(a.size)+'</span>');
+  if(a.url && String(a.url).indexOf("http")===0) tch.push('<span class="chipp">🛡️ লিংক যাচাই করা</span>');
+  var dtEl=document.getElementById("dTrust");
+  if(dtEl){ dtEl.innerHTML=tch.join(""); dtEl.style.display=tch.length?"flex":"none"; }
   document.getElementById("dDesc").textContent=a.desc;
   var v=document.getElementById("dVid");
   if(a.video){ v.style.display="block"; v.href=a.video; } else v.style.display="none";
