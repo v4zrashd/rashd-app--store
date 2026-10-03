@@ -839,8 +839,15 @@ function drawDlState(){
   b.classList.remove("done");
 }
 function goDlUrl(){
-  /* একই পেজ থেকে ডাউনলোড: নতুন ট্যাবে GitHub পেজ খুলে না; attachment হেডার থাকায়
-     Chrome একই পেজে থেকেই শুধু ডাউনলোড নোটিফিকেশনে ফাইল নামাবে। */
+  /* ডেডিকেটেড ডাউনলোড পেজে (dl/) পাঠায়: আসল লিংক sessionStorage-এ রেখে ওই পেজে যায় —
+     পেজ নিজে থেকেই ব্রাউজারে ডাউনলোড শুরু করে, লিংক কোথাও টেক্সট হিসেবে দেখা যায় না।
+     Telegram-এর ভেতর থাকলে ওই পেজ openLink দিয়ে বাইরের ব্রাউজারে পাঠিয়ে দেয়। */
+  try{
+    sessionStorage.setItem("rashd_dl", JSON.stringify({url:curDl, name:(curApp&&curApp.name)||"", size:(curApp&&curApp.size)||0, ts:Date.now()}));
+    location.href="dl/";
+    return;
+  }catch(e){}
+  /* sessionStorage ব্যর্থ হলে আগের আচরণ: একই পেজ থেকে anchor ডাউনলোড */
   try{
     var a=document.createElement("a");
     a.href=curDl;
@@ -851,7 +858,6 @@ function goDlUrl(){
     document.body.removeChild(a);
     return;
   }catch(e){}
-  /* anchor পথ ব্যর্থ হলে আগের আচরণ */
   try{ var w=window.open(curDl, "_blank"); if(w) return; }catch(e){}
   location.href=curDl;
 }
