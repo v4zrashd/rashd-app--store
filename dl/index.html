@@ -105,10 +105,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   function fmtSize(b){ b = Number(b) || 0; if(b < 1024) return b + " B"; if(b < 1048576) return (b/1024).toFixed(1) + " KB"; return (b/1048576).toFixed(1) + " MB"; }
 
   /* ---------- Telegram-escape helpers ---------- */
+  function getTg(){
+    try{ return (window.Telegram && window.Telegram.WebApp) || null; }catch(e){ return null; }
+  }
+  /* আসল Mini App: Bot-এর web-app বাটন থেকে খুললে initData অ-শূন্য থাকে */
+  function isMiniApp(){
+    var tg = getTg();
+    try{ return !!(tg && tg.initData && String(tg.initData).length > 0); }catch(e){ return false; }
+  }
+  /* Telegram-এর যেকোনো ভেতরের পরিবেশ (Mini App বা সাধারণ Telegram ব্রাউজার) */
   function detectTelegram(){
+    if(isMiniApp()) return true;
     try{
-      var tg = window.Telegram && window.Telegram.WebApp;
-      if(tg && tg.initData) return true; /* আসল WebApp-এ initData থাকে; বাইরে খালি থাকে */
+      var tg = getTg();
+      if(tg && tg.platform && String(tg.platform) !== "unknown") return true;
     }catch(e){}
     return /Telegram/i.test(navigator.userAgent || "");
   }
@@ -205,48 +215,59 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
   dlUrl = String(data.url);
   var payload = { url: dlUrl, name: data.name ? String(data.name) : "", size: Number(data.size) || 0 };
-  var inTg = detectTelegram();
-  /* escape শুধু sessionStorage পথে ও Telegram-এর ভেতরে থাকলে (hash দিয়ে এলে ব্রাউজারেই চলছে) */
-  var escapeMode = (!fromHash && inTg);
-  var escapeUrl = null;
+  var inTg = detectTelegram(); /* Telegram-এর ভেতরে আছি কিনা (যেভাবেই এসেছি) */
+  var mini = isMiniApp();      /* আসল Mini App কিনা (openLink ব্যবহারযোগ্য) */
+  /* Telegram-এর ভেতরে থাকলেই escape — hash পথে এলেও, নইলে webview-এর ভেতরেই ডাউনলোড ব্যর্থ হবে */
+  var escapeMode = inTg;
+  var payloadB64 = b64urlEncode(JSON.stringify(payload));
+  var escapeUrl = null, rescueUrl = null;
   if(escapeMode){
-    escapeUrl = location.origin + location.pathname + "#h=" + b64urlEncode(JSON.stringify(payload));
+    escapeUrl = location.origin + location.pathname + "#h=" + payloadB64;
+    rescueUrl = "https://t.me/rashd12bot?start=dl_" + payloadB64;
   }
 
   $("appName").textContent = payload.name || "অ্যাপ";
   if(payload.size > 0) $("appSize").textContent = "📦 " + fmtSize(payload.size);
   $("okState").classList.remove("hide");
 
-  function openEscape(){
-    var tg = window.Telegram && window.Telegram.WebApp;
-    try{
-      if(tg && typeof tg.openLink === "function"){ tg.openLink(escapeUrl); return; }
-    }catch(e){}
-    try{
-      var a = document.createElement("a");
-      a.href = escapeUrl;
-      a.rel = "noopener";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }catch(e){}
+  function showEscape(){
+    /* Telegram-এর ভেতরে ডাউনলোড শুরু করব না — বাইরের ব্রাউজারে একই পেজে পাঠাই।
+       sessionStorage মোছা হবে না, অটো-anchor-ও হবে না (loop এড়াতে)। */
+    $("statusTx").textContent = "ব্রাউজারে পাঠানো হচ্ছে — ওইখানে ডাউনলোড শুরু হবে ⬇";
+    var eb = $("escapeBtn");
+    if(mini){
+      /* Mini App: openLink দিয়ে সরাসরি আসল ব্রাউজারে একই পেজ খুলবে; অটো-চেষ্টাও একবার */
+      eb.textContent = "🌐 ব্রাউজারে গিয়ে ডাউনলোড করো";
+      eb.href = escapeUrl;
+      eb.addEventListener("click", function(ev){
+        var tg = getTg();
+        try{
+          if(tg && typeof tg.openLink === "function"){ ev.preventDefault(); tg.openLink(escapeUrl); }
+        }catch(e){}
+      });
+      $("subTx").textContent = "তুমি এখন Telegram-এর ভেতরে আছো — ডাউনলোডের জন্য আসল ব্রাউজার লাগবে।";
+      setTimeout(function(){
+        var tg = getTg();
+        try{ if(tg && typeof tg.openLink === "function") tg.openLink(escapeUrl); }catch(e){}
+      }, 800);
+    } else {
+      /* সাধারণ Telegram ব্রাউজার: openLink আসল ব্রাউজারে নাও নিতে পারে — bot-rescue লিংকই ভরসা */
+      eb.textContent = "🤖 বট থেকে ব্রাউজারে খোলো";
+      eb.href = rescueUrl;
+      $("subTx").textContent = "অথবা উপরের ⋮ মেনু থেকে Open in Chrome চাপো";
+    }
+    eb.classList.remove("hide");
+    /* escape মোডে retry বাটন লুকানো — ডুপ্লিকেট ক্লিকে বিভ্রান্তি এড়াতে */
+    $("retryBtn").classList.add("hide");
   }
 
   $("retryBtn").addEventListener("click", function(){
-    if(escapeMode){ openEscape(); return; }
+    if(escapeMode){ showEscape(); return; }
     if(triggerDownload() && !started) onStarted();
   });
 
   if(escapeMode){
-    /* c) Telegram-এর ভেতরে ভেতরে ডাউনলোড শুরু করব না — বাইরের ব্রাউজারে একই পেজে পাঠাই।
-       sessionStorage মোছা হবে না, অটো-anchor-ও হবে না (loop এড়াতে)। */
-    $("statusTx").textContent = "ব্রাউজারে পাঠানো হয়েছে — ওইখানে ডাউনলোড শুরু হবে ⬇";
-    $("subTx").textContent = "কাজ না হলে উপরের ⋮ মেনু থেকে Open in Chrome চাপো";
-    var eb = $("escapeBtn");
-    eb.href = escapeUrl;
-    eb.classList.remove("hide");
-    $("retryBtn").classList.remove("hide");
-    setTimeout(openEscape, 800);
+    showEscape();
     return;
   }
 
