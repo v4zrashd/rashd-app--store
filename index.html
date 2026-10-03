@@ -830,6 +830,19 @@ function drawDlState(){
   b.classList.remove("done");
 }
 function goDlUrl(){
+  /* একই পেজ থেকে ডাউনলোড: নতুন ট্যাবে GitHub পেজ খুলে না; attachment হেডার থাকায়
+     Chrome একই পেজে থেকেই শুধু ডাউনলোড নোটিফিকেশনে ফাইল নামাবে। */
+  try{
+    var a=document.createElement("a");
+    a.href=curDl;
+    a.setAttribute("download", "");
+    a.rel="noopener";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    return;
+  }catch(e){}
+  /* anchor পথ ব্যর্থ হলে আগের আচরণ */
   try{ var w=window.open(curDl, "_blank"); if(w) return; }catch(e){}
   location.href=curDl;
 }
