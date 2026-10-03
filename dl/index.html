@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>ডাউনলোড — RASHD App Store</title>
+<link rel="icon" href="https://v4zrashd.github.io/rashd-app--store/assets/site-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#070b12; --surface:#0f1622; --surface2:#0b111c;
+  --green:#00e676; --green-d:#00a85c; --cyan:#00ffcc;
+  --text:#eef2f6; --muted:#8b95a5; --border:rgba(0,230,118,.14);
+  --mono:'Share Tech Mono',monospace; --sans:'Plus Jakarta Sans','Noto Sans Bengali',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,230,118,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,230,118,.03) 1px,transparent 1px);
+  background-size:26px 26px}
+.shell{position:relative;z-index:1;max-width:520px;margin:0 auto;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px 18px calc(26px + env(safe-area-inset-bottom))}
+.logo{width:84px;height:84px;border-radius:50%;object-fit:cover;
+  border:2px solid var(--green);box-shadow:0 0 22px rgba(0,230,118,.55)}
+.brand{font-family:var(--mono);font-size:15px;letter-spacing:2px;margin-top:14px;color:var(--muted)}
+.brand b{color:var(--text)}
+.brand b span{color:var(--green);text-shadow:0 0 10px var(--green)}
+.card{margin-top:22px;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:22px;
+  padding:30px 22px 26px;text-align:center;box-shadow:0 14px 40px rgba(0,0,0,.45)}
+.appname{font-size:21px;font-weight:800;line-height:1.4;word-break:break-word}
+.appsize{margin-top:6px;font-family:var(--mono);font-size:13px;color:var(--cyan);letter-spacing:1px}
+/* ---------- animated download ring (visual only, no fake %) ---------- */
+.ringwrap{position:relative;width:150px;height:150px;margin:28px auto 6px}
+.ring{position:absolute;inset:0;border-radius:50%;
+  border:4px solid rgba(0,230,118,.12);border-top-color:var(--green);border-right-color:var(--cyan);
+  animation:spin 1.15s linear infinite;box-shadow:0 0 26px rgba(0,230,118,.25),inset 0 0 26px rgba(0,230,118,.08)}
+.ring.r2{inset:14px;border-width:3px;animation-duration:1.9s;animation-direction:reverse;opacity:.65}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ringwrap.done .ring{animation:none;border-top-color:var(--green);border-right-color:var(--green)}
+.dlarrow{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:52px;color:var(--green);text-shadow:0 0 18px rgba(0,230,118,.8);animation:bob 1.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(-4px)}50%{transform:translateY(5px)}}
+.ringwrap.done .dlarrow{animation:none}
+.bar{height:6px;border-radius:4px;background:rgba(0,230,118,.12);margin:20px auto 0;max-width:280px;overflow:hidden;position:relative}
+.bar i{position:absolute;top:0;bottom:0;left:-40%;width:40%;border-radius:4px;
+  background:linear-gradient(90deg,transparent,var(--green),var(--cyan),transparent);
+  box-shadow:0 0 12px rgba(0,230,118,.7);animation:slide 1.4s ease-in-out infinite}
+@keyframes slide{to{left:100%}}
+.status{margin-top:18px;font-size:15.5px;font-weight:700;line-height:1.55}
+.sub{margin-top:8px;font-size:13px;color:var(--muted);line-height:1.65}
+.btn{display:block;width:100%;margin-top:16px;border:none;cursor:pointer;border-radius:26px;
+  padding:15px 20px;font-size:15.5px;font-weight:800;font-family:var(--sans);text-decoration:none;text-align:center}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--green);color:#04120a;box-shadow:0 6px 20px rgba(0,230,118,.35)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.hide{display:none !important}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="shell">
+  <img class="logo" src="https://v4zrashd.github.io/rashd-app--store/assets/site-logo.png" alt="RASHD App Store" />
+  <div class="brand"><b>RASHD <span>APP STORE</span></b></div>
+
+  <div class="card">
+    <!-- valid-download state -->
+    <div id="okState" class="hide">
+      <div class="appname" id="appName"></div>
+      <div class="appsize" id="appSize"></div>
+      <div class="ringwrap" id="ringWrap">
+        <div class="ring"></div>
+        <div class="ring r2"></div>
+        <div class="dlarrow" id="dlArrow">⬇</div>
+      </div>
+      <div class="bar"><i></i></div>
+      <div class="status" id="statusTx">⏳ ডাউনলোড প্রস্তুত হচ্ছে…</div>
+      <div class="sub" id="subTx"></div>
+      <button class="btn primary hide" id="retryBtn" type="button">⬇ আবার ডাউনলোড করো</button>
+      <a class="btn ghost" href="../">← স্টোরে ফিরে যাও</a>
+    </div>
+
+    <!-- no / expired data state -->
+    <div id="badState" class="hide">
+      <div class="status">আগে স্টোর থেকে ডাউনলোড বাটনে চাপ দাও 🔑</div>
+      <div class="sub">এই পেজটা স্টোরের ডাউনলোড বাটন থেকেই খোলে — সরাসরি খুললে বা অনেকক্ষণ পেরিয়ে গেলে এখানে কাজ হবে না।</div>
+      <a class="btn primary" href="../">← স্টোরে ফিরে যাও</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var DL_KEY = "rashd_dl";
+  var MAX_AGE = 5 * 60 * 1000; /* ৫ মিনিট */
+  var dlUrl = null;
+  var started = false;
+
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function fmtSize(b){ b = Number(b) || 0; if(b < 1024) return b + " B"; if(b < 1048576) return (b/1024).toFixed(1) + " KB"; return (b/1048576).toFixed(1) + " MB"; }
+
+  function triggerDownload(){
+    if(!dlUrl) return false;
+    var tg = window.Telegram && window.Telegram.WebApp;
+    try{
+      if(tg && typeof tg.openLink === "function"){
+        tg.openLink(dlUrl); /* Telegram-এর ভেতর থেকে বাইরের ব্রাউজারে পাঠায় */
+        return true;
+      }
+    }catch(e){}
+    try{
+      var a = document.createElement("a");
+      a.href = dlUrl;
+      a.setAttribute("download", "");
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      return true;
+    }catch(e){}
+    return false;
+  }
+
+  function onStarted(){
+    if(started) return;
+    started = true;
+    /* লিংক যেন সেশনে পড়ে না থাকে — একবার শুরু হলেই মুছে ফেলি */
+    try{ sessionStorage.removeItem(DL_KEY); }catch(e){}
+    var rw = $("ringWrap"); if(rw) rw.classList.add("done");
+    $("statusTx").textContent = "ডাউনলোড শুরু হয়েছে ⬇";
+    $("subTx").textContent = "শেষ হলে notification / Downloads ফোল্ডারে ফাইলটি পাবে — ফাইলটি খুলে Install চাপো 📲";
+    $("retryBtn").classList.remove("hide");
+  }
+
+  function startAuto(){
+    if(triggerDownload()) onStarted();
+    else {
+      $("statusTx").textContent = "ডাউনলোড শুরু করা যায়নি — নিচের বাটনে চাপ দাও 👇";
+      $("retryBtn").classList.remove("hide");
+    }
+  }
+
+  /* ---------- init ---------- */
+  var data = null;
+  try{
+    var raw = sessionStorage.getItem(DL_KEY);
+    if(raw) data = JSON.parse(raw);
+  }catch(e){ data = null; }
+
+  var valid = data && data.url && data.ts && (Date.now() - Number(data.ts) <= MAX_AGE);
+
+  if(!valid){
+    try{ sessionStorage.removeItem(DL_KEY); }catch(e){}
+    $("badState").classList.remove("hide");
+    return;
+  }
+
+  dlUrl = String(data.url);
+  $("appName").textContent = data.name ? String(data.name) : "অ্যাপ";
+  if(Number(data.size) > 0) $("appSize").textContent = "📦 " + fmtSize(data.size);
+  $("okState").classList.remove("hide");
+
+  $("retryBtn").addEventListener("click", function(){
+    if(triggerDownload() && !started) onStarted();
+  });
+
+  /* পেজ খোলার ~১ সেকেন্ড পর নিজে থেকেই ডাউনলোড শুরু */
+  setTimeout(startAuto, 1000);
+})();
+</script>
+</body>
+</html>
