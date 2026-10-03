@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🔑 RASHD Key</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src='//libtl.com/sdk.js' data-zone='11949593' data-sdk='show_11949593'></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    background:#04070a; color:#e8fff4; min-height:100vh;
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    display:flex; flex-direction:column; align-items:center;
+    padding:28px 18px 40px;
+    background-image:radial-gradient(ellipse 80% 45% at 50% -5%, rgba(0,255,157,.14), transparent 65%);
+  }
+  .logo {
+    font-size:30px; font-weight:900; letter-spacing:3px; color:#fff; text-align:center;
+    text-shadow:0 0 18px rgba(0,255,157,.55);
+  }
+  .logo span { color:#00ff9d; }
+  .tagline { text-align:center; color:#7ddbb5; font-size:12px; letter-spacing:2px; margin-top:4px; }
+  .card {
+    width:100%; max-width:420px; margin-top:30px;
+    background:linear-gradient(160deg, rgba(0,255,157,.07), rgba(0,255,157,.015));
+    border:1px solid rgba(0,255,157,.3); border-radius:20px; padding:26px 20px;
+    box-shadow:0 0 34px rgba(0,255,157,.10), inset 0 0 24px rgba(0,255,157,.03);
+    text-align:center;
+  }
+  h1 { font-size:22px; margin-bottom:10px; }
+  .desc { color:#b9e8d2; font-size:14.5px; line-height:1.75; }
+  .desc b { color:#00ff9d; }
+  #adBtn {
+    margin-top:24px; width:100%; border:none; cursor:pointer;
+    background:linear-gradient(90deg,#00d97a,#00ff9d); color:#02130a;
+    font-size:18px; font-weight:800; padding:16px 12px; border-radius:14px;
+    box-shadow:0 0 22px rgba(0,255,157,.45);
+    animation:pulse 2s infinite;
+  }
+  #adBtn:disabled { opacity:.55; cursor:wait; animation:none; box-shadow:none; }
+  @keyframes pulse {
+    0%,100% { box-shadow:0 0 14px rgba(0,255,157,.35); }
+    50% { box-shadow:0 0 30px rgba(0,255,157,.65); }
+  }
+  #status { margin-top:16px; min-height:22px; font-size:14px; color:#ffd97a; }
+  #keyBox { display:none; margin-top:22px; }
+  #keyCode {
+    font-family:'Courier New', monospace; font-size:27px; font-weight:900; letter-spacing:2.5px;
+    color:#00ff9d; background:rgba(0,0,0,.5); border:1.5px dashed rgba(0,255,157,.55);
+    border-radius:12px; padding:15px 8px; text-shadow:0 0 12px rgba(0,255,157,.5);
+    word-break:break-all;
+  }
+  #copyBtn {
+    margin-top:14px; width:100%; background:transparent; color:#00ff9d; cursor:pointer;
+    border:1.5px solid #00ff9d; font-size:16px; font-weight:700; padding:12px; border-radius:12px;
+  }
+  .note { margin-top:14px; font-size:13.5px; line-height:1.7; color:#a9d8c2; }
+  .foot { margin-top:auto; padding-top:34px; font-size:11.5px; color:#4d7a64; letter-spacing:1px; text-align:center; }
+</style>
+</head>
+<body>
+  <div class="logo">RASHD <span>APP STORE</span></div>
+  <div class="tagline">V4Z RASHD • OFFICIAL</div>
+
+  <div class="card">
+    <h1>🔑 RASHD Key</h1>
+    <p class="desc">ছোট্ট একটা অ্যাড দেখো → একটা <b>কি</b> পাও → সেই কিটা <b>RASHD App Store</b> অ্যাপে বসিয়ে <b>১টা অ্যাপ</b> ডাউনলোড করো।</p>
+
+    <button id="adBtn" type="button">▶ অ্যাড দেখে কি নাও</button>
+    <div id="status"></div>
+
+    <div id="keyBox">
+      <div id="keyCode"></div>
+      <button id="copyBtn" type="button">📋 কি কপি করো</button>
+      <p class="note">এই কিটা RASHD App Store অ্যাপে বসাও।<br>একটা কিতে ১টা ডাউনলোড।</p>
+    </div>
+  </div>
+
+  <div class="foot">© 2026 V4Z RASHD • t.me/rashdteem</div>
+
+<script>
+(function () {
+  'use strict';
+  // v1 design: each completed rewarded ad = exactly 1 key. No extra artificial timer.
+  var DB = 'https://rashdapp-784d3-default-rtdb.firebaseio.com';
+  var ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no I/O/0/1 — easy to read & type
+  var btn = document.getElementById('adBtn');
+  var status = document.getElementById('status');
+  var keyBox = document.getElementById('keyBox');
+  var keyCodeEl = document.getElementById('keyCode');
+  var copyBtn = document.getElementById('copyBtn');
+  var currentKey = '';
+
+  try {
+    if (window.Telegram && Telegram.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+    }
+  } catch (e) { /* opened outside Telegram — page still works */ }
+
+  function tgUserId() {
+    try {
+      var u = Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user;
+      return (u && u.id) ? u.id : null;
+    } catch (e) { return null; }
+  }
+
+  function makeCode() {
+    var code = '', i, n;
+    var buf = new Uint32Array(10);
+    if (window.crypto && crypto.getRandomValues) { crypto.getRandomValues(buf); }
+    for (i = 0; i < 10; i++) {
+      n = (window.crypto && crypto.getRandomValues) ? buf[i] : Math.floor(Math.random() * 4294967296);
+      code += ALPHABET[n % ALPHABET.length];
+    }
+    return code;
+  }
+
+  function setStatus(t) { status.textContent = t || ''; }
+
+  function saveKey(code) {
+    // Create-only write under /keys/{code} (rules v4: create with used=false, readable per-key).
+    var rec = { src: 'ad', t: Date.now(), used: false };
+    var tg = tgUserId();
+    if (tg) { rec.tg = tg; }
+    return fetch(DB + '/keys/' + code + '.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(rec)
+    }).then(function (r) {
+      if (!r.ok) { throw new Error('save failed: ' + r.status); }
+      return r.json();
+    });
+  }
+
+  function issueKey(attempt) {
+    var code = makeCode();
+    return saveKey(code).then(function () {
+      return code;
+    }).catch(function (err) {
+      if (attempt < 3) { return issueKey(attempt + 1); } // fresh code each retry (also covers rare collision)
+      throw err;
+    });
+  }
+
+  btn.addEventListener('click', function () {
+    if (typeof window.show_11949593 !== 'function') {
+      setStatus('⚠️ অ্যাড এখন লোড হয়নি। একটু পরে আবার চেষ্টা করো।');
+      return;
+    }
+    btn.disabled = true;
+    keyBox.style.display = 'none';
+    setStatus('📺 অ্যাড চলছে... পুরোটা দেখো!');
+    window.show_11949593().then(function () {
+      setStatus('⏳ কি তৈরি হচ্ছে...');
+      return issueKey(1);
+    }).then(function (code) {
+      currentKey = code;
+      keyCodeEl.textContent = code;
+      keyBox.style.display = 'block';
+      setStatus('✅ তোমার কি তৈরি!');
+      btn.disabled = false;
+      btn.textContent = '▶ আরেকটা কি নাও';
+      try { if (Telegram.WebApp.HapticFeedback) { Telegram.WebApp.HapticFeedback.notificationOccurred('success'); } } catch (e) {}
+    }).catch(function () {
+      setStatus('❌ হয়নি — অ্যাডটা পুরো দেখে আবার চেষ্টা করো।');
+      btn.disabled = false;
+    });
+  });
+
+  copyBtn.addEventListener('click', function () {
+    if (!currentKey) { return; }
+    function done() {
+      copyBtn.textContent = '✅ কপি হয়েছে!';
+      setStatus('এবার RASHD App Store অ্যাপে গিয়ে কিটা বসাও।');
+      setTimeout(function () { copyBtn.textContent = '📋 কি কপি করো'; }, 2200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(currentKey).then(done).catch(function () { fallbackCopy(done); });
+    } else { fallbackCopy(done); }
+  });
+
+  function fallbackCopy(done) {
+    var ta = document.createElement('textarea');
+    ta.value = currentKey;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    done();
+  }
+})();
+</script>
+</body>
+</html>
