@@ -347,7 +347,7 @@ footer a{color:var(--green);text-decoration:none;font-family:var(--mono);font-si
         <div class="field"><label>ইউজারনেম (৩-২০ অক্ষর)</label><input id="suUser" placeholder="নতুন ইউজারনেম" autocomplete="username"></div>
         <div class="field"><label>পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label><input id="suPass" type="password" placeholder="••••••••" autocomplete="new-password"></div>
         <div class="field"><label>পাসওয়ার্ড আবার দিন</label><input id="suPass2" type="password" placeholder="••••••••" autocomplete="new-password"></div>
-        <div class="field"><label>রেফার কোড (থাকলে দাও)</label><input id="suRef" maxlength="6" placeholder="যেমন: AB12CD" style="text-transform:uppercase"></div>
+        
         <div class="auth-msg" id="suMsg"></div>
         <button class="auth-go" onclick="doSignup()">একাউন্ট খুলুন</button>
       </div>
@@ -422,16 +422,19 @@ footer a{color:var(--green);text-decoration:none;font-family:var(--mono);font-si
   <a class="joinbtn" href="https://t.me/rashdteem" target="_blank" rel="noopener">✈️ চ্যানেলে জয়েন করো</a>
   <button class="confirmbtn" onclick="confirmJoin()">✅ জয়েন করেছি</button>
 </div></div>
-<div id="refWall" class="ovl" style="display:none"><div class="ovcard">
-  <button class="ovx" onclick="hideRefWall()" aria-label="close">✕</button>
-  <h2>🔒 ডাউনলোড ক্রেডিট শেষ!</h2>
-  <p id="refWallStat"></p>
-  <div class="refbox-mount"></div>
+<div id="keyGate" class="ovl" style="display:none"><div class="ovcard">
+  <button class="ovx" onclick="hideKeyGate()" aria-label="close">✕</button>
+  <h2>🔑 ডাউনলোড কি লাগবে</h2>
+  <p>এই অ্যাপটা প্রথমবার নিতে ১টা কি লাগবে। Telegram বট থেকে কি এনে নিচে বসাও — একটা কিতে এই অ্যাপটা তোমার হয়ে যাবে, পরে আবার ফ্রি-তেই নামানো যাবে।</p>
+  <input id="keyInp" maxlength="10" placeholder="কি কোড বসাও" autocomplete="off" autocapitalize="characters" onkeydown="if(event.key==='Enter'){event.preventDefault();submitKey();}" style="width:100%;margin-top:10px;padding:13px 12px;border-radius:12px;border:1.5px solid rgba(0,255,157,.5);background:rgba(0,0,0,.45);color:#e8fff4;font-size:17px;font-weight:700;letter-spacing:2px;text-align:center;text-transform:uppercase;outline:none">
+  <p id="keyErr" style="min-height:20px;margin-top:8px;color:#ff9a9a;font-size:13.5px"></p>
+  <button class="confirmbtn" id="keyGoBtn" onclick="submitKey()">✔ যাচাই করে ডাউনলোড</button>
+  <a class="joinbtn" href="https://t.me/rashd12bot" target="_blank" rel="noopener">🔑 কি নাও — বট থেকে</a>
 </div></div>
 <div id="toast"></div>
 <script>
 "use strict";
-try{ var _rp=new URLSearchParams(location.search).get("ref"); if(_rp) localStorage.setItem("rashd_ref", String(_rp).trim().toUpperCase()); }catch(e){}
+
 window.APP_ICONS={
 "BanglaCodes.apk":"data:image/jpeg;base64,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",
 "Dev.Tools.Pro_6.9.1-gp.apk":"data:image/jpeg;base64,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",
@@ -504,7 +507,7 @@ async function initFirebase(){
     firebase.initializeApp(FIREBASE_CONFIG);
     auth = firebase.auth();
     try{ if(firebase.database) fbDb = firebase.database(); }catch(e){ fbDb=null; }
-    auth.onAuthStateChanged(function(u){ fbUser = u || null; if(u){ saveUserProfile(u); checkBan(u); loadFavs(); loadRates(); loadUserData(u); } else { resetMyDL(); showTgGate(false); hideRefWall(); renderRefBox(); renderMyDownloads(); } refreshAcctBtn(); });
+    auth.onAuthStateChanged(function(u){ fbUser = u || null; if(u){ saveUserProfile(u); checkBan(u); loadFavs(); loadRates(); loadUserData(u); } else { resetMyDL(); showTgGate(false); hideKeyGate(); renderKeyBox(); renderMyDownloads(); } refreshAcctBtn(); });
     return true;
   }catch(e){ auth=null; return false; }
 }
@@ -533,7 +536,6 @@ async function doSignup(){
   if(!validUser(u)) return err("ইউজারনেম ৩-২০ অক্ষর (a-z, 0-9, _) হতে হবে।");
   if(p1.length<6) return err("পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে।");
   if(p1!==p2) return err("দুটি পাসওয়ার্ড মিলছে না।");
-  var _sr=document.getElementById("suRef"); if(_sr && _sr.value.trim()){ try{ localStorage.setItem("rashd_ref", _sr.value.trim().toUpperCase()); }catch(e){} }
   if(useFirebase()){
     try{ var cr=await auth.createUserWithEmailAndPassword(uname2email(u), p1); fbUser=cr.user; sessSet("");
       if(fbDb){ try{ fbDb.ref("meta/userCount").transaction(function(c){ return (c||0)+1; }); }catch(e){} }
@@ -739,10 +741,7 @@ function saveUserProfile(u){
     ref.once('value').then(function(s){
       if(s.exists()){ ref.update({name: nm}); }
       else {
-        ref.set({name: nm, t: Date.now()}).then(function(){
-          var code=""; try{ code=(localStorage.getItem("rashd_ref")||"").trim().toUpperCase(); }catch(e){}
-          if(code){ resolveRefCode(code, function(ruid){ if(ruid && ruid!==u.uid){ try{ fbDb.ref("users/" + u.uid + "/referredBy").set(ruid); }catch(e){} } }); }
-        }).catch(function(){});
+        ref.set({name: nm, t: Date.now()}).catch(function(){});
       }
     }).catch(function(){});
   }catch(e){}
@@ -827,41 +826,87 @@ function drawDlState(){
   if(!useFirebase() || !fbUser || isAdminUser()){ b.textContent="⬇ Install"; b.classList.remove("done"); return; }
   var key=rk(curApp.name);
   if(myDL.downloadedApps && myDL.downloadedApps[key]){ b.textContent="✓ Downloaded"; b.classList.add("done"); return; }
-  var total=1+(Number(myDL.refCredits)||0), used=Number(myDL.downloadsUsed)||0;
-  b.textContent = used>=total ? "🔒 Install (রেফার লাগবে)" : "⬇ Install";
+  b.textContent="⬇ Install";
   b.classList.remove("done");
+}
+function goDlUrl(){
+  try{ var w=window.open(curDl, "_blank"); if(w) return; }catch(e){}
+  location.href=curDl;
+}
+function dlStartedUI(){
+  showDlProg("✅ ডাউনলোড শুরু হয়েছে — ফোনের notification / Downloads ফোল্ডারে দেখো। শেষ হলে ফাইলটি খুলে Install চাপো 📲", true);
+  toast("ডাউনলোড শুরু হয়েছে ⬇");
+  drawDlState(); renderKeyBox(); renderMyDownloads();
 }
 async function doDownload(){
   if(!curDl){ toast("ডাউনলোড লিংক পাওয়া যায়নি।"); return; }
   var a=curApp;
   if(!useFirebase() || !fbUser || !fbDb || !a || isAdminUser()){ window.open(curDl, "_blank"); return; }
   if(dlBusy) return; dlBusy=true;
-  var win=null; try{ win=window.open("", "_blank"); }catch(e){}
-  function closeWin(){ if(win){ try{ win.close(); }catch(e){} } }
-  function goUrl(){ if(win){ try{ win.location.href=curDl; return; }catch(e){} } try{ var w2=window.open(curDl, "_blank"); if(!w2) location.href=curDl; }catch(e){ location.href=curDl; } }
   showDlProg("⏳ যাচাই করা হচ্ছে...");
   try{
     var ref=fbDb.ref("users/" + fbUser.uid);
     var s=await ref.once("value"); var d=s.val() || {};
-    myDL.joinedTg=!!d.joinedTg; myDL.refCredits=Number(d.refCredits)||0; myDL.downloadsUsed=Number(d.downloadsUsed)||0; myDL.downloadedApps=d.downloadedApps||{}; myDL.refCode=d.refCode||myDL.refCode||""; myDL.referredBy=d.referredBy||"";
-    if(!myDL.joinedTg){ closeWin(); hideDlProg(); dlBusy=false; showTgGate(true); return; }
+    myDL.joinedTg=!!d.joinedTg; myDL.downloadsUsed=Number(d.downloadsUsed)||0; myDL.downloadedApps=d.downloadedApps||{};
+    if(!myDL.joinedTg){ hideDlProg(); dlBusy=false; showTgGate(true); return; }
     var key=rk(a.name);
-    if(myDL.downloadedApps[key]){ closeWin(); hideDlProg(); toast("এই অ্যাপটা আগেই ডাউনলোড করেছ ✓"); drawDlState(); dlBusy=false; return; }
-    var total=1+myDL.refCredits, used=myDL.downloadsUsed;
-    if(used>=total){ closeWin(); hideDlProg(); dlBusy=false; showRefWall(); return; }
-    var firstDl = used===0;
-    var upd={}; upd["downloadsUsed"]=used+1; upd["downloadedApps/" + key]=Date.now();
-    await ref.update(upd);
-    myDL.downloadsUsed=used+1; myDL.downloadedApps[key]=Date.now();
-    if(firstDl) creditReferrerOnce();
-    goUrl();
-    showDlProg("✅ ডাউনলোড শুরু হয়েছে — ফোনের notification / Downloads ফোল্ডারে দেখো। শেষ হলে ফাইলটি খুলে Install চাপো 📲", true);
-    toast("ডাউনলোড শুরু হয়েছে ⬇");
-    drawDlState(); renderRefBox(); renderMyDownloads();
-  }catch(e){ closeWin(); hideDlProg(); toast("কিছু সমস্যা হয়েছে — আবার চেষ্টা করো।"); }
-  dlBusy=false;
+    if(myDL.downloadedApps[key]){
+      hideDlProg();
+      goDlUrl(); dlStartedUI();
+      dlBusy=false; return;
+    }
+    hideDlProg();
+    pendingKeyDl={ key:key };
+    showKeyGate();
+  }catch(e){ hideDlProg(); toast("কিছু সমস্যা হয়েছে — আবার চেষ্টা করো।"); dlBusy=false; }
 }
-document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ closeDetail(); hideRefWall(); } });
+var pendingKeyDl=null;
+function showKeyGate(){
+  var g=document.getElementById("keyGate"); if(!g) return;
+  keyErr("");
+  var i=document.getElementById("keyInp"); if(i) i.value="";
+  g.style.display="flex"; document.body.style.overflow="hidden";
+  if(i){ try{ i.focus(); }catch(e){} }
+}
+function hideKeyGate(){
+  var g=document.getElementById("keyGate"); if(g) g.style.display="none";
+  var det=document.getElementById("detail");
+  if(!det || !det.classList.contains("open")) document.body.style.overflow="";
+  pendingKeyDl=null; dlBusy=false;
+}
+function keyErr(t){ var e=document.getElementById("keyErr"); if(e) e.textContent=t||""; }
+async function submitKey(){
+  if(!pendingKeyDl){ hideKeyGate(); return; }
+  var i=document.getElementById("keyInp");
+  var code=(i && i.value ? i.value : "").trim().toUpperCase();
+  if(!code){ keyErr("আগে কিটা বসাও।"); return; }
+  var btn=document.getElementById("keyGoBtn"); if(btn) btn.disabled=true;
+  keyErr(""); showDlProg("⏳ কি যাচাই হচ্ছে...");
+  function fail(msg){ hideDlProg(); keyErr(msg); if(btn) btn.disabled=false; }
+  var url="https://rashdapp-784d3-default-rtdb.firebaseio.com/keys/" + encodeURIComponent(code) + ".json";
+  try{
+    var r=await fetch(url);
+    if(!r.ok){ fail("কিছু সমস্যা হয়েছে — আবার চেষ্টা করো।"); return; }
+    var rec=await r.json();
+    if(!rec){ fail("কি পাওয়া যায়নি ❌ — ঠিক করে আবার বসাও।"); return; }
+    if(rec.used===true){ fail("কিটা আগেই ব্যবহার হয়েছে ☑️ — নতুন কি নাও।"); return; }
+    rec.used=true;
+    var r2=await fetch(url, {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(rec)});
+    if(!r2.ok){ fail("কি যাচাই হয়নি — আবার চেষ্টা করো।"); return; }
+    var key=pendingKeyDl.key;
+    var upd={}; upd["downloadsUsed"]=(Number(myDL.downloadsUsed)||0)+1; upd["downloadedApps/" + key]=Date.now();
+    await fbDb.ref("users/" + fbUser.uid).update(upd);
+    myDL.downloadsUsed=(Number(myDL.downloadsUsed)||0)+1; myDL.downloadedApps[key]=Date.now();
+    pendingKeyDl=null;
+    var g=document.getElementById("keyGate"); if(g) g.style.display="none";
+    var det=document.getElementById("detail");
+    if(!det || !det.classList.contains("open")) document.body.style.overflow="";
+    if(btn) btn.disabled=false;
+    dlBusy=false;
+    goDlUrl(); dlStartedUI();
+  }catch(e){ fail("কিছু সমস্যা হয়েছে — আবার চেষ্টা করো।"); }
+}
+document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ closeDetail(); hideKeyGate(); } });
 
 /* featured auto-scroll */
 setInterval(function(){
@@ -978,9 +1023,8 @@ function checkBan(u){
 
 
 /* ---------- v2: join gate / referral codes / credits / my downloads ---------- */
-var myDL = {joinedTg:false, refCredits:0, downloadsUsed:0, downloadedApps:{}, creditedFrom:{}, refCode:"", referredBy:""};
-var __refGenBusy = false, __refApplied = false;
-function resetMyDL(){ myDL = {joinedTg:false, refCredits:0, downloadsUsed:0, downloadedApps:{}, creditedFrom:{}, refCode:"", referredBy:""}; }
+var myDL = {joinedTg:false, downloadsUsed:0, downloadedApps:{}};
+function resetMyDL(){ myDL = {joinedTg:false, downloadsUsed:0, downloadedApps:{}}; }
 function isAdminUser(){ try{ return !!(fbUser && (fbUser.email || "").toLowerCase() === "rashedbro123@rashdstore.app"); }catch(e){ return false; } }
 function verOf(n){ var m = /[_\-\s]v?(\d+(?:\.\d+){1,3})/.exec(n || ""); return m ? ("v" + m[1]) : ""; }
 function toast(t){
@@ -1001,91 +1045,30 @@ function confirmJoin(){
     myDL.joinedTg = true; showTgGate(false); toast("স্বাগতম! 🎉 এখন সব ফিচার ব্যবহার করো");
   }).catch(function(){ toast("হয়নি — আবার চেষ্টা করো"); });
 }
-function resolveRefCode(code, cb){
-  if(!fbDb || !code){ cb(null); return; }
-  try{ fbDb.ref("refCodes/" + code).once("value").then(function(s){ cb(s.val() || null); }).catch(function(){ cb(null); }); }
-  catch(e){ cb(null); }
-}
-function ensureRefCode(){
-  if(!fbUser || !fbDb || myDL.refCode || __refGenBusy) return;
-  __refGenBusy = true;
-  var chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789", code = "";
-  for(var i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
-  try{
-    fbDb.ref("refCodes/" + code).transaction(function(cur){ return cur === null ? fbUser.uid : undefined; }, function(err, committed){
-      __refGenBusy = false;
-      if(committed){
-        fbDb.ref("users/" + fbUser.uid + "/refCode").set(code).then(function(){ myDL.refCode = code; renderRefBox(); }).catch(function(){});
-      } else if(!err){ setTimeout(ensureRefCode, 500); }
-    });
-  }catch(e){ __refGenBusy = false; }
-}
-function maybeApplyStoredRef(){
-  if(__refApplied || !fbUser || !fbDb || myDL.referredBy) return;
-  __refApplied = true;
-  var code = ""; try{ code = (localStorage.getItem("rashd_ref") || "").trim().toUpperCase(); }catch(e){}
-  if(!code) return;
-  resolveRefCode(code, function(ruid){
-    if(ruid && ruid !== fbUser.uid){
-      fbDb.ref("users/" + fbUser.uid + "/referredBy").set(ruid).then(function(){ myDL.referredBy = ruid; renderRefBox(); }).catch(function(){});
-    }
-  });
-}
-function creditReferrerOnce(){
-  if(!fbUser || !fbDb) return;
-  var myUid = fbUser.uid;
-  try{
-    fbDb.ref("users/" + myUid + "/referredBy").once("value").then(function(s){
-      var rb = s.val(); if(!rb || rb === myUid) return;
-      var mark = fbDb.ref("users/" + rb + "/creditedFrom/" + myUid);
-      mark.once("value").then(function(ms){
-        if(ms.exists()) return;
-        mark.set(true).then(function(){
-          fbDb.ref("users/" + rb + "/refCredits").transaction(function(c){ return (Number(c) || 0) + 1; }, function(){});
-        }).catch(function(){});
-      }).catch(function(){});
-    }).catch(function(){});
-  }catch(e){}
-}
 function loadUserData(u){
   if(!u || !fbDb){ showTgGate(false); return; }
   fbDb.ref("users/" + u.uid).once("value").then(function(s){
     var d = s.val() || {};
-    myDL = { joinedTg: !!d.joinedTg, refCredits: Number(d.refCredits) || 0, downloadsUsed: Number(d.downloadsUsed) || 0,
-      downloadedApps: d.downloadedApps || {}, creditedFrom: d.creditedFrom || {}, refCode: d.refCode || "", referredBy: d.referredBy || "" };
+    myDL = { joinedTg: !!d.joinedTg, downloadsUsed: Number(d.downloadsUsed) || 0, downloadedApps: d.downloadedApps || {} };
     if(isAdminUser()) myDL.joinedTg = true;
     showTgGate(!myDL.joinedTg);
-    ensureRefCode();
-    maybeApplyStoredRef();
-    renderRefBox(); renderMyDownloads(); drawDlState();
+    renderKeyBox(); renderMyDownloads(); drawDlState();
   }).catch(function(){ myDL.joinedTg = true; showTgGate(false); });
 }
-function refLink(){ return "https://v4zrashd.github.io/rashd-app--store/?ref=" + (myDL.refCode || ""); }
-function refBoxHTML(){
+function keyBoxHTML(){
   if(!useFirebase() || !fbUser) return "";
-  var code = myDL.refCode || "......", link = refLink();
-  var total = 1 + (Number(myDL.refCredits) || 0), used = Number(myDL.downloadsUsed) || 0;
-  var shareTxt = encodeURIComponent("RASHD App Store থেকে ফ্রি অ্যাপ ডাউনলোড করো! 🎁 আমার রেফার কোড: " + code);
-  var wa = "https://wa.me/?text=" + shareTxt + "%0A" + encodeURIComponent(link);
-  var tg = "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + shareTxt;
-  var apply = (!myDL.referredBy)
-    ? '<div class="refapply"><input class="refin" maxlength="6" placeholder="বন্ধুর কোড বসাও"><button onclick="applyRefCode(this)">✔ বসাও</button></div>'
-    : '<p class="refnote">✅ তুমি ইতিমধ্যে একটা রেফার কোড ব্যবহার করেছ</p>';
+  var owned = Object.keys(myDL.downloadedApps || {}).length;
   return '<div class="refbox">'
-    + '<h3>🎁 বন্ধুদের ডাকো, ফ্রি ডাউনলোড নাও!</h3>'
-    + '<p class="refsub">তোমার কোড দিয়ে কেউ জয়েন করে প্রথম ডাউনলোড করলেই তুমি +১ ডাউনলোড ক্রেডিট পাবে।</p>'
-    + '<div class="refcode">' + esc(code) + '</div>'
-    + '<div class="refrow"><button onclick="copyMyCode()">📋 কোড কপি</button></div>'
-    + '<div class="reflink">' + esc(link) + '</div>'
-    + '<div class="refrow"><button onclick="copyMyLink()">🔗 লিংক কপি</button>'
-    + '<a class="shbtn" target="_blank" rel="noopener" href="' + wa + '">WhatsApp</a>'
-    + '<a class="shbtn" target="_blank" rel="noopener" href="' + tg + '">Telegram</a></div>'
-    + '<p class="refstat">⬇ ডাউনলোড: ' + used + '/' + total + ' • 👥 রেফার ক্রেডিট: ' + (Number(myDL.refCredits) || 0) + '</p>'
-    + apply + '</div>';
+    + '<h3>🔑 আমার কি</h3>'
+    + '<p class="refsub">প্রতিটা নতুন অ্যাপ ডাউনলোড করতে ১টা কি লাগে। একবার কি দিয়ে নেওয়া অ্যাপ পরে ফ্রি-তেই আবার নামানো যাবে।</p>'
+    + '<p class="refnote">কি কোথায় পাবে?<br>🤖 Telegram বট @rashd12bot-এ গেলেই — চ্যানেলে জয়েন করলে ১টা ফ্রি কি<br>📺 অ্যাড দেখে বা বন্ধুকে রেফার করে আরও কি</p>'
+    + '<div class="refrow"><a class="shbtn" target="_blank" rel="noopener" href="https://t.me/rashd12bot">🤖 বট খোলো</a>'
+    + '<a class="shbtn" target="_blank" rel="noopener" href="https://t.me/rashd12bot/rashdstore">🔑 কি পেজ</a></div>'
+    + '<p class="refstat">📦 তোমার নেওয়া অ্যাপ: ' + owned + 'টি</p></div>';
 }
-function renderRefBox(){
+function renderKeyBox(){
   var ms = document.querySelectorAll(".refbox-mount");
-  for(var i = 0; i < ms.length; i++) ms[i].innerHTML = refBoxHTML();
+  for(var i = 0; i < ms.length; i++) ms[i].innerHTML = keyBoxHTML();
 }
 function fallbackCopy(t){
   try{
@@ -1098,31 +1081,6 @@ function copyTextSafe(t, okMsg){
   if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done).catch(function(){ fallbackCopy(t); done(); }); }
   else { fallbackCopy(t); done(); }
 }
-function copyMyCode(){ if(myDL.refCode) copyTextSafe(myDL.refCode, "রেফার কোড কপি হয়েছে 📋"); else toast("কোড তৈরি হচ্ছে — একটু পরে আবার চাপ দাও"); }
-function copyMyLink(){ copyTextSafe(refLink(), "রেফার লিংক কপি হয়েছে 🔗"); }
-function applyRefCode(btn){
-  var wrap = (btn && btn.closest) ? btn.closest(".refbox") : null;
-  var inp = wrap ? wrap.querySelector(".refin") : null;
-  var code = inp ? (inp.value || "").trim().toUpperCase() : "";
-  if(!code){ toast("আগে কোডটা লেখো"); return; }
-  if(!fbUser || !fbDb) return;
-  if(myDL.referredBy){ toast("তুমি আগেই কোড ব্যবহার করেছ"); return; }
-  resolveRefCode(code, function(ruid){
-    if(!ruid){ toast("এই কোডে কাউকে পাওয়া যায়নি ❌"); return; }
-    if(ruid === fbUser.uid){ toast("নিজের কোড নিজে ব্যবহার করা যাবে না 😅"); return; }
-    fbDb.ref("users/" + fbUser.uid + "/referredBy").set(ruid).then(function(){
-      myDL.referredBy = ruid; toast("রেফার কোড বসানো হয়েছে ✅"); renderRefBox();
-    }).catch(function(){ toast("হয়নি — আবার চেষ্টা করো"); });
-  });
-}
-function showRefWall(){
-  var w = document.getElementById("refWall"); if(!w) return;
-  renderRefBox();
-  var st = document.getElementById("refWallStat");
-  if(st){ var total = 1 + (Number(myDL.refCredits) || 0); st.textContent = "তোমার ডাউনলোড ক্রেডিট শেষ (" + (Number(myDL.downloadsUsed) || 0) + "/" + total + ")। বন্ধুকে তোমার কোড দিয়ে জয়েন করাও — সে প্রথম ডাউনলোড করলেই তুমি +১ ক্রেডিট পাবে। আরও ডাউনলোড করতে রেফার করো 👇"; }
-  w.style.display = "flex";
-}
-function hideRefWall(){ var w = document.getElementById("refWall"); if(w) w.style.display = "none"; }
 function renderMyDownloads(){
   var el = document.getElementById("myDlList"); if(!el) return;
   if(!useFirebase() || !fbUser){ el.innerHTML = '<div class="empty">লগইন করলে তোমার ডাউনলোডগুলো এখানে দেখাবে</div>'; return; }
