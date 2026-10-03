@@ -78,6 +78,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="bar"><i></i></div>
       <div class="status" id="statusTx">⏳ ডাউনলোড প্রস্তুত হচ্ছে…</div>
       <div class="sub" id="subTx"></div>
+      <a class="btn primary hide" id="escapeBtn" href="#" rel="noopener">🌐 ব্রাউজারে গিয়ে ডাউনলোড করো</a>
       <button class="btn primary hide" id="retryBtn" type="button">⬇ আবার ডাউনলোড করো</button>
       <a class="btn ghost" href="../">← স্টোরে ফিরে যাও</a>
     </div>
@@ -102,6 +103,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   function $(id){ return document.getElementById(id); }
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
   function fmtSize(b){ b = Number(b) || 0; if(b < 1024) return b + " B"; if(b < 1048576) return (b/1024).toFixed(1) + " KB"; return (b/1048576).toFixed(1) + " MB"; }
+
+  /* ---------- Telegram-escape helpers ---------- */
+  function detectTelegram(){
+    try{
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if(tg && tg.initData) return true; /* আসল WebApp-এ initData থাকে; বাইরে খালি থাকে */
+    }catch(e){}
+    return /Telegram/i.test(navigator.userAgent || "");
+  }
+  function b64urlEncode(str){
+    var bytes = new TextEncoder().encode(str);
+    var bin = "";
+    for(var i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  }
+  function b64urlDecode(s){
+    var b64 = String(s).replace(/-/g,"+").replace(/_/g,"/");
+    while(b64.length % 4) b64 += "=";
+    var bin = atob(b64);
+    var bytes = new Uint8Array(bin.length);
+    for(var j=0;j<bin.length;j++) bytes[j] = bin.charCodeAt(j);
+    return new TextDecoder().decode(bytes);
+  }
 
   function triggerDownload(){
     if(!dlUrl) return false;
@@ -146,29 +170,87 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
   /* ---------- init ---------- */
   var data = null;
-  try{
-    var raw = sessionStorage.getItem(DL_KEY);
-    if(raw) data = JSON.parse(raw);
-  }catch(e){ data = null; }
+  var fromHash = false;
 
-  var valid = data && data.url && data.ts && (Date.now() - Number(data.ts) <= MAX_AGE);
+  /* a) hash পে-লোড: #h=<base64url JSON {url,name,size}> হলে সেখান থেকে ডেটা নাও */
+  var hashData = null;
+  if(location.hash && location.hash.indexOf("#h=") === 0){
+    try{
+      var decoded = JSON.parse(b64urlDecode(location.hash.slice(3)));
+      if(decoded && decoded.url) hashData = decoded;
+    }catch(e){ hashData = null; }
+    if(hashData){
+      fromHash = true;
+      /* লিংক যেন ঠিকানায় না দেখায় — ডিকোড হয়ে গেলেই hash মুছে ফেলি */
+      try{ history.replaceState(null, document.title, location.pathname + location.search); }catch(e){}
+    }
+  }
 
-  if(!valid){
+  if(hashData){
+    data = hashData;
+  } else {
+    /* b) আগের sessionStorage পথ */
+    var raw = null;
+    try{ raw = sessionStorage.getItem(DL_KEY); }catch(e){ raw = null; }
+    if(raw){ try{ data = JSON.parse(raw); }catch(e){ data = null; } }
+    var fresh = data && data.url && data.ts && (Date.now() - Number(data.ts) <= MAX_AGE);
+    if(!fresh) data = null;
+  }
+
+  if(!data || !data.url){
     try{ sessionStorage.removeItem(DL_KEY); }catch(e){}
     $("badState").classList.remove("hide");
     return;
   }
 
   dlUrl = String(data.url);
-  $("appName").textContent = data.name ? String(data.name) : "অ্যাপ";
-  if(Number(data.size) > 0) $("appSize").textContent = "📦 " + fmtSize(data.size);
+  var payload = { url: dlUrl, name: data.name ? String(data.name) : "", size: Number(data.size) || 0 };
+  var inTg = detectTelegram();
+  /* escape শুধু sessionStorage পথে ও Telegram-এর ভেতরে থাকলে (hash দিয়ে এলে ব্রাউজারেই চলছে) */
+  var escapeMode = (!fromHash && inTg);
+  var escapeUrl = null;
+  if(escapeMode){
+    escapeUrl = location.origin + location.pathname + "#h=" + b64urlEncode(JSON.stringify(payload));
+  }
+
+  $("appName").textContent = payload.name || "অ্যাপ";
+  if(payload.size > 0) $("appSize").textContent = "📦 " + fmtSize(payload.size);
   $("okState").classList.remove("hide");
 
+  function openEscape(){
+    var tg = window.Telegram && window.Telegram.WebApp;
+    try{
+      if(tg && typeof tg.openLink === "function"){ tg.openLink(escapeUrl); return; }
+    }catch(e){}
+    try{
+      var a = document.createElement("a");
+      a.href = escapeUrl;
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }catch(e){}
+  }
+
   $("retryBtn").addEventListener("click", function(){
+    if(escapeMode){ openEscape(); return; }
     if(triggerDownload() && !started) onStarted();
   });
 
-  /* পেজ খোলার ~১ সেকেন্ড পর নিজে থেকেই ডাউনলোড শুরু */
+  if(escapeMode){
+    /* c) Telegram-এর ভেতরে ভেতরে ডাউনলোড শুরু করব না — বাইরের ব্রাউজারে একই পেজে পাঠাই।
+       sessionStorage মোছা হবে না, অটো-anchor-ও হবে না (loop এড়াতে)। */
+    $("statusTx").textContent = "ব্রাউজারে পাঠানো হয়েছে — ওইখানে ডাউনলোড শুরু হবে ⬇";
+    $("subTx").textContent = "কাজ না হলে উপরের ⋮ মেনু থেকে Open in Chrome চাপো";
+    var eb = $("escapeBtn");
+    eb.href = escapeUrl;
+    eb.classList.remove("hide");
+    $("retryBtn").classList.remove("hide");
+    setTimeout(openEscape, 800);
+    return;
+  }
+
+  /* d) ব্রাউজারে: আগের আচরণ — ~১ সেকেন্ডে অটো-ডাউনলোড (onStarted-এ storage মোছে) */
   setTimeout(startAuto, 1000);
 })();
 </script>
