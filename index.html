@@ -425,7 +425,7 @@ footer a{color:var(--green);text-decoration:none;font-family:var(--mono);font-si
 <div id="keyGate" class="ovl" style="display:none"><div class="ovcard">
   <button class="ovx" onclick="hideKeyGate()" aria-label="close">✕</button>
   <h2>🔑 ডাউনলোড কি লাগবে</h2>
-  <p>এই অ্যাপটা প্রথমবার নিতে ১টা কি লাগবে। Telegram বট থেকে কি এনে নিচে বসাও — একটা কিতে এই অ্যাপটা তোমার হয়ে যাবে, পরে আবার ফ্রি-তেই নামানো যাবে।</p>
+  <p>প্রতিটা ডাউনলোডে ১টা অব্যবহৃত কি লাগবে (আগে নেওয়া অ্যাপের বেলাতেও)। Telegram বট থেকে কি এনে নিচে বসাও — একটা কি = একটা ডাউনলোড।</p>
   <input id="keyInp" maxlength="10" placeholder="কি কোড বসাও" autocomplete="off" autocapitalize="characters" onkeydown="if(event.key==='Enter'){event.preventDefault();submitKey();}" style="width:100%;margin-top:10px;padding:13px 12px;border-radius:12px;border:1.5px solid rgba(0,255,157,.5);background:rgba(0,0,0,.45);color:#e8fff4;font-size:17px;font-weight:700;letter-spacing:2px;text-align:center;text-transform:uppercase;outline:none">
   <p id="keyErr" style="min-height:20px;margin-top:8px;color:#ff9a9a;font-size:13.5px"></p>
   <button class="confirmbtn" id="keyGoBtn" onclick="submitKey()">✔ যাচাই করে ডাউনলোড</button>
@@ -841,7 +841,10 @@ function dlStartedUI(){
 async function doDownload(){
   if(!curDl){ toast("ডাউনলোড লিংক পাওয়া যায়নি।"); return; }
   var a=curApp;
-  if(!useFirebase() || !fbUser || !fbDb || !a || isAdminUser()){ window.open(curDl, "_blank"); return; }
+  /* ADMIN BYPASS — এটাই একমাত্র ছাড়: মালিকের নিজের অ্যাকাউন্ট (rashedbro123@rashdstore.app)
+     কি ছাড়াই সরাসরি ডাউনলোড করতে পারে। বাকি সবার জন্য নিচের STRICT KEY GATE প্রযোজ্য। */
+  if(isAdminUser()){ window.open(curDl, "_blank"); return; }
+  if(!useFirebase() || !fbUser || !fbDb || !a){ toast("ডাউনলোড করতে আগে লগইন করো 🔐"); return; }
   if(dlBusy) return; dlBusy=true;
   showDlProg("⏳ যাচাই করা হচ্ছে...");
   try{
@@ -849,14 +852,10 @@ async function doDownload(){
     var s=await ref.once("value"); var d=s.val() || {};
     myDL.joinedTg=!!d.joinedTg; myDL.downloadsUsed=Number(d.downloadsUsed)||0; myDL.downloadedApps=d.downloadedApps||{};
     if(!myDL.joinedTg){ hideDlProg(); dlBusy=false; showTgGate(true); return; }
-    var key=rk(a.name);
-    if(myDL.downloadedApps[key]){
-      hideDlProg();
-      goDlUrl(); dlStartedUI();
-      dlBusy=false; return;
-    }
+    /* STRICT KEY GATE: প্রতিটা ডাউনলোডেই (আগে নেওয়া অ্যাপ হলেও) অব্যবহৃত কি লাগবে।
+       downloadedApps এখন শুধু হিস্ট্রি / "আমার ডাউনলোড" তালিকার রেকর্ড — কোনো ফ্রি পাস নয়। */
     hideDlProg();
-    pendingKeyDl={ key:key };
+    pendingKeyDl={ key:rk(a.name) };
     showKeyGate();
   }catch(e){ hideDlProg(); toast("কিছু সমস্যা হয়েছে — আবার চেষ্টা করো।"); dlBusy=false; }
 }
@@ -1060,7 +1059,7 @@ function keyBoxHTML(){
   var owned = Object.keys(myDL.downloadedApps || {}).length;
   return '<div class="refbox">'
     + '<h3>🔑 আমার কি</h3>'
-    + '<p class="refsub">প্রতিটা নতুন অ্যাপ ডাউনলোড করতে ১টা কি লাগে। একবার কি দিয়ে নেওয়া অ্যাপ পরে ফ্রি-তেই আবার নামানো যাবে।</p>'
+    + '<p class="refsub">প্রতিটা ডাউনলোড করতে ১টা অব্যবহৃত কি লাগে — একটা কি = একটা ডাউনলোড।</p>'
     + '<p class="refnote">কি কোথায় পাবে?<br>🤖 Telegram বট @rashd12bot-এ গেলেই — চ্যানেলে জয়েন করলে ১টা ফ্রি কি<br>📺 অ্যাড দেখে বা বন্ধুকে রেফার করে আরও কি</p>'
     + '<div class="refrow"><a class="shbtn" target="_blank" rel="noopener" href="https://t.me/rashd12bot">🤖 বট খোলো</a>'
     + '<a class="shbtn" target="_blank" rel="noopener" href="https://t.me/rashd12bot/rashdstore">🔑 কি পেজ</a></div>'
