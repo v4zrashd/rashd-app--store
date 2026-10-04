@@ -41,15 +41,6 @@
   },
   "custom": [
     {
-      "name": "RASHD App Store",
-      "url": "https://v4zrashd.github.io/rashd-app--store/app/rashd-app-store.apk",
-      "size": 29941,
-      "label": "RASHD App Store",
-      "desc": "অফিসিয়াল RASHD App Store অ্যাপ — সব অ্যাপ এখন এক অ্যাপেই! ইনস্টল করে নাও।",
-      "video": "",
-      "logo": "https://v4zrashd.github.io/rashd-app--store/assets/site-logo.png"
-    },
-    {
       "name": "Test",
       "url": "https://gofile.io/d/aMSOiEhu",
       "size": 0,
