@@ -47,6 +47,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 /* ---------- announce ---------- */
 #announce{display:none;margin:12px 14px 0;padding:10px 12px;border:1px solid var(--green);border-radius:12px;
   color:var(--green);background:rgba(0,230,118,.06);font-size:13px;text-align:center}
+/* ---------- warning ticker ---------- */
+#warnTicker{margin:10px 14px 0;padding:9px 0;border-radius:12px;overflow:hidden;position:relative;
+  background:linear-gradient(90deg,#7f1d1d,#b91c1c,#7f1d1d);border:1px solid #f87171;
+  box-shadow:0 0 14px rgba(248,113,113,.25)}
+#warnTicker .wt-track{display:inline-flex;white-space:nowrap;will-change:transform;
+  animation:wtMove 22s linear infinite}
+#warnTicker:hover .wt-track{animation-play-state:paused}
+#warnTicker .wt-txt{color:#fff;font-weight:700;font-size:13.5px;padding-right:56px}
+#warnTicker .wt-ico{display:inline-block;animation:wtBlink 1.2s ease-in-out infinite}
+@keyframes wtMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes wtBlink{0%,100%{opacity:1}50%{opacity:.3}}
 /* ---------- sections ---------- */
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin:20px 14px 10px}
 .sec-head h2{font-size:16px;font-weight:800}
@@ -272,6 +283,8 @@ footer a{color:var(--green);text-decoration:none;font-family:var(--mono);font-si
   </button>
   <button class="avatar" id="acctBtn" onclick="showView('you')">👤</button>
 </header>
+
+<div id="warnTicker" role="alert"><div class="wt-track"><span class="wt-txt"><span class="wt-ico">⚠️</span> সতর্কতা: কোনো অ্যাপ সম্পর্কে ভালোভাবে না জেনে ডাউনলোড করবেন না — এতে আপনি ক্ষতিগ্রস্ত হতে পারেন। ডাউনলোডের আগে অ্যাপের বিস্তারিত ভালো করে দেখে নিন।</span><span class="wt-txt"><span class="wt-ico">⚠️</span> সতর্কতা: কোনো অ্যাপ সম্পর্কে ভালোভাবে না জেনে ডাউনলোড করবেন না — এতে আপনি ক্ষতিগ্রস্ত হতে পারেন। ডাউনলোডের আগে অ্যাপের বিস্তারিত ভালো করে দেখে নিন।</span></div></div>
 
 <div class="pills" id="chips">
   <button class="pill on" data-c="ALL" onclick="setCat('ALL',this)">সব</button>
