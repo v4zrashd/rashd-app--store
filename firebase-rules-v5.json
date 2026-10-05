@@ -1,0 +1,106 @@
+{
+ "rules": {
+  "banned": {
+   "$uid": {
+    ".read": "auth != null && auth.uid === $uid",
+    ".write": false
+   }
+  },
+  "comments": {
+   "$app": {
+    "$cid": {
+     ".write": "auth != null && (newData.exists() ? newData.child('uid').val() === auth.uid : data.child('uid').val() === auth.uid)"
+    }
+   },
+   ".read": "auth != null"
+  },
+  "favs": {
+   "$uid": {
+    ".read": "auth != null && auth.uid === $uid",
+    ".write": "auth != null && auth.uid === $uid"
+   }
+  },
+  "meta": {
+   "userCount": {
+    ".read": "auth != null",
+    ".write": "auth != null && newData.isNumber() && newData.val() === (data.exists() ? data.val() : 0) + 1"
+   }
+  },
+  "ratings": {
+   "$app": {
+    "$uid": {
+     ".write": "auth != null && auth.uid === $uid && newData.child('r').isNumber() && newData.child('r').val() >= 1 && newData.child('r').val() <= 5"
+    }
+   },
+   ".read": "auth != null"
+  },
+  "refCodes": {
+   "$code": {
+    ".read": "auth != null",
+    ".write": "auth != null && !data.exists() && newData.val() === auth.uid"
+   }
+  },
+  "users": {
+   "$uid": {
+    ".read": "auth != null && auth.uid === $uid",
+    "creditedFrom": {
+     "$ref": {
+      ".validate": "newData.val() === true",
+      ".write": "auth != null && auth.uid === $ref && !data.exists() && newData.val() === true"
+     },
+     ".read": "auth != null && auth.uid === $uid"
+    },
+    "downloadedApps": {
+     "$app": {
+      ".validate": "newData.isNumber() || newData.val() === true"
+     },
+     ".write": "auth != null && auth.uid === $uid"
+    },
+    "downloadsUsed": {
+     ".validate": "newData.isNumber() && newData.val() >= (data.exists() ? data.val() : 0) && newData.val() <= (data.exists() ? data.val() : 0) + 1",
+     ".write": "auth != null && auth.uid === $uid"
+    },
+    "joinedTg": {
+     ".validate": "newData.isBoolean()",
+     ".write": "auth != null && auth.uid === $uid"
+    },
+    "name": {
+     ".validate": "newData.isString()",
+     ".write": "auth != null && auth.uid === $uid"
+    },
+    "refCode": {
+     ".validate": "newData.isString() && newData.val().length <= 10",
+     ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.isString()"
+    },
+    "refCredits": {
+     ".read": "auth != null",
+     ".validate": "newData.isNumber() && newData.val() >= 0",
+     ".write": "auth != null && auth.uid !== $uid && newData.isNumber() && newData.val() === (data.exists() ? data.val() : 0) + 1 && newData.parent().child('creditedFrom').child(auth.uid).val() === true"
+    },
+    "referredBy": {
+     ".validate": "newData.isString()",
+     ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.isString()"
+    },
+    "t": {
+     ".validate": "newData.isNumber()",
+     ".write": "auth != null && auth.uid === $uid"
+    }
+   }
+  },
+  "catalog": {
+   ".read": true,
+   ".write": "auth != null && (auth.token.email === 'rashedbro123@rashdstore.app' || auth.token.email === 'admin@rashdstore.app')"
+  },
+  "appUpdate": {
+   ".read": true,
+   ".write": "auth != null && (auth.token.email === 'rashedbro123@rashdstore.app' || auth.token.email === 'admin@rashdstore.app')"
+  },
+  "keys": {
+   ".read": "auth != null && (auth.token.email === 'rashedbro123@rashdstore.app' || auth.token.email === 'admin@rashdstore.app')",
+   "$key": {
+    ".read": true,
+    ".write": "(!data.exists() && newData.child('used').val() === false) || (data.exists() && data.child('used').val() === false && newData.child('used').val() === true)"
+   }
+  }
+ }
+}
