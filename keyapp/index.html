@@ -45,6 +45,16 @@
   }
   #status { margin-top:16px; min-height:22px; font-size:14px; color:#ffd97a; }
   #keyBox { display:none; margin-top:22px; }
+  #refArea { display:none; margin-top:6px; }
+  #refLink {
+    font-family:'Courier New', monospace; font-size:14px; color:#00ff9d;
+    background:rgba(0,0,0,.5); border:1.5px dashed rgba(0,255,157,.55);
+    border-radius:12px; padding:12px 8px; word-break:break-all; margin-top:14px;
+  }
+  .refBtn {
+    margin-top:12px; width:100%; background:transparent; color:#00ff9d; cursor:pointer;
+    border:1.5px solid #00ff9d; font-size:16px; font-weight:700; padding:12px; border-radius:12px;
+  }
   #keyCode {
     font-family:'Courier New', monospace; font-size:27px; font-weight:900; letter-spacing:2.5px;
     color:#00ff9d; background:rgba(0,0,0,.5); border:1.5px dashed rgba(0,255,157,.55);
@@ -65,8 +75,9 @@
 
   <div class="card">
     <h1>🔑 RASHD Key</h1>
-    <p class="desc">ছোট্ট একটা অ্যাড দেখো → একটা <b>কি</b> পাও → সেই কিটা দিয়ে <b>RASHD App Store</b> অ্যাপে <b>১টা অ্যাপ</b> ডাউনলোড, অথবা <b>Number Lookup</b> বটে <b>১টা Lookup</b> করো।</p>
+    <p class="desc"><span id="modeDesc">ছোট্ট একটা অ্যাড দেখো → একটা <b>কি</b> পাও।</span> সেই কিটা দিয়ে <b>RASHD App Store</b>-এ <b>১টা ডাউনলোড</b>, <b>Number Lookup</b>-এ <b>১টা Lookup</b>, অথবা <b>File Host</b>-এ <b>১টা আপলোড</b> করা যাবে।</p>
 
+    <div id="adArea">
     <button id="adBtn" type="button">▶ অ্যাড দেখে কি নাও</button>
     <div id="status"></div>
 
@@ -74,11 +85,19 @@
       <p class="note">অ্যাডটা টেলিগ্রামের বাইরে চলে গেছে মনে হচ্ছে। অ্যাড শেষ করে এই পেজে ফিরে এসে নিচের বাটনে চাপ দাও:</p>
       <button id="claimBtn" type="button" style="margin-top:10px; width:100%; background:transparent; color:#00ff9d; cursor:pointer; border:1.5px solid #00ff9d; font-size:16px; font-weight:700; padding:12px; border-radius:12px;">✅ আমি অ্যাড দেখেছি — কি দাও</button>
     </div>
+    </div>
 
     <div id="keyBox">
       <div id="keyCode"></div>
       <button id="copyBtn" type="button">📋 কি কপি করো</button>
-      <p class="note">একটা কিতে হয় ১টা অ্যাপ ডাউনলোড, নয়তো Number Lookup বটে ১টা Lookup।<br>কিটা যেখানে আগে বসাবে সেখানেই খরচ হবে।</p>
+      <p class="note">একটা কিতে ১টা App Store ডাউনলোড, বা Number Lookup-এ ১টা Lookup, বা File Host-এ ১টা আপলোড।<br>কিটা যেখানে আগে বসাবে সেখানেই খরচ হবে।</p>
+    </div>
+
+    <div id="refArea">
+      <p class="note">👥 এখন <b>রেফার মোড</b> চলছে — অ্যাড বন্ধ।<br>নিচের লিংকটা বন্ধুদের পাঠাও। বন্ধু লিংক দিয়ে এসে চ্যানেলে জয়েন করে তার <b>বোনাস কি</b> প্রথমবার ব্যবহার করলেই বট নিজে তোমার কাছে ১টা কি পাঠিয়ে দেবে। পাওয়া কি বটে <b>/key</b> লিখলে দেখা যাবে।</p>
+      <div id="refLink"></div>
+      <button id="refCopyBtn" class="refBtn" type="button">📋 রেফার লিংক কপি করো</button>
+      <button id="refShareBtn" class="refBtn" type="button">📤 বন্ধুদের পাঠাও</button>
     </div>
   </div>
 
@@ -253,6 +272,69 @@
     document.body.removeChild(ta);
     done();
   }
+
+  // ---- মোড সুইচ (Admin Panel -> key-config.json) ----
+  var KEYCFG_URL = 'https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/key-config.json';
+  var adArea = document.getElementById('adArea');
+  var refArea = document.getElementById('refArea');
+  var refLinkEl = document.getElementById('refLink');
+  var refCopyBtn = document.getElementById('refCopyBtn');
+  var refShareBtn = document.getElementById('refShareBtn');
+  var modeDesc = document.getElementById('modeDesc');
+  var myRefLink = '';
+
+  function applyMode(mode) {
+    if (mode !== 'referral') { return; } // ডিফল্ট ভিউ = অ্যাড মোড
+    adArea.style.display = 'none';
+    refArea.style.display = 'block';
+    if (modeDesc) { modeDesc.innerHTML = 'বন্ধুদের রেফার করো → একটা <b>কি</b> পাও।'; }
+    var uid = tgUserId();
+    if (uid) {
+      myRefLink = 'https://t.me/rashd12bot?start=ref_' + uid;
+      refLinkEl.textContent = myRefLink;
+    } else {
+      myRefLink = '';
+      refLinkEl.textContent = 'টেলিগ্রাম থেকে এই পেজটা খুললে তোমার নিজের রেফার লিংক এখানে আসবে।';
+    }
+  }
+
+  fetch(KEYCFG_URL).then(function (r) { return r.json(); }).then(function (cfg) {
+    if (cfg && cfg.mode) { applyMode(cfg.mode); }
+  }).catch(function () { /* config না পেলে অ্যাড মোডই থাকে */ });
+
+  refCopyBtn.addEventListener('click', function () {
+    if (!myRefLink) { return; }
+    function done() {
+      refCopyBtn.textContent = '✅ কপি হয়েছে!';
+      setTimeout(function () { refCopyBtn.textContent = '📋 রেফার লিংক কপি করো'; }, 2200);
+    }
+    function manualCopy() {
+      var ta = document.createElement('textarea');
+      ta.value = myRefLink;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      done();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(myRefLink).then(done).catch(manualCopy);
+    } else { manualCopy(); }
+  });
+
+  refShareBtn.addEventListener('click', function () {
+    if (!myRefLink) { return; }
+    var shareUrl = 'https://t.me/share/url?url=' + encodeURIComponent(myRefLink) +
+      '&text=' + encodeURIComponent('RASHD App Store — জয়েন করে ফ্রি কি নাও!');
+    try {
+      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openTelegramLink) {
+        Telegram.WebApp.openTelegramLink(shareUrl);
+        return;
+      }
+    } catch (e) {}
+    window.open(shareUrl, '_blank');
+  });
 })();
 </script>
 </body>
