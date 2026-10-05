@@ -65,15 +65,20 @@
 
   <div class="card">
     <h1>🔑 RASHD Key</h1>
-    <p class="desc">ছোট্ট একটা অ্যাড দেখো → একটা <b>কি</b> পাও → সেই কিটা <b>RASHD App Store</b> অ্যাপে বসিয়ে <b>১টা অ্যাপ</b> ডাউনলোড করো।</p>
+    <p class="desc">ছোট্ট একটা অ্যাড দেখো → একটা <b>কি</b> পাও → সেই কিটা দিয়ে <b>RASHD App Store</b> অ্যাপে <b>১টা অ্যাপ</b> ডাউনলোড, অথবা <b>Number Lookup</b> বটে <b>১টা Lookup</b> করো।</p>
 
     <button id="adBtn" type="button">▶ অ্যাড দেখে কি নাও</button>
     <div id="status"></div>
 
+    <div id="fallback" style="display:none; margin-top:14px;">
+      <p class="note">অ্যাডটা টেলিগ্রামের বাইরে চলে গেছে মনে হচ্ছে। অ্যাড শেষ করে এই পেজে ফিরে এসে নিচের বাটনে চাপ দাও:</p>
+      <button id="claimBtn" type="button" style="margin-top:10px; width:100%; background:transparent; color:#00ff9d; cursor:pointer; border:1.5px solid #00ff9d; font-size:16px; font-weight:700; padding:12px; border-radius:12px;">✅ আমি অ্যাড দেখেছি — কি দাও</button>
+    </div>
+
     <div id="keyBox">
       <div id="keyCode"></div>
       <button id="copyBtn" type="button">📋 কি কপি করো</button>
-      <p class="note">এই কিটা RASHD App Store অ্যাপে বসাও।<br>একটা কিতে ১টা ডাউনলোড।</p>
+      <p class="note">একটা কিতে হয় ১টা অ্যাপ ডাউনলোড, নয়তো Number Lookup বটে ১টা Lookup।<br>কিটা যেখানে আগে বসাবে সেখানেই খরচ হবে।</p>
     </div>
   </div>
 
@@ -144,29 +149,86 @@
     });
   }
 
+  var FB_COOLDOWN_MS = 5 * 60 * 1000; // fallback-claim cooldown (his "5 min পরে আবার" idea)
+  var adPending = false;   // show_ was called, promise not settled yet
+  var adSettled = false;   // promise resolved or rejected
+  var fallbackEl = document.getElementById('fallback');
+  var claimBtn = document.getElementById('claimBtn');
+
+  function showKey(code) {
+    currentKey = code;
+    keyCodeEl.textContent = code;
+    keyBox.style.display = 'block';
+    fallbackEl.style.display = 'none';
+    setStatus('✅ তোমার কি তৈরি!');
+    btn.disabled = false;
+    btn.textContent = '▶ আরেকটা কি নাও';
+    try { if (Telegram.WebApp.HapticFeedback) { Telegram.WebApp.HapticFeedback.notificationOccurred('success'); } } catch (e) {}
+  }
+
+  function mintAndShow() {
+    setStatus('⏳ কি তৈরি হচ্ছে...');
+    return issueKey(1).then(showKey).catch(function () {
+      setStatus('❌ কি তৈরি হয়নি — আবার চেষ্টা করো।');
+      btn.disabled = false;
+    });
+  }
+
+  function offerFallback() {
+    if (adSettled) { return; }
+    fallbackEl.style.display = 'block';
+    setStatus('⚠️ অ্যাড শেষ হয়নি বা বাইরে চলে গেছে।');
+    btn.disabled = false;
+  }
+
+  // If the ad hijacked the tab (opened the browser), the user coming back
+  // to this page fires visibilitychange — offer the manual claim then.
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && adPending && !adSettled) { offerFallback(); }
+  });
+
   btn.addEventListener('click', function () {
     if (typeof window.show_11949593 !== 'function') {
       setStatus('⚠️ অ্যাড এখন লোড হয়নি। একটু পরে আবার চেষ্টা করো।');
       return;
     }
     btn.disabled = true;
+    adPending = true;
+    adSettled = false;
     keyBox.style.display = 'none';
+    fallbackEl.style.display = 'none';
     setStatus('📺 অ্যাড চলছে... পুরোটা দেখো!');
-    window.show_11949593().then(function () {
-      setStatus('⏳ কি তৈরি হচ্ছে...');
-      return issueKey(1);
-    }).then(function (code) {
-      currentKey = code;
-      keyCodeEl.textContent = code;
-      keyBox.style.display = 'block';
-      setStatus('✅ তোমার কি তৈরি!');
-      btn.disabled = false;
-      btn.textContent = '▶ আরেকটা কি নাও';
-      try { if (Telegram.WebApp.HapticFeedback) { Telegram.WebApp.HapticFeedback.notificationOccurred('success'); } } catch (e) {}
+    var p;
+    try { p = window.show_11949593(); } catch (e) { p = null; }
+    if (!p || typeof p.then !== 'function') { offerFallback(); return; }
+    // Normal rewarded path: full watch → promise resolves → mint.
+    p.then(function () {
+      adSettled = true;
+      adPending = false;
+      mintAndShow();
     }).catch(function () {
-      setStatus('❌ হয়নি — অ্যাডটা পুরো দেখে আবার চেষ্টা করো।');
-      btn.disabled = false;
+      adSettled = true;
+      adPending = false;
+      offerFallback();
     });
+    // If the promise never settles (ad jumped to the browser and the user
+    // never comes back here), unstick the button after 60s.
+    setTimeout(function () { if (adPending && !adSettled) { offerFallback(); } }, 60000);
+  });
+
+  claimBtn.addEventListener('click', function () {
+    var last = 0;
+    try { last = parseInt(localStorage.getItem('rashdFbClaim') || '0', 10) || 0; } catch (e) {}
+    var wait = FB_COOLDOWN_MS - (Date.now() - last);
+    if (last && wait > 0) {
+      setStatus('⏳ একটু অপেক্ষা করো — আবার চেষ্টা করো ' + Math.ceil(wait / 60000) + ' মিনিট পর। এর মধ্যে রেফার করে কি নিতে পারো!');
+      return;
+    }
+    claimBtn.disabled = true;
+    try { localStorage.setItem('rashdFbClaim', String(Date.now())); } catch (e) {}
+    adPending = false;
+    adSettled = true;
+    mintAndShow();
   });
 
   copyBtn.addEventListener('click', function () {
