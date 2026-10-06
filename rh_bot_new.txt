@@ -51,6 +51,7 @@ FB_DB = "https://rashdapp-784d3-default-rtdb.firebaseio.com"
 KEYAPP_URL = "https://t.me/rashd12bot/rashdstore"
 MAX_TG_FILE = 2 * 1024 * 1024 * 1024  # 2GB — Telegram স্টোর মোডের সীমা (file_id স্টোর; বট ফাইল ডাউনলোড করে না)
 PENDING_TTL = 900  # ফাইল পাঠানোর ১৫ মিনিটের মধ্যে কি দিতে হবে
+MAX_USER_FILES = 20  # প্রতি ইউজারের অ্যাকাউন্টে সর্বোচ্চ হোস্ট করা ফাইল
 BACKUP_DB_NAME = "v4z-hosting-users.db"  # এডমিন চ্যাটে পাঠানো ব্যাকআপ ফাইলের নাম
 CODE_ALPHABET = string.ascii_letters + string.digits
 
@@ -61,7 +62,8 @@ BOT_DESCRIPTION = (
     "📁 V4Z File Host\n\n"
     "দুইভাবে হোস্টিং করা যায়:\n"
     "1️⃣ অতিরিক্ত বড় ফাইল (2GB-এর বেশি): File Host অ্যাপে আপলোড করে লিংক বানান (৩ দিনের হোস্টিং)\n"
-    "2️⃣ যেকোনো ফাইল (2GB পর্যন্ত): সরাসরি এই চ্যাটে ফাইল পাঠালেই Telegram-এ স্থায়ী হোস্টিং (মেয়াদ নেই)\n\n"
+    "2️⃣ যেকোনো ফাইল (2GB পর্যন্ত): সরাসরি এই চ্যাটে ফাইল পাঠালেই Telegram-এ স্থায়ী হোস্টিং (মেয়াদ নেই)\n"
+    "📦 প্রতি অ্যাকাউন্টে সর্বোচ্চ ২০টা ফাইল — /myfiles-এ লিস্ট ও ডিলিট\n\n"
     "কীভাবে ব্যবহার করবেন:\n"
     "1️⃣ আগে @rashdteem চ্যানেলে জয়েন করুন\n"
     "2️⃣ তারপর File Host অ্যাপ খুলুন, অথবা এখানেই ফাইল পাঠান\n"
@@ -72,6 +74,16 @@ BOT_DESCRIPTION = (
 
 
 # ---------- user tracking (admin stats) ----------
+
+def _migrate_columns(conn):
+    """পুরোনো DB-তে নতুন কলাম যোগ করে (চ্যানেল গোডাউন: chan_file_id/chan_msg_id)।"""
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(tgfiles)")}
+    if "chan_file_id" not in cols:
+        conn.execute("ALTER TABLE tgfiles ADD COLUMN chan_file_id TEXT")
+    if "chan_msg_id" not in cols:
+        conn.execute("ALTER TABLE tgfiles ADD COLUMN chan_msg_id INTEGER")
+    conn.commit()
+
 
 def _db():
     conn = sqlite3.connect(DB_PATH)
@@ -89,6 +101,10 @@ def _db():
         "user_id INTEGER PRIMARY KEY, file_id TEXT, name TEXT, "
         "size INTEGER, kind TEXT, ts INTEGER)"
     )
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT)"
+    )
+    _migrate_columns(conn)
     return conn
 
 
@@ -202,14 +218,27 @@ def store_file(user_id: int, file_id: str, name: str, size, kind: str):
 def get_stored_file(code: str):
     conn = _db()
     row = conn.execute(
-        "SELECT owner, file_id, name, size, kind FROM tgfiles WHERE code = ?",
+        "SELECT owner, file_id, name, size, kind, chan_file_id FROM tgfiles WHERE code = ?",
         (code or "",),
     ).fetchone()
     conn.close()
     if not row:
         return None
-    owner, file_id, name, size, kind = row
-    return {"owner": owner, "file_id": file_id, "name": name, "size": size, "kind": kind}
+    owner, file_id, name, size, kind, chan_file_id = row
+    return {"owner": owner, "file_id": file_id, "name": name, "size": size, "kind": kind, "chan_file_id": chan_file_id}
+
+
+def set_file_channel(code: str, chan_file_id, chan_msg_id):
+    try:
+        conn = _db()
+        conn.execute(
+            "UPDATE tgfiles SET chan_file_id = ?, chan_msg_id = ? WHERE code = ?",
+            (chan_file_id, chan_msg_id, code),
+        )
+        conn.commit()
+        conn.close()
+    except Exception:
+        log.exception("set_file_channel failed")
 
 
 def list_user_files(user_id: int, limit: int = 10):
@@ -223,6 +252,22 @@ def list_user_files(user_id: int, limit: int = 10):
     return [{"code": c, "name": n, "size": s, "kind": k} for c, n, s, k in rows]
 
 
+def delete_user_file(user_id: int, code: str):
+    """মালিক নিজের ফাইল ডিলিট করে; {name, chan_msg_id} ফেরত দেয়, না মিললে None।"""
+    conn = _db()
+    row = conn.execute(
+        "SELECT name, chan_msg_id FROM tgfiles WHERE code = ? AND owner = ?",
+        (code or "", user_id),
+    ).fetchone()
+    if not row:
+        conn.close()
+        return None
+    conn.execute("DELETE FROM tgfiles WHERE code = ? AND owner = ?", (code, user_id))
+    conn.commit()
+    conn.close()
+    return {"name": row[0], "chan_msg_id": row[1]}
+
+
 def tgfile_count() -> int:
     try:
         conn = _db()
@@ -231,6 +276,74 @@ def tgfile_count() -> int:
         return n
     except Exception:
         return -1
+
+
+def user_file_count(user_id: int) -> int:
+    try:
+        conn = _db()
+        n = conn.execute(
+            "SELECT COUNT(*) FROM tgfiles WHERE owner = ?", (user_id,)
+        ).fetchone()[0]
+        conn.close()
+        return int(n)
+    except Exception:
+        return 0
+
+
+# ---------- স্টোরেজ চ্যানেল (গোডাউন) সেটিংস ----------
+
+def _meta_get(key: str):
+    try:
+        conn = _db()
+        row = conn.execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
+        conn.close()
+        return row[0] if row else None
+    except Exception:
+        return None
+
+
+def _meta_set(key: str, value: str):
+    conn = _db()
+    conn.execute(
+        "INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)", (key, value)
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_storage_channel():
+    """সেট করা স্টোরেজ চ্যানেলের আইডি; সেট না থাকলে None।"""
+    v = _meta_get("storage_channel")
+    try:
+        return int(v) if v else None
+    except Exception:
+        return None
+
+
+def set_storage_channel(chat_id: int):
+    _meta_set("storage_channel", str(int(chat_id)))
+
+
+def storage_channel_from_forward(msg):
+    """ফরওয়ার্ড করা চ্যানেল পোস্ট থেকে চ্যানেল আইডি বের করে; না মিললে None।"""
+    if msg is None:
+        return None
+    chat = None
+    origin = getattr(msg, "forward_origin", None)
+    if origin is not None:
+        chat = getattr(origin, "chat", None)
+    if chat is None:
+        chat = getattr(msg, "forward_from_chat", None)
+    if chat is None:
+        return None
+    ctype = str(getattr(chat, "type", "") or "")
+    if "channel" not in ctype:
+        return None
+    cid = getattr(chat, "id", None)
+    try:
+        return int(cid) if cid is not None else None
+    except Exception:
+        return None
 
 
 def share_link(code: str) -> str:
@@ -244,6 +357,46 @@ def file_code_from_args(args) -> str:
     if first.startswith("file_"):
         return first[5:]
     return ""
+
+
+def _sent_file_id(sent, kind: str):
+    try:
+        if kind == "photo":
+            return sent.photo[-1].file_id
+        attr = {"document": "document", "video": "video", "audio": "audio", "voice": "voice"}[kind]
+        return getattr(sent, attr).file_id
+    except Exception:
+        return None
+
+
+async def _copy_to_storage(bot, user, name: str, size, kind: str, file_id: str, code: str):
+    """ফাইলটা স্টোরেজ চ্যানেলে কপি করে; (chan_file_id, chan_msg_id) ফেরত দেয়।
+
+    চ্যানেল সেট না থাকলে বা কপি ব্যর্থ হলে (None, None) — হোস্টিং তাতে আটকায় না।
+    """
+    chan = get_storage_channel()
+    if not chan or bot is None:
+        return None, None
+    caption = (
+        f"📁 {name or 'file'} ({human_size(size)})\n"
+        f"👤 {user.first_name or ''} (ID {user.id})\n"
+        f"🔑 কোড: {code}"
+    )
+    try:
+        if kind == "photo":
+            sent = await bot.send_photo(chan, file_id, caption=caption)
+        elif kind == "video":
+            sent = await bot.send_video(chan, file_id, caption=caption)
+        elif kind == "audio":
+            sent = await bot.send_audio(chan, file_id, caption=caption)
+        elif kind == "voice":
+            sent = await bot.send_voice(chan, file_id)
+        else:
+            sent = await bot.send_document(chan, file_id, caption=caption)
+        return _sent_file_id(sent, kind), getattr(sent, "message_id", None)
+    except Exception:
+        log.exception("storage channel copy failed")
+        return None, None
 
 
 # ---------- DB ব্যাকআপ / রিস্টোর (হোস্ট বদল সুরক্ষা) ----------
@@ -584,10 +737,28 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 await update.message.reply_document(fid, caption=caption, parse_mode=ParseMode.HTML)
         except Exception:
-            log.exception("send stored file failed")
-            await update.message.reply_text(
-                "❌ ফাইলটা পাঠানো যাচ্ছে না — একটু পরে আবার লিংকটা খুলুন।"
-            )
+            chan_fid = rec.get("chan_file_id")
+            sent_ok = False
+            if chan_fid and chan_fid != fid:
+                try:
+                    if rec["kind"] == "photo":
+                        await update.message.reply_photo(chan_fid, caption=caption, parse_mode=ParseMode.HTML)
+                    elif rec["kind"] == "video":
+                        await update.message.reply_video(chan_fid, caption=caption, parse_mode=ParseMode.HTML)
+                    elif rec["kind"] == "audio":
+                        await update.message.reply_audio(chan_fid, caption=caption, parse_mode=ParseMode.HTML)
+                    elif rec["kind"] == "voice":
+                        await update.message.reply_voice(chan_fid)
+                    else:
+                        await update.message.reply_document(chan_fid, caption=caption, parse_mode=ParseMode.HTML)
+                    sent_ok = True
+                except Exception:
+                    log.exception("send stored file (channel copy) failed")
+            if not sent_ok:
+                log.exception("send stored file failed")
+                await update.message.reply_text(
+                    "❌ ফাইলটা পাঠানো যাচ্ছে না — একটু পরে আবার লিংকটা খুলুন।"
+                )
         return
     member = await is_member(context.bot, user.id)
     await send_welcome(update.message, user, member is True)
@@ -643,7 +814,8 @@ async def cmd_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user is None or user.id not in ADMIN_IDS:
         return
     await update.message.reply_text(
-        f"📊 @{BOT_USERNAME} stats\nমোট ইউজার: {user_count()}\n📁 হোস্ট করা ফাইল: {tgfile_count()}\n\n"
+        f"📊 @{BOT_USERNAME} stats\nমোট ইউজার: {user_count()}\n📁 হোস্ট করা ফাইল: {tgfile_count()}\n"
+        f"📦 স্টোরেজ চ্যানেল: {get_storage_channel() or 'সেট হয়নি'}\n\n"
         "🗄️ ব্যাকআপ: /backup\n"
         "রিস্টোর: সর্বশেষ ব্যাকআপ ফাইলটা (v4z-hosting-users.db) এই চ্যাটে পাঠালেই আগের লিংক কাজ করবে।"
     )
@@ -690,6 +862,12 @@ async def on_file_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 reply_markup=start_keyboard(False),
             )
         return
+    if user_file_count(user.id) >= MAX_USER_FILES:
+        await msg.reply_text(
+            f"📦 তোমার অ্যাকাউন্টে ইতিমধ্যে {MAX_USER_FILES}টা ফাইল আছে — এটাই সীমা।\n"
+            "নতুন ফাইল হোস্ট করতে আগে /myfiles থেকে পুরনো কোনো ফাইল ডিলিট করো।"
+        )
+        return
     if size and int(size) > MAX_TG_FILE:
         await msg.reply_text(
             f"⚠️ এই ফাইলটা {human_size(size)} — Telegram স্টোর মোডে সর্বোচ্চ 2GB।\n"
@@ -714,6 +892,16 @@ async def on_file_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def on_media_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     msg = update.message
+    if user is not None and msg is not None and user.id in ADMIN_IDS:
+        chan_id = storage_channel_from_forward(msg)
+        if chan_id is not None:
+            set_storage_channel(chan_id)
+            log.info("storage channel set to %s via forward", chan_id)
+            await msg.reply_text(
+                f"✅ স্টোরেজ চ্যানেল সেট হয়েছে! (আইডি: {chan_id})\n"
+                "এখন থেকে প্রতিটা হোস্ট করা ফাইল ওই চ্যানেলে কপি হয়ে থাকবে।"
+            )
+            return
     if (
         user is not None
         and msg is not None
@@ -735,10 +923,26 @@ async def on_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user is None or msg is None or not msg.text:
         return
     text = msg.text.strip()
+    if user.id in ADMIN_IDS:
+        chan_id = storage_channel_from_forward(msg)
+        if chan_id is not None:
+            set_storage_channel(chan_id)
+            log.info("storage channel set to %s via forward", chan_id)
+            await msg.reply_text(
+                f"✅ স্টোরেজ চ্যানেল সেট হয়েছে! (আইডি: {chan_id})\n"
+                "এখন থেকে প্রতিটা হোস্ট করা ফাইল ওই চ্যানেলে কপি হয়ে থাকবে।"
+            )
+            return
     pend = get_pending(user.id)
     if pend:
         if len(text) < 4 or len(text) > 64 or " " in text:
             await msg.reply_text("🔑 শুধু কিটাই পাঠাও — বাড়তি লেখা ছাড়া।")
+            return
+        if user_file_count(user.id) >= MAX_USER_FILES:
+            await msg.reply_text(
+                f"📦 তোমার {MAX_USER_FILES} ফাইলের লিমিট শেষ — কিটা পোড়েনি।\n"
+                "আগে /myfiles থেকে পুরনো কোনো ফাইল ডিলিট করে তারপর কিটা আবার পাঠাও।"
+            )
             return
         st = try_consume_key(text, user.id)
         if st == "notfound":
@@ -754,12 +958,19 @@ async def on_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not code:
             await msg.reply_text("⚠️ ফাইলটা রাখা যায়নি — ফাইলটা আবার পাঠাও।")
             return
+        chan_fid, chan_mid = await _copy_to_storage(
+            context.bot, user, pend["name"], pend["size"], pend["kind"], pend["file_id"], code
+        )
+        if chan_fid or chan_mid:
+            set_file_channel(code, chan_fid, chan_mid)
         clear_pending(user.id)
+        godown_line = "\n📦 স্টোরেজ চ্যানেলেও কপি রাখা হয়েছে।" if (chan_fid or chan_mid) else ""
         await msg.reply_text(
             f"✅ <b>হোস্ট হয়ে গেছে!</b> ({human_size(pend['size'])})\n\n"
             f"🔗 শেয়ার লিংক:\n{share_link(code)}\n\n"
-            "লিংকটা যাকে দেবে সেও ফাইলটা পেয়ে যাবে (শুধু @rashdteem মেম্বার হতে হবে)। মেয়াদ নেই — ফাইল Telegram-এই থাকবে।\n"
-            "তোমার সব ফাইল দেখো: /myfiles",
+            "লিংকটা যাকে দেবে সেও ফাইলটা পেয়ে যাবে (শুধু @rashdteem মেম্বার হতে হবে)। মেয়াদ নেই — ফাইল Telegram-এই থাকবে।"
+            f"{godown_line}\n"
+            f"তোমার ফাইল: {user_file_count(user.id)}/{MAX_USER_FILES} — সব দেখো: /myfiles",
             parse_mode=ParseMode.HTML,
         )
         try:
@@ -777,17 +988,56 @@ async def cmd_myfiles(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     if user is None or update.message is None:
         return
-    files = list_user_files(user.id)
+    files = list_user_files(user.id, limit=MAX_USER_FILES)
+    count = user_file_count(user.id)
     if not files:
         await update.message.reply_text(
-            "📭 এখনো কোনো ফাইল হোস্ট করোনি।\n\nযেকোনো ফাইল (2GB-এর নিচে) এই চ্যাটে পাঠালেই হোস্ট করা শুরু হবে।"
+            f"📭 এখনো কোনো ফাইল হোস্ট করোনি। (তোমার লিমিট: সর্বোচ্চ {MAX_USER_FILES}টা ফাইল)\n\n"
+            "যেকোনো ফাইল (2GB-এর নিচে) এই চ্যাটে পাঠালেই হোস্ট করা শুরু হবে।"
         )
         return
-    lines = ["📁 <b>তোমার হোস্ট করা ফাইলগুলো:</b>\n"]
+    lines = [f"📁 <b>তোমার হোস্ট করা ফাইলগুলো ({count}/{MAX_USER_FILES}):</b>\n"]
     for i, f in enumerate(files, 1):
         nm = (f["name"] or "file").replace("<", "").replace(">", "")
         lines.append(f"{i}. <b>{nm}</b> ({human_size(f['size'])})\n{share_link(f['code'])}")
-    await update.message.reply_text("\n".join(lines), parse_mode=ParseMode.HTML)
+    rows = [
+        [InlineKeyboardButton(f"🗑 {i}", callback_data=f"del_{f['code']}")]
+        for i, f in enumerate(files, 1)
+    ]
+    await update.message.reply_text(
+        "\n".join(lines) + "\n\nডিলিট করতে নিচে ফাইলের নম্বরের বাটন চাপো 👇",
+        parse_mode=ParseMode.HTML,
+        reply_markup=InlineKeyboardMarkup(rows),
+    )
+
+
+async def cb_delfile(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    if query is None or not query.data:
+        return
+    code = query.data[4:]
+    user_id = query.from_user.id
+    chan = get_storage_channel()
+    rec = delete_user_file(user_id, code)
+    if not rec:
+        await query.answer("এই ফাইলটা তোমার না, বা আগেই ডিলিট হয়ে গেছে।", show_alert=True)
+        return
+    if chan and rec.get("chan_msg_id"):
+        try:
+            await context.bot.delete_message(chan, rec["chan_msg_id"])
+        except Exception:
+            log.warning("channel copy delete failed for %s", code)
+    await query.answer("🗑 ফাইল ডিলিট হয়েছে")
+    try:
+        safe_name = (rec["name"] or "file").replace("<", "").replace(">", "")
+        await context.bot.send_message(
+            user_id,
+            f"🗑 <b>{safe_name}</b> ডিলিট হয়ে গেছে।\n"
+            f"এখন তোমার ফাইল: {user_file_count(user_id)}/{MAX_USER_FILES}",
+            parse_mode=ParseMode.HTML,
+        )
+    except Exception:
+        pass
 
 
 # ---------- startup: bio / description / photo / commands ----------
@@ -844,6 +1094,7 @@ def main():
     app.add_handler(CommandHandler("admin", cmd_admin))
     app.add_handler(CommandHandler("backup", cmd_backup))
     app.add_handler(CallbackQueryHandler(cb_check_join, pattern="^check_join$"))
+    app.add_handler(CallbackQueryHandler(cb_delfile, pattern="^del_"))
     app.add_handler(MessageHandler(filters.ATTACHMENT, on_media_router))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text_message))
     log.info("RASHD Hosting Bot started (@%s)", BOT_USERNAME)
