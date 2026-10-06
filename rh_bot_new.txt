@@ -1,0 +1,698 @@
+"""
+RASHD Hosting Bot — @rashd_hosting_bot
+V4Z File Host-এর বট: logo welcome, @rashdteem join gate, File Host Mini App খোলে।
+Token শুধু panel ENV (BOT_TOKEN) থেকে আসে — কোডে কোনো টোকেন নেই।
+"""
+import json
+import logging
+import os
+import secrets
+import sqlite3
+import string
+import time
+import urllib.parse
+import urllib.request
+
+from telegram import (
+    BotCommand,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    InputProfilePhotoStatic,
+    Update,
+    WebAppInfo,
+)
+from telegram.constants import ChatMemberStatus, ParseMode
+from telegram.ext import (
+    Application,
+    CallbackQueryHandler,
+    CommandHandler,
+    ContextTypes,
+    MessageHandler,
+    filters,
+)
+
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s", level=logging.INFO
+)
+log = logging.getLogger("rashd-hosting-bot")
+
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
+CHANNEL = "@rashdteem"
+CHANNEL_LINK = "https://t.me/rashdteem"
+APP_URL = "https://rashd-bro.vercel.app/host.html"
+BOT_USERNAME = "rashd_hosting_bot"
+ADMIN_IDS = {8100055552}
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOGO_PATH = os.path.join(BASE_DIR, "logo.png")
+DB_PATH = os.path.join(BASE_DIR, "users.db")
+FB_DB = "https://rashdapp-784d3-default-rtdb.firebaseio.com"
+KEYAPP_URL = "https://t.me/rashd12bot/rashdstore"
+MAX_TG_FILE = 2 * 1024 * 1024 * 1024  # 2GB — Telegram স্টোর মোডের সীমা (file_id স্টোর; বট ফাইল ডাউনলোড করে না)
+PENDING_TTL = 900  # ফাইল পাঠানোর ১৫ মিনিটের মধ্যে কি দিতে হবে
+CODE_ALPHABET = string.ascii_letters + string.digits
+
+BOT_SHORT_DESCRIPTION = (
+    "📁 অতিরিক্ত বড় ফাইলের ডাউনলোড লিংক + 2GB পর্যন্ত ফাইল Telegram-এ স্থায়ী হোস্টিং।\n@rashdteem"
+)
+BOT_DESCRIPTION = (
+    "📁 V4Z File Host\n\n"
+    "দুইভাবে হোস্টিং করা যায়:\n"
+    "1️⃣ অতিরিক্ত বড় ফাইল (2GB-এর বেশি): File Host অ্যাপে আপলোড করে লিংক বানান (৩ দিনের হোস্টিং)\n"
+    "2️⃣ যেকোনো ফাইল (2GB পর্যন্ত): সরাসরি এই চ্যাটে ফাইল পাঠালেই Telegram-এ স্থায়ী হোস্টিং (মেয়াদ নেই)\n\n"
+    "কীভাবে ব্যবহার করবেন:\n"
+    "1️⃣ আগে @rashdteem চ্যানেলে জয়েন করুন\n"
+    "2️⃣ তারপর File Host অ্যাপ খুলুন, অথবা এখানেই ফাইল পাঠান\n"
+    "3️⃣ আপলোড শেষ হলেই লিংক পেয়ে যাবেন\n\n"
+    "📌 চ্যানেলে জয়েন না থাকলে টুল চলবে না। প্রতি আপলোডে একটা App Store কি লাগবে।\n\n"
+    "— V4Z RASHD"
+)
+
+
+# ---------- user tracking (admin stats) ----------
+
+def _db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS users ("
+        "id INTEGER PRIMARY KEY, first_seen TEXT, name TEXT)"
+    )
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS tgfiles ("
+        "code TEXT PRIMARY KEY, owner INTEGER, file_id TEXT, name TEXT, "
+        "size INTEGER, kind TEXT, t TEXT)"
+    )
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS pending ("
+        "user_id INTEGER PRIMARY KEY, file_id TEXT, name TEXT, "
+        "size INTEGER, kind TEXT, ts INTEGER)"
+    )
+    return conn
+
+
+def track_user(user) -> bool:
+    """True if this user is brand new."""
+    try:
+        conn = _db()
+        cur = conn.execute(
+            "INSERT OR IGNORE INTO users (id, first_seen, name) VALUES (?, datetime('now'), ?)",
+            (user.id, user.first_name or ""),
+        )
+        conn.commit()
+        is_new = cur.rowcount > 0
+        conn.close()
+        return is_new
+    except Exception:
+        log.exception("track_user failed")
+        return False
+
+
+def user_count() -> int:
+    try:
+        conn = _db()
+        n = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+        conn.close()
+        return n
+    except Exception:
+        return -1
+
+
+# ---------- Telegram file store (স্থায়ী হোস্টিং) ----------
+
+def human_size(n) -> str:
+    try:
+        n = float(n or 0)
+    except Exception:
+        return "?"
+    if n < 1024:
+        return f"{int(n)} B"
+    if n < 1024 * 1024:
+        return f"{n / 1024:.1f} KB"
+    return f"{n / (1024 * 1024):.2f} MB"
+
+
+def new_code(n: int = 8) -> str:
+    return "".join(secrets.choice(CODE_ALPHABET) for _ in range(n))
+
+
+def set_pending(user_id: int, file_id: str, name: str, size, kind: str):
+    conn = _db()
+    conn.execute(
+        "INSERT OR REPLACE INTO pending (user_id, file_id, name, size, kind, ts) "
+        "VALUES (?, ?, ?, ?, ?, ?)",
+        (user_id, file_id, name or "", int(size or 0), kind, int(time.time())),
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_pending(user_id: int):
+    conn = _db()
+    row = conn.execute(
+        "SELECT file_id, name, size, kind, ts FROM pending WHERE user_id = ?",
+        (user_id,),
+    ).fetchone()
+    conn.close()
+    if not row:
+        return None
+    file_id, name, size, kind, ts = row
+    if int(time.time()) - int(ts or 0) > PENDING_TTL:
+        clear_pending(user_id)
+        return None
+    return {"file_id": file_id, "name": name, "size": size, "kind": kind}
+
+
+def clear_pending(user_id: int):
+    conn = _db()
+    conn.execute("DELETE FROM pending WHERE user_id = ?", (user_id,))
+    conn.commit()
+    conn.close()
+
+
+def store_file(user_id: int, file_id: str, name: str, size, kind: str):
+    """নতুন হোস্টিং রেকর্ড বসিয়ে শেয়ার কোড ফেরত দেয়; ব্যর্থ হলে None।"""
+    for _ in range(6):
+        code = new_code()
+        conn = None
+        try:
+            conn = _db()
+            conn.execute(
+                "INSERT INTO tgfiles (code, owner, file_id, name, size, kind, t) "
+                "VALUES (?, ?, ?, ?, ?, ?, datetime('now'))",
+                (code, user_id, file_id, name or "", int(size or 0), kind),
+            )
+            conn.commit()
+            conn.close()
+            return code
+        except sqlite3.IntegrityError:
+            try:
+                if conn:
+                    conn.close()
+            except Exception:
+                pass
+            continue
+        except Exception:
+            log.exception("store_file failed")
+            return None
+    return None
+
+
+def get_stored_file(code: str):
+    conn = _db()
+    row = conn.execute(
+        "SELECT owner, file_id, name, size, kind FROM tgfiles WHERE code = ?",
+        (code or "",),
+    ).fetchone()
+    conn.close()
+    if not row:
+        return None
+    owner, file_id, name, size, kind = row
+    return {"owner": owner, "file_id": file_id, "name": name, "size": size, "kind": kind}
+
+
+def list_user_files(user_id: int, limit: int = 10):
+    conn = _db()
+    rows = conn.execute(
+        "SELECT code, name, size, kind FROM tgfiles WHERE owner = ? "
+        "ORDER BY t DESC LIMIT ?",
+        (user_id, limit),
+    ).fetchall()
+    conn.close()
+    return [{"code": c, "name": n, "size": s, "kind": k} for c, n, s, k in rows]
+
+
+def tgfile_count() -> int:
+    try:
+        conn = _db()
+        n = conn.execute("SELECT COUNT(*) FROM tgfiles").fetchone()[0]
+        conn.close()
+        return n
+    except Exception:
+        return -1
+
+
+def share_link(code: str) -> str:
+    return f"https://t.me/{BOT_USERNAME}?start=file_{code}"
+
+
+def file_code_from_args(args) -> str:
+    if not args:
+        return ""
+    first = str(args[0] or "")
+    if first.startswith("file_"):
+        return first[5:]
+    return ""
+
+
+# ---------- App Store key (Firebase REST, stdlib only) ----------
+
+def _fb_request(method: str, path: str, payload=None, timeout: int = 8):
+    url = FB_DB + path
+    data = None
+    headers = {}
+    if payload is not None:
+        data = json.dumps(payload).encode("utf-8")
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(url, data=data, headers=headers, method=method)
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        body = resp.read().decode("utf-8")
+        return json.loads(body) if body else None
+
+
+def fb_get_key(code: str):
+    try:
+        return _fb_request("GET", "/keys/" + urllib.parse.quote(code, safe="") + ".json")
+    except Exception:
+        return None
+
+
+def fb_burn_key(code: str, user_id: int) -> bool:
+    try:
+        _fb_request(
+            "PATCH",
+            "/keys/" + urllib.parse.quote(code, safe="") + ".json",
+            {
+                "used": True,
+                "usedFor": "file-host-tg",
+                "usedAt": int(time.time() * 1000),
+                "usedBy": user_id,
+            },
+        )
+        return True
+    except Exception:
+        return False
+
+
+def try_consume_key(code: str, user_id: int) -> str:
+    """'ok' | 'notfound' | 'used' | 'error'"""
+    rec = fb_get_key(code)
+    if not rec:
+        return "notfound"
+    if rec.get("used") is True:
+        return "used"
+    if not fb_burn_key(code, user_id):
+        return "error"
+    return "ok"
+
+
+# ---------- join gate ----------
+
+async def is_member(bot, user_id: int):
+    """True/False; None if the check itself failed (e.g. bot not channel admin)."""
+    try:
+        member = await bot.get_chat_member(CHANNEL, user_id)
+    except Exception as exc:
+        log.warning("getChatMember failed for %s: %s", user_id, exc)
+        return None
+    if member.status in (
+        ChatMemberStatus.OWNER,
+        ChatMemberStatus.ADMINISTRATOR,
+        ChatMemberStatus.MEMBER,
+    ):
+        return True
+    if member.status == ChatMemberStatus.RESTRICTED:
+        return bool(getattr(member, "is_member", False))
+    return False
+
+
+def welcome_caption(name: str, member: bool) -> str:
+    safe = (name or "বন্ধু").replace("<", "").replace(">", "")
+    head = f"👋 আসসালামু আলাইকুম, <b>{safe}</b>!\n\n"
+    if member:
+        return (
+            head
+            + "📁 <b>V4Z File Host</b>-এ স্বাগতম!\n\n"
+            "যেকোনো বড় ফাইল আপলোড করে সঙ্গে সঙ্গে ডাউনলোড লিংক বানাতে পারবেন।\n\n"
+            "✅ আপনি @rashdteem চ্যানেলের মেম্বার — নিচের বাটনে ট্যাপ করে টুলটি খুলুন।\n\n"
+            "💾 অথবা যেকোনো ফাইল (2GB পর্যন্ত) সরাসরি এই চ্যাটে পাঠান — Telegram-এ <b>স্থায়ী হোস্টিং</b> হয়ে যাবে (প্রতি ফাইলে একটা কি লাগবে)।\n"
+            "আপনার ফাইলগুলো: /myfiles"
+        )
+    return (
+        head
+        + "📁 <b>V4Z File Host</b>-এ স্বাগতম!\n\n"
+        "বড় ফাইল আপলোড করে ডাউনলোড লিংক বানান — দ্রুত, সহজ, ফ্রি।\n\n"
+        "⚠️ এই টুল ব্যবহারের আগে আমাদের @rashdteem চ্যানেলে জয়েন করা বাধ্যতামূলক:\n"
+        "1️⃣ নিচের বাটনে চ্যানেলে জয়েন করুন\n"
+        "2️⃣ তারপর «✅ জয়েন করেছি» বাটনে ট্যাপ করুন"
+    )
+
+
+def start_keyboard(member: bool) -> InlineKeyboardMarkup:
+    if member:
+        return InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        "📁 V4Z File Host খুলুন", web_app=WebAppInfo(url=APP_URL)
+                    )
+                ],
+                [InlineKeyboardButton("📢 আমাদের চ্যানেল", url=CHANNEL_LINK)],
+            ]
+        )
+    return InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("📢 চ্যানেলে জয়েন করুন", url=CHANNEL_LINK)],
+            [InlineKeyboardButton("✅ জয়েন করেছি", callback_data="check_join")],
+        ]
+    )
+
+
+async def send_welcome(target, user, member: bool):
+    caption = welcome_caption(user.first_name or "", member)
+    markup = start_keyboard(member)
+    try:
+        with open(LOGO_PATH, "rb") as photo:
+            await target.reply_photo(
+                photo=photo,
+                caption=caption,
+                parse_mode=ParseMode.HTML,
+                reply_markup=markup,
+            )
+    except FileNotFoundError:
+        log.warning("logo.png missing — sending text welcome")
+        await target.reply_text(caption, parse_mode=ParseMode.HTML, reply_markup=markup)
+
+
+async def on_admin_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """এডমিন ছবি পাঠালে সেটাই বটের নতুন লোগো — profile photo + welcome ছবি দুটোই।"""
+    user = update.effective_user
+    msg = update.message
+    if user is None or msg is None or not msg.photo:
+        return
+    if user.id not in ADMIN_IDS:
+        return
+    try:
+        tg_file = await msg.photo[-1].get_file()
+        data = bytes(await tg_file.download_as_bytearray())
+        with open(LOGO_PATH, "wb") as fh:
+            fh.write(data)
+        await context.bot.set_my_profile_photo(
+            photo=InputProfilePhotoStatic(photo=data)
+        )
+        log.info("Logo updated by admin (%d bytes)", len(data))
+        await msg.reply_text(
+            "✅ নতুন লোগো সেট হয়েছে! বটের প্রোফাইল ছবি আর /start-এর welcome ছবি — দুটোই বদলে গেছে।"
+        )
+    except Exception:
+        log.exception("admin logo update failed")
+        try:
+            await msg.reply_text("❌ লোগো সেট হয়নি — আবার ছবিটা পাঠাও।")
+        except Exception:
+            pass
+
+
+# ---------- handlers ----------
+
+async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    if user is None or update.message is None:
+        return
+    if track_user(user):
+        for admin in ADMIN_IDS:
+            try:
+                await context.bot.send_message(
+                    admin,
+                    f"🆕 নতুন ইউজার @{BOT_USERNAME}-এ: {user.first_name} (ID {user.id})",
+                )
+            except Exception:
+                pass
+    code = file_code_from_args(context.args)
+    if code:
+        member = await is_member(context.bot, user.id)
+        if member is not True:
+            await update.message.reply_text(
+                "🔒 ফাইলটা পেতে আগে @rashdteem চ্যানেলে জয়েন করুন, তারপর লিংকটা আবার খুলুন 👇",
+                reply_markup=start_keyboard(False),
+            )
+            return
+        rec = get_stored_file(code)
+        if not rec:
+            await update.message.reply_text(
+                "❌ এই হোস্টিং লিংকটা পাওয়া যায়নি — লিংকটা ভুল হতে পারে।"
+            )
+            return
+        safe_name = (rec["name"] or "file").replace("<", "").replace(">", "")
+        caption = f"📁 <b>{safe_name}</b> ({human_size(rec['size'])})\n— V4Z File Host"
+        fid = rec["file_id"]
+        try:
+            if rec["kind"] == "photo":
+                await update.message.reply_photo(fid, caption=caption, parse_mode=ParseMode.HTML)
+            elif rec["kind"] == "video":
+                await update.message.reply_video(fid, caption=caption, parse_mode=ParseMode.HTML)
+            elif rec["kind"] == "audio":
+                await update.message.reply_audio(fid, caption=caption, parse_mode=ParseMode.HTML)
+            elif rec["kind"] == "voice":
+                await update.message.reply_voice(fid)
+            else:
+                await update.message.reply_document(fid, caption=caption, parse_mode=ParseMode.HTML)
+        except Exception:
+            log.exception("send stored file failed")
+            await update.message.reply_text(
+                "❌ ফাইলটা পাঠানো যাচ্ছে না — একটু পরে আবার লিংকটা খুলুন।"
+            )
+        return
+    member = await is_member(context.bot, user.id)
+    await send_welcome(update.message, user, member is True)
+
+
+async def cb_check_join(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    if query is None:
+        return
+    member = await is_member(context.bot, query.from_user.id)
+    if member is True:
+        await query.answer("✅ জয়েন কনফার্ম হয়েছে! টুলটি খুলুন।", show_alert=True)
+        caption = welcome_caption(query.from_user.first_name or "", True)
+        try:
+            await query.edit_message_caption(
+                caption=caption,
+                parse_mode=ParseMode.HTML,
+                reply_markup=start_keyboard(True),
+            )
+        except Exception:
+            await query.message.reply_text(
+                caption, parse_mode=ParseMode.HTML, reply_markup=start_keyboard(True)
+            )
+    else:
+        await query.answer(
+            "❌ আপনি এখনো চ্যানেলে জয়েন করেননি। আগে জয়েন করুন।", show_alert=True
+        )
+
+
+async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    member = await is_member(context.bot, user.id) if user else None
+    await update.message.reply_text(
+        "📖 <b>কীভাবে ব্যবহার করবেন</b>\n\n"
+        "<b>বড় ফাইল (যেকোনো সাইজ):</b>\n"
+        "1️⃣ @rashdteem চ্যানেলে জয়েন করুন\n"
+        "2️⃣ /start দিন\n"
+        "3️⃣ «📁 V4Z File Host খুলুন» বাটনে ট্যাপ করুন\n"
+        "4️⃣ ফাইল সিলেক্ট করে আপলোড করুন — শেষ হলেই লিংক পাবেন\n\n"
+        "<b>ফাইল (2GB-এর নিচে, স্থায়ী):</b>\n"
+        "1️⃣ ফাইলটা সরাসরি এই চ্যাটে পাঠান\n"
+        "2️⃣ তারপর একটা App Store কি পাঠান\n"
+        "3️⃣ শেয়ার লিংক পেয়ে যাবেন — মেয়াদ নেই\n\n"
+        "আপনার হোস্ট করা ফাইল: /myfiles\n\n"
+        "সমস্যা হলে চ্যানেলে জানান: @rashdteem",
+        parse_mode=ParseMode.HTML,
+        reply_markup=start_keyboard(member is True),
+    )
+
+
+async def cmd_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    if user is None or user.id not in ADMIN_IDS:
+        return
+    await update.message.reply_text(
+        f"📊 @{BOT_USERNAME} stats\nমোট ইউজার: {user_count()}\n📁 হোস্ট করা ফাইল: {tgfile_count()}"
+    )
+
+
+def _media_info(msg):
+    """message থেকে (file_id, name, size, kind); কিছু না মিললে None।"""
+    if msg.document:
+        d = msg.document
+        return d.file_id, (d.file_name or "file"), d.file_size, "document"
+    if msg.video:
+        v = msg.video
+        return v.file_id, (v.file_name or "video.mp4"), v.file_size, "video"
+    if msg.audio:
+        a = msg.audio
+        return a.file_id, (a.file_name or (a.title or "audio")), a.file_size, "audio"
+    if msg.voice:
+        return msg.voice.file_id, "voice.ogg", msg.voice.file_size, "voice"
+    if getattr(msg, "animation", None):
+        an = msg.animation
+        return an.file_id, (an.file_name or "animation.mp4"), an.file_size, "document"
+    if msg.photo:
+        p = msg.photo[-1]
+        return p.file_id, "photo.jpg", p.file_size, "photo"
+    return None
+
+
+async def on_file_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    msg = update.message
+    if user is None or msg is None:
+        return
+    info = _media_info(msg)
+    if not info:
+        return
+    file_id, name, size, kind = info
+    member = await is_member(context.bot, user.id)
+    if member is not True:
+        if member is None:
+            await msg.reply_text("⚠️ মেম্বারশিপ যাচাই করা যাচ্ছে না — একটু পরে আবার ফাইলটা পাঠাও।")
+        else:
+            await msg.reply_text(
+                "🔒 ফাইল হোস্ট করতে আগে @rashdteem চ্যানেলে জয়েন করো 👇",
+                reply_markup=start_keyboard(False),
+            )
+        return
+    if size and int(size) > MAX_TG_FILE:
+        await msg.reply_text(
+            f"⚠️ এই ফাইলটা {human_size(size)} — Telegram স্টোর মোডে সর্বোচ্চ 2GB।\n"
+            "বড় ফাইলের জন্য File Host অ্যাপটা ব্যবহার করো 👇",
+            reply_markup=start_keyboard(True),
+        )
+        return
+    set_pending(user.id, file_id, name, size or 0, kind)
+    kb = InlineKeyboardMarkup(
+        [[InlineKeyboardButton("🔑 কি নিতে যাও", url=KEYAPP_URL)]]
+    )
+    safe_name = (name or "file").replace("<", "").replace(">", "")
+    await msg.reply_text(
+        f"📁 ফাইল পেয়েছি: <b>{safe_name}</b> ({human_size(size)})\n\n"
+        "এটা Telegram-এ <b>স্থায়ীভাবে</b> হোস্ট করতে একটা App Store কি লাগবে (১ কি = ১ ফাইল, মেয়াদ নেই)।\n"
+        "কিটা সরাসরি এই চ্যাটে পাঠিয়ে দাও — হোস্ট করে শেয়ার লিংক দিয়ে দেব 👇",
+        parse_mode=ParseMode.HTML,
+        reply_markup=kb,
+    )
+
+
+async def on_media_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    msg = update.message
+    if user is not None and msg is not None and msg.photo and user.id in ADMIN_IDS:
+        await on_admin_photo(update, context)
+        return
+    await on_file_message(update, context)
+
+
+async def on_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    msg = update.message
+    if user is None or msg is None or not msg.text:
+        return
+    text = msg.text.strip()
+    pend = get_pending(user.id)
+    if pend:
+        if len(text) < 4 or len(text) > 64 or " " in text:
+            await msg.reply_text("🔑 শুধু কিটাই পাঠাও — বাড়তি লেখা ছাড়া।")
+            return
+        st = try_consume_key(text, user.id)
+        if st == "notfound":
+            await msg.reply_text("❌ এমন কোনো কি পাওয়া যায়নি — ঠিক করে আবার পাঠাও।")
+            return
+        if st == "used":
+            await msg.reply_text("❌ এই কিটা আগেই ব্যবহার হয়ে গেছে — নতুন কি এনে পাঠাও।")
+            return
+        if st == "error":
+            await msg.reply_text("⚠️ কিটা জমা নিতে সমস্যা হয়েছে — একটু পরে আবার পাঠাও।")
+            return
+        code = store_file(user.id, pend["file_id"], pend["name"], pend["size"], pend["kind"])
+        if not code:
+            await msg.reply_text("⚠️ ফাইলটা রাখা যায়নি — ফাইলটা আবার পাঠাও।")
+            return
+        clear_pending(user.id)
+        await msg.reply_text(
+            f"✅ <b>হোস্ট হয়ে গেছে!</b> ({human_size(pend['size'])})\n\n"
+            f"🔗 শেয়ার লিংক:\n{share_link(code)}\n\n"
+            "লিংকটা যাকে দেবে সেও ফাইলটা পেয়ে যাবে (শুধু @rashdteem মেম্বার হতে হবে)। মেয়াদ নেই — ফাইল Telegram-এই থাকবে।\n"
+            "তোমার সব ফাইল দেখো: /myfiles",
+            parse_mode=ParseMode.HTML,
+        )
+        return
+    if 6 <= len(text) <= 20 and all(ch.isalnum() or ch in "-_" for ch in text):
+        await msg.reply_text(
+            "📤 আগে আমাকে একটা ফাইল পাঠাও (2GB-এর নিচে) — তারপর কি দিলেই হোস্ট করে লিংক দিয়ে দেব।"
+        )
+
+
+async def cmd_myfiles(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    if user is None or update.message is None:
+        return
+    files = list_user_files(user.id)
+    if not files:
+        await update.message.reply_text(
+            "📭 এখনো কোনো ফাইল হোস্ট করোনি।\n\nযেকোনো ফাইল (2GB-এর নিচে) এই চ্যাটে পাঠালেই হোস্ট করা শুরু হবে।"
+        )
+        return
+    lines = ["📁 <b>তোমার হোস্ট করা ফাইলগুলো:</b>\n"]
+    for i, f in enumerate(files, 1):
+        nm = (f["name"] or "file").replace("<", "").replace(">", "")
+        lines.append(f"{i}. <b>{nm}</b> ({human_size(f['size'])})\n{share_link(f['code'])}")
+    await update.message.reply_text("\n".join(lines), parse_mode=ParseMode.HTML)
+
+
+# ---------- startup: bio / description / photo / commands ----------
+
+async def on_startup(app: Application):
+    bot = app.bot
+    try:
+        me = await bot.get_me()
+        log.info("[TOKEN CHECK] SUCCESS. Bot Username: @%s", me.username)
+    except Exception:
+        log.exception("get_me failed — token check failed")
+    try:
+        await bot.set_my_commands(
+            [
+                BotCommand("start", "🚀 বট চালু করুন"),
+                BotCommand("myfiles", "📁 আমার হোস্ট করা ফাইল"),
+                BotCommand("help", "📖 সাহায্য"),
+            ]
+        )
+    except Exception:
+        log.exception("set_my_commands failed")
+    try:
+        await bot.set_my_short_description(BOT_SHORT_DESCRIPTION)
+    except Exception:
+        log.exception("set_my_short_description failed")
+    try:
+        await bot.set_my_description(BOT_DESCRIPTION)
+    except Exception:
+        log.exception("set_my_description failed")
+    try:
+        if os.path.exists(LOGO_PATH):
+            with open(LOGO_PATH, "rb") as fh:
+                await bot.set_my_profile_photo(
+                    photo=InputProfilePhotoStatic(photo=fh.read())
+                )
+            log.info("Profile photo updated from logo.png")
+    except Exception:
+        log.exception("set_my_profile_photo failed (BotFather থেকে ম্যানুয়ালি দেওয়া যাবে)")
+
+
+def main():
+    if not BOT_TOKEN:
+        raise SystemExit("BOT_TOKEN env var নেই — panel ENV-তে বটের টোকেন বসাতে হবে")
+    app = (
+        Application.builder()
+        .token(BOT_TOKEN)
+        .post_init(on_startup)
+        .build()
+    )
+    app.add_handler(CommandHandler("start", cmd_start))
+    app.add_handler(CommandHandler("help", cmd_help))
+    app.add_handler(CommandHandler("myfiles", cmd_myfiles))
+    app.add_handler(CommandHandler("admin", cmd_admin))
+    app.add_handler(CallbackQueryHandler(cb_check_join, pattern="^check_join$"))
+    app.add_handler(MessageHandler(filters.ATTACHMENT, on_media_router))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text_message))
+    log.info("RASHD Hosting Bot started (@%s)", BOT_USERNAME)
+    app.run_polling(allowed_updates=Update.ALL_TYPES, drop_pending_updates=True)
+
+
+if __name__ == "__main__":
+    main()
