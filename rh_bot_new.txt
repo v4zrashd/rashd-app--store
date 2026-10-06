@@ -7,8 +7,10 @@ import json
 import logging
 import os
 import secrets
+import shutil
 import sqlite3
 import string
+import tempfile
 import time
 import urllib.parse
 import urllib.request
@@ -49,6 +51,7 @@ FB_DB = "https://rashdapp-784d3-default-rtdb.firebaseio.com"
 KEYAPP_URL = "https://t.me/rashd12bot/rashdstore"
 MAX_TG_FILE = 2 * 1024 * 1024 * 1024  # 2GB — Telegram স্টোর মোডের সীমা (file_id স্টোর; বট ফাইল ডাউনলোড করে না)
 PENDING_TTL = 900  # ফাইল পাঠানোর ১৫ মিনিটের মধ্যে কি দিতে হবে
+BACKUP_DB_NAME = "v4z-hosting-users.db"  # এডমিন চ্যাটে পাঠানো ব্যাকআপ ফাইলের নাম
 CODE_ALPHABET = string.ascii_letters + string.digits
 
 BOT_SHORT_DESCRIPTION = (
@@ -241,6 +244,142 @@ def file_code_from_args(args) -> str:
     if first.startswith("file_"):
         return first[5:]
     return ""
+
+
+# ---------- DB ব্যাকআপ / রিস্টোর (হোস্ট বদল সুরক্ষা) ----------
+
+def _db_snapshot_bytes():
+    """users.db-র consistent snapshot বানিয়ে bytes ফেরত দেয়; ব্যর্থ হলে None।"""
+    tmp = DB_PATH + ".snap"
+    try:
+        if os.path.exists(tmp):
+            os.remove(tmp)
+        src = sqlite3.connect(DB_PATH)
+        dst = sqlite3.connect(tmp)
+        try:
+            src.backup(dst)
+        finally:
+            dst.close()
+            src.close()
+        with open(tmp, "rb") as fh:
+            data = fh.read()
+        os.remove(tmp)
+        return data
+    except Exception:
+        log.exception("db snapshot failed")
+        try:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        except Exception:
+            pass
+        return None
+
+
+def _validate_backup_bytes(data: bytes):
+    """ব্যাকআপ bytes ঠিকমতো SQLite কিনা + দরকারি টেবিল আছে কিনা; ঠিক হলে counts, নাহলে None।"""
+    if not data or not data.startswith(b"SQLite format 3\x00"):
+        return None
+    tmp = None
+    try:
+        fd, tmp = tempfile.mkstemp(suffix=".db")
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(data)
+        conn = sqlite3.connect(tmp)
+        try:
+            tables = {
+                r[0]
+                for r in conn.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'"
+                )
+            }
+            if not {"tgfiles", "users", "pending"}.issubset(tables):
+                return None
+            files = conn.execute("SELECT COUNT(*) FROM tgfiles").fetchone()[0]
+            users = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+        finally:
+            conn.close()
+        return {"files": files, "users": users}
+    except Exception:
+        return None
+    finally:
+        if tmp and os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except Exception:
+                pass
+
+
+async def send_db_backup(bot, reason: str) -> bool:
+    """DB-র ব্যাকআপ কপি প্রত্যেক এডমিনের চ্যাটে পাঠায়।"""
+    data = _db_snapshot_bytes()
+    if not data:
+        return False
+    caption = (
+        "🗄️ <b>Hosting DB ব্যাকআপ</b>\n"
+        f"{reason}\n"
+        f"📁 ফাইল: {tgfile_count()} · 👥 ইউজার: {user_count()}\n"
+        "রিস্টোর: নতুন হোস্টে এই ফাইলটা বটে পাঠালেই আগের সব লিংক আবার কাজ করবে।"
+    )
+    sent_any = False
+    for admin in ADMIN_IDS:
+        try:
+            await bot.send_document(
+                admin,
+                document=data,
+                filename=BACKUP_DB_NAME,
+                caption=caption,
+                parse_mode=ParseMode.HTML,
+            )
+            sent_any = True
+        except Exception:
+            log.exception("backup send failed for admin %s", admin)
+    return sent_any
+
+
+async def cmd_backup(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    if user is None or user.id not in ADMIN_IDS or update.message is None:
+        return
+    if await send_db_backup(context.bot, "ম্যানুয়াল ব্যাকআপ"):
+        await update.message.reply_text("✅ ব্যাকআপ পাঠানো হয়েছে — উপরেই ফাইলটা আছে।")
+    else:
+        await update.message.reply_text("❌ ব্যাকআপ পাঠানো যাচ্ছে না — একটু পরে আবার চেষ্টা করো।")
+
+
+async def on_admin_restore(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """এডমিন ব্যাকআপ .db ফাইল পাঠালে DB রিস্টোর হয় — হোস্ট বদলের পর পুরোনো লিংক বাঁচাতে।"""
+    msg = update.message
+    try:
+        tg_file = await context.bot.get_file(msg.document.file_id)
+        data = bytes(await tg_file.download_as_bytearray())
+    except Exception:
+        log.exception("restore: download failed")
+        await msg.reply_text("❌ ব্যাকআপ ফাইলটা নামানো যাচ্ছে না — আবার পাঠাও।")
+        return
+    info = _validate_backup_bytes(data)
+    if not info:
+        await msg.reply_text(
+            "❌ এটা ঠিক ব্যাকআপ ফাইল মনে হচ্ছে না — রিস্টোর হয়নি, আগের ডাটাই আছে।"
+        )
+        return
+    try:
+        if os.path.exists(DB_PATH):
+            shutil.copyfile(DB_PATH, DB_PATH + ".pre-restore.bak")
+        tmp_path = DB_PATH + ".restore-tmp"
+        with open(tmp_path, "wb") as fh:
+            fh.write(data)
+        os.replace(tmp_path, DB_PATH)
+    except Exception:
+        log.exception("restore: write failed")
+        await msg.reply_text("❌ রিস্টোর লিখতে সমস্যা হয়েছে — আবার চেষ্টা করো।")
+        return
+    log.info("DB restored by admin: %s files, %s users", info["files"], info["users"])
+    await msg.reply_text(
+        "✅ <b>ব্যাকআপ রিস্টোর হয়ে গেছে!</b>\n"
+        f"📁 হোস্ট করা ফাইল: {info['files']} · 👥 ইউজার: {info['users']}\n"
+        "আগের সব শেয়ার লিংক আবার কাজ করবে।",
+        parse_mode=ParseMode.HTML,
+    )
 
 
 # ---------- App Store key (Firebase REST, stdlib only) ----------
@@ -504,7 +643,9 @@ async def cmd_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user is None or user.id not in ADMIN_IDS:
         return
     await update.message.reply_text(
-        f"📊 @{BOT_USERNAME} stats\nমোট ইউজার: {user_count()}\n📁 হোস্ট করা ফাইল: {tgfile_count()}"
+        f"📊 @{BOT_USERNAME} stats\nমোট ইউজার: {user_count()}\n📁 হোস্ট করা ফাইল: {tgfile_count()}\n\n"
+        "🗄️ ব্যাকআপ: /backup\n"
+        "রিস্টোর: সর্বশেষ ব্যাকআপ ফাইলটা (v4z-hosting-users.db) এই চ্যাটে পাঠালেই আগের লিংক কাজ করবে।"
     )
 
 
@@ -573,6 +714,15 @@ async def on_file_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def on_media_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     msg = update.message
+    if (
+        user is not None
+        and msg is not None
+        and msg.document
+        and user.id in ADMIN_IDS
+        and (msg.document.file_name or "").lower().endswith(".db")
+    ):
+        await on_admin_restore(update, context)
+        return
     if user is not None and msg is not None and msg.photo and user.id in ADMIN_IDS:
         await on_admin_photo(update, context)
         return
@@ -612,6 +762,10 @@ async def on_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "তোমার সব ফাইল দেখো: /myfiles",
             parse_mode=ParseMode.HTML,
         )
+        try:
+            await send_db_backup(context.bot, "নতুন ফাইল হোস্ট হয়েছে")
+        except Exception:
+            log.exception("auto backup after store failed")
         return
     if 6 <= len(text) <= 20 and all(ch.isalnum() or ch in "-_" for ch in text):
         await msg.reply_text(
@@ -651,6 +805,7 @@ async def on_startup(app: Application):
                 BotCommand("start", "🚀 বট চালু করুন"),
                 BotCommand("myfiles", "📁 আমার হোস্ট করা ফাইল"),
                 BotCommand("help", "📖 সাহায্য"),
+                BotCommand("backup", "🗄️ DB ব্যাকআপ (এডমিন)"),
             ]
         )
     except Exception:
@@ -687,6 +842,7 @@ def main():
     app.add_handler(CommandHandler("help", cmd_help))
     app.add_handler(CommandHandler("myfiles", cmd_myfiles))
     app.add_handler(CommandHandler("admin", cmd_admin))
+    app.add_handler(CommandHandler("backup", cmd_backup))
     app.add_handler(CallbackQueryHandler(cb_check_join, pattern="^check_join$"))
     app.add_handler(MessageHandler(filters.ATTACHMENT, on_media_router))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text_message))
