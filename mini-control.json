@@ -1,0 +1,35 @@
+{
+  "updatedAt": "",
+  "services": {
+    "downloader": {
+      "enabled": true,
+      "name": "V4Z Downloader",
+      "logo": "",
+      "announcement": "",
+      "maxFormats": 8,
+      "socketTimeout": 10,
+      "retries": 1,
+      "showSocial": false
+    },
+    "number": {
+      "enabled": true,
+      "name": "Number Lookup",
+      "logo": "",
+      "announcement": ""
+    },
+    "filehost": {
+      "enabled": true,
+      "name": "V4Z File Host",
+      "logo": "",
+      "announcement": ""
+    },
+    "store": {
+      "enabled": true,
+      "title": "RASHD App Store",
+      "heading": "RASHD APP STORE",
+      "logo": "",
+      "announcement": ""
+    }
+  },
+  "broadcast": {}
+}
