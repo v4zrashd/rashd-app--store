@@ -8,12 +8,16 @@
 <script src='//libtl.com/sdk.js' data-zone='11949593' data-sdk='show_11949593'></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { min-height:100vh; }
   body {
-    background:#04070a; color:#e8fff4; min-height:100vh;
+    background:#04070a; color:#e8fff4;
     font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
     display:flex; flex-direction:column; align-items:center;
-    padding:28px 18px 40px;
-    background-image:radial-gradient(ellipse 80% 45% at 50% -5%, rgba(0,255,157,.14), transparent 65%);
+    padding:30px 18px 40px; overflow-x:hidden; position:relative;
+    background-image:
+      radial-gradient(ellipse 85% 48% at 50% -5%, rgba(0,255,157,.16), transparent 65%),
+      radial-gradient(ellipse 55% 32% at 88% 30%, rgba(0,229,255,.10), transparent 70%),
+      radial-gradient(ellipse 45% 30% at 6% 62%, rgba(255,0,200,.06), transparent 70%);
   }
   .logo {
     font-size:30px; font-weight:900; letter-spacing:3px; color:#fff; text-align:center;
@@ -21,50 +25,88 @@
   }
   .logo span { color:#00ff9d; }
   .tagline { text-align:center; color:#7ddbb5; font-size:12px; letter-spacing:2px; margin-top:4px; }
+
+  .keyring {
+    margin-top:26px; width:92px; height:92px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:44px; position:relative; isolation:isolate;
+    background:radial-gradient(circle at 50% 42%, rgba(0,255,157,.16), rgba(0,0,0,.35) 72%);
+  }
+  .keyring::before {
+    content:""; position:absolute; inset:-3px; border-radius:50%; z-index:-1;
+    background:conic-gradient(from 0deg, #00ff9d, #00e5ff, #7c4dff, #ff00c8, #00ff9d);
+    animation:spin 5s linear infinite; filter:saturate(1.25);
+  }
+  .keyring::after {
+    content:""; position:absolute; inset:3px; border-radius:50%; z-index:-1;
+    background:#06110c;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .keyring .k { animation:floaty 2.6s ease-in-out infinite; }
+  @keyframes floaty { 0%,100% { transform:translateY(0) rotate(-6deg); } 50% { transform:translateY(-5px) rotate(6deg); } }
+
   .card {
-    width:100%; max-width:420px; margin-top:30px;
-    background:linear-gradient(160deg, rgba(0,255,157,.07), rgba(0,255,157,.015));
-    border:1px solid rgba(0,255,157,.3); border-radius:20px; padding:26px 20px;
-    box-shadow:0 0 34px rgba(0,255,157,.10), inset 0 0 24px rgba(0,255,157,.03);
-    text-align:center;
+    width:100%; max-width:420px; margin-top:24px; text-align:center;
+    background:linear-gradient(165deg, rgba(0,255,157,.08), rgba(0,229,255,.03) 55%, rgba(0,255,157,.015));
+    border:1px solid rgba(0,255,157,.32); border-radius:22px; padding:26px 20px 24px;
+    box-shadow:0 0 36px rgba(0,255,157,.11), inset 0 0 26px rgba(0,255,157,.035);
   }
   h1 { font-size:22px; margin-bottom:10px; }
   .desc { color:#b9e8d2; font-size:14.5px; line-height:1.75; }
   .desc b { color:#00ff9d; }
+  .uses { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
+  .use {
+    font-size:12px; font-weight:700; padding:7px 11px; border-radius:999px;
+    border:1px solid rgba(0,255,157,.4); background:rgba(0,255,157,.06); color:#a9f5d2;
+  }
+  .use.c { border-color:rgba(0,229,255,.45); background:rgba(0,229,255,.07); color:#a8ecff; }
+  .use.p { border-color:rgba(255,0,200,.4); background:rgba(255,0,200,.06); color:#ffc4f2; }
+
   #adBtn {
-    margin-top:24px; width:100%; border:none; cursor:pointer;
+    margin-top:22px; width:100%; border:none; cursor:pointer; position:relative; overflow:hidden;
     background:linear-gradient(90deg,#00d97a,#00ff9d); color:#02130a;
-    font-size:18px; font-weight:800; padding:16px 12px; border-radius:14px;
-    box-shadow:0 0 22px rgba(0,255,157,.45);
+    font-size:18px; font-weight:900; letter-spacing:.3px; padding:16px 12px; border-radius:14px;
+    box-shadow:0 0 24px rgba(0,255,157,.45);
     animation:pulse 2s infinite;
   }
-  #adBtn:disabled { opacity:.55; cursor:wait; animation:none; box-shadow:none; }
+  #adBtn::after {
+    content:""; position:absolute; top:0; left:-70%; width:45%; height:100%;
+    background:linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
+    animation:shine 2.6s ease-in-out infinite;
+  }
+  @keyframes shine { 0%,55% { left:-70%; } 100% { left:130%; } }
+  #adBtn:disabled { opacity:.6; cursor:wait; animation:none; box-shadow:none; }
+  #adBtn:disabled::after { animation:none; }
   @keyframes pulse {
     0%,100% { box-shadow:0 0 14px rgba(0,255,157,.35); }
-    50% { box-shadow:0 0 30px rgba(0,255,157,.65); }
+    50% { box-shadow:0 0 32px rgba(0,255,157,.65); }
   }
-  #status { margin-top:16px; min-height:22px; font-size:14px; color:#ffd97a; }
+  #status { margin-top:16px; min-height:22px; font-size:14px; color:#ffd97a; line-height:1.55; }
+  .dots::after { content:""; animation:dots 1.2s steps(4) infinite; }
+  @keyframes dots { 0% { content:""; } 25% { content:"."; } 50% { content:".."; } 75% { content:"..."; } }
+
   #keyBox { display:none; margin-top:22px; }
-  #refArea { display:none; margin-top:6px; }
-  #refLink {
-    font-family:'Courier New', monospace; font-size:14px; color:#00ff9d;
-    background:rgba(0,0,0,.5); border:1.5px dashed rgba(0,255,157,.55);
-    border-radius:12px; padding:12px 8px; word-break:break-all; margin-top:14px;
-  }
-  .refBtn {
-    margin-top:12px; width:100%; background:transparent; color:#00ff9d; cursor:pointer;
-    border:1.5px solid #00ff9d; font-size:16px; font-weight:700; padding:12px; border-radius:12px;
-  }
+  #keyBox.pop { animation:pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+  @keyframes pop { from { transform:scale(.82); opacity:0; } to { transform:scale(1); opacity:1; } }
   #keyCode {
     font-family:'Courier New', monospace; font-size:27px; font-weight:900; letter-spacing:2.5px;
     color:#00ff9d; background:rgba(0,0,0,.5); border:1.5px dashed rgba(0,255,157,.55);
     border-radius:12px; padding:15px 8px; text-shadow:0 0 12px rgba(0,255,157,.5);
     word-break:break-all;
   }
-  #copyBtn {
+  #copyBtn, .refBtn {
     margin-top:14px; width:100%; background:transparent; color:#00ff9d; cursor:pointer;
     border:1.5px solid #00ff9d; font-size:16px; font-weight:700; padding:12px; border-radius:12px;
+    transition:transform .12s ease, background .12s ease;
   }
+  #copyBtn:active, .refBtn:active { transform:scale(.98); background:rgba(0,255,157,.1); }
+  #refArea { display:none; margin-top:6px; }
+  #refLink {
+    font-family:'Courier New', monospace; font-size:14px; color:#00ff9d;
+    background:rgba(0,0,0,.5); border:1.5px dashed rgba(0,255,157,.55);
+    border-radius:12px; padding:12px 8px; word-break:break-all; margin-top:14px;
+  }
+  .secure { margin-top:16px; font-size:12px; color:#6fc79d; letter-spacing:.4px; }
   .note { margin-top:14px; font-size:13.5px; line-height:1.7; color:#a9d8c2; }
   .foot { margin-top:auto; padding-top:34px; font-size:11.5px; color:#4d7a64; letter-spacing:1px; text-align:center; }
 </style>
@@ -73,18 +115,26 @@
   <div class="logo">RASHD <span>APP STORE</span></div>
   <div class="tagline">V4Z RASHD • OFFICIAL</div>
 
+  <div class="keyring" aria-hidden="true"><span class="k">🔑</span></div>
+
   <div class="card">
     <h1>🔑 RASHD Key</h1>
     <p class="desc"><span id="modeDesc">ছোট্ট একটা অ্যাড দেখো → একটা <b>কি</b> পাও।</span> সেই কিটা দিয়ে <b>RASHD App Store</b>-এ <b>১টা ডাউনলোড</b>, <b>Number Lookup</b>-এ <b>১টা Lookup</b>, অথবা <b>File Host</b>-এ <b>১টা আপলোড</b> করা যাবে।</p>
 
-    <div id="adArea">
-    <button id="adBtn" type="button">▶ অ্যাড দেখে কি নাও</button>
-    <div id="status"></div>
-
-    <div id="fallback" style="display:none; margin-top:14px;">
-      <p class="note">অ্যাডটা টেলিগ্রামের বাইরে চলে গেছে মনে হচ্ছে। অ্যাড শেষ করে এই পেজে ফিরে এসে নিচের বাটনে চাপ দাও:</p>
-      <button id="claimBtn" type="button" style="margin-top:10px; width:100%; background:transparent; color:#00ff9d; cursor:pointer; border:1.5px solid #00ff9d; font-size:16px; font-weight:700; padding:12px; border-radius:12px;">✅ আমি অ্যাড দেখেছি — কি দাও</button>
+    <div class="uses" aria-hidden="true">
+      <span class="use">📥 App Store ডাউনলোড</span>
+      <span class="use c">🔍 Number Lookup</span>
+      <span class="use p">☁️ File Host আপলোড</span>
     </div>
+
+    <div id="adArea">
+      <button id="adBtn" type="button">▶ অ্যাড দেখে কি নাও</button>
+      <div id="status" role="status"></div>
+
+      <div id="claimArea" style="display:none; margin-top:14px;">
+        <p class="note">অ্যাড শেষ করে ফিরে এলে নিচের বাটনে চাপ দাও — সার্ভার যাচাই করে কিটা দিয়ে দেবে:</p>
+        <button id="claimBtn" type="button" style="margin-top:10px; width:100%; background:transparent; color:#00ff9d; cursor:pointer; border:1.5px solid #00ff9d; font-size:16px; font-weight:700; padding:12px; border-radius:12px;">✅ কি নাও</button>
+      </div>
     </div>
 
     <div id="keyBox">
@@ -99,6 +149,8 @@
       <button id="refCopyBtn" class="refBtn" type="button">📋 রেফার লিংক কপি করো</button>
       <button id="refShareBtn" class="refBtn" type="button">📤 বন্ধুদের পাঠাও</button>
     </div>
+
+    <div class="secure">🔒 কি তৈরি হয় শুধু সার্ভারে — যাচাই ছাড়া কারো পক্ষে কি বানানো সম্ভব না</div>
   </div>
 
   <div class="foot">© 2026 V4Z RASHD • t.me/rashdteem</div>
@@ -106,22 +158,42 @@
 <script>
 (function () {
   'use strict';
-  // v1 design: each completed rewarded ad = exactly 1 key. No extra artificial timer.
-  var DB = 'https://rashdapp-784d3-default-rtdb.firebaseio.com';
-  var ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no I/O/0/1 — easy to read & type
+  // v2: keys are minted ONLY by the server after Telegram initData
+  // verification. This page holds no database write path at all.
+  var API = 'https://rashd-bro.vercel.app/api/keymint';
+  var KEYCFG_URL = 'https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/key-config.json';
+  var CHANNEL_URL = 'https://t.me/rashdteem';
+
   var btn = document.getElementById('adBtn');
-  var status = document.getElementById('status');
+  var statusEl = document.getElementById('status');
   var keyBox = document.getElementById('keyBox');
   var keyCodeEl = document.getElementById('keyCode');
   var copyBtn = document.getElementById('copyBtn');
+  var claimArea = document.getElementById('claimArea');
+  var claimBtn = document.getElementById('claimBtn');
+  var adArea = document.getElementById('adArea');
+  var refArea = document.getElementById('refArea');
+  var refLinkEl = document.getElementById('refLink');
+  var refCopyBtn = document.getElementById('refCopyBtn');
+  var refShareBtn = document.getElementById('refShareBtn');
+  var modeDesc = document.getElementById('modeDesc');
+
   var currentKey = '';
+  var session = null;
+  var adPending = false;
+  var claiming = false;
 
   try {
     if (window.Telegram && Telegram.WebApp) {
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
     }
-  } catch (e) { /* opened outside Telegram — page still works */ }
+  } catch (e) { /* opened outside Telegram */ }
+
+  function initData() {
+    try { return (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData) || ''; }
+    catch (e) { return ''; }
+  }
 
   function tgUserId() {
     try {
@@ -130,159 +202,161 @@
     } catch (e) { return null; }
   }
 
-  function makeCode() {
-    var code = '', i, n;
-    var buf = new Uint32Array(10);
-    if (window.crypto && crypto.getRandomValues) { crypto.getRandomValues(buf); }
-    for (i = 0; i < 10; i++) {
-      n = (window.crypto && crypto.getRandomValues) ? buf[i] : Math.floor(Math.random() * 4294967296);
-      code += ALPHABET[n % ALPHABET.length];
-    }
-    return code;
+  function setStatus(t, dots) {
+    statusEl.textContent = t || '';
+    statusEl.className = dots ? 'dots' : '';
   }
 
-  function setStatus(t) { status.textContent = t || ''; }
+  function haptic(kind) {
+    try {
+      if (Telegram.WebApp.HapticFeedback) {
+        if (kind === 'success') { Telegram.WebApp.HapticFeedback.notificationOccurred('success'); }
+        else { Telegram.WebApp.HapticFeedback.notificationOccurred('error'); }
+      }
+    } catch (e) {}
+  }
 
-  function saveKey(code) {
-    // Create-only write under /keys/{code} (rules v4: create with used=false, readable per-key).
-    var rec = { src: 'ad', t: Date.now(), used: false };
-    var tg = tgUserId();
-    if (tg) { rec.tg = tg; }
-    return fetch(DB + '/keys/' + code + '.json', {
-      method: 'PUT',
+  function api(action, extra) {
+    var payload = { action: action, initData: initData() };
+    if (extra) { for (var k in extra) { payload[k] = extra[k]; } }
+    return fetch(API, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(rec)
-    }).then(function (r) {
-      if (!r.ok) { throw new Error('save failed: ' + r.status); }
-      return r.json();
-    });
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json(); });
   }
 
-  function issueKey(attempt) {
-    var code = makeCode();
-    return saveKey(code).then(function () {
-      return code;
-    }).catch(function (err) {
-      if (attempt < 3) { return issueKey(attempt + 1); } // fresh code each retry (also covers rare collision)
-      throw err;
-    });
+  function reasonText(res) {
+    if (!res) { return '❌ আবার চেষ্টা করো।'; }
+    if (res.reason === 'auth') { return '⚠️ এই পেজটা টেলিগ্রামের ভেতর থেকে খোলো — বাইরে থেকে কি নেওয়া যাবে না।'; }
+    if (res.reason === 'setup') { return '⏳ সার্ভার প্রস্তুত হচ্ছে — একটু পরে আবার এসো।'; }
+    if (res.reason === 'cooldown') {
+      var m = Math.max(1, Math.ceil((res.waitSec || 300) / 60));
+      return '⏳ একটু থামো — আবার ' + m + ' মিনিট পর কি নেওয়া যাবে। ততক্ষণে রেফার করে কি নিতে পারো!';
+    }
+    if (res.reason === 'daily_cap') { return '🌙 আজকের কি নেওয়ার সীমা শেষ — কাল আবার এসো। রেফার করলে যেকোনো সময় কি পাবে!'; }
+    if (res.reason === 'too_fast') { return '📺 অ্যাডটা পুরোটা দেখনি মনে হচ্ছে — আবার অ্যাড দেখে চেষ্টা করো।'; }
+    if (res.reason === 'session' || res.reason === 'session_old') { return '⚠️ এই চেষ্টাটা মেয়াদোত্তীর্ণ — আবার অ্যাড দেখে নাও।'; }
+    return '❌ কি তৈরি হয়নি — আবার চেষ্টা করো।';
   }
-
-  var FB_COOLDOWN_MS = 5 * 60 * 1000; // fallback-claim cooldown (his "5 min পরে আবার" idea)
-  var adPending = false;   // show_ was called, promise not settled yet
-  var adSettled = false;   // promise resolved or rejected
-  var fallbackEl = document.getElementById('fallback');
-  var claimBtn = document.getElementById('claimBtn');
 
   function showKey(code) {
     currentKey = code;
     keyCodeEl.textContent = code;
     keyBox.style.display = 'block';
-    fallbackEl.style.display = 'none';
+    keyBox.className = 'pop';
+    claimArea.style.display = 'none';
+    session = null;
     setStatus('✅ তোমার কি তৈরি!');
     btn.disabled = false;
     btn.textContent = '▶ আরেকটা কি নাও';
-    try { if (Telegram.WebApp.HapticFeedback) { Telegram.WebApp.HapticFeedback.notificationOccurred('success'); } } catch (e) {}
+    haptic('success');
   }
 
-  function mintAndShow() {
-    setStatus('⏳ কি তৈরি হচ্ছে...');
-    return issueKey(1).then(showKey).catch(function () {
-      setStatus('❌ কি তৈরি হয়নি — আবার চেষ্টা করো।');
+  function showRefArea() {
+    claimArea.style.display = 'block';
+  }
+
+  function claimKey() {
+    if (!session || claiming) { return; }
+    claiming = true;
+    claimBtn.disabled = true;
+    setStatus('🔐 সার্ভার যাচাই করছে', true);
+    api('claim', { session: session }).then(function (res) {
+      claiming = false;
+      claimBtn.disabled = false;
+      if (res && res.ok && res.key) { showKey(res.key); return; }
+      setStatus(reasonText(res));
+      if (res && (res.reason === 'session' || res.reason === 'session_old' || res.reason === 'too_fast')) {
+        session = null;
+        claimArea.style.display = 'none';
+        btn.disabled = false;
+      }
+    }).catch(function () {
+      claiming = false;
+      claimBtn.disabled = false;
+      setStatus('❌ নেটওয়ার্কে সমস্যা — আবার চেষ্টা করো।');
+    });
+  }
+
+  function startFlow() {
+    if (!initData()) {
+      setStatus('⚠️ এই পেজটা টেলিগ্রামের ভেতর থেকে খোলো — বাইরে থেকে কি নেওয়া যাবে না।');
+      haptic('error');
+      return;
+    }
+    if (typeof window.show_11949593 !== 'function') {
+      setStatus('⚠️ অ্যাড এখনো লোড হয়নি। কয়েক সেকেন্ড অপেক্ষা করে আবার চাপ দাও।');
+      return;
+    }
+    btn.disabled = true;
+    keyBox.style.display = 'none';
+    claimArea.style.display = 'none';
+    setStatus('🔐 যাচাই হচ্ছে', true);
+    api('start').then(function (res) {
+      if (!res || !res.ok || !res.session) {
+        setStatus(reasonText(res));
+        btn.disabled = false;
+        haptic('error');
+        return;
+      }
+      session = res.session;
+      adPending = true;
+      setStatus('📺 অ্যাড চলছে... পুরোটা দেখো!');
+      var p;
+      try { p = window.show_11949593(); } catch (e) { p = null; }
+      if (!p || typeof p.then !== 'function') { adPending = false; showRefArea(); return; }
+      p.then(function () {
+        adPending = false;
+        claimKey();
+      }).catch(function () {
+        adPending = false;
+        showRefArea();
+        setStatus('⚠️ অ্যাডটা শেষ হয়নি। শেষ করে ফিরে এলে নিচের বাটনে চাপ দাও।');
+      });
+      // Ad sometimes takes over the whole tab; if the promise never settles,
+      // returning to this page offers the server-side claim.
+      setTimeout(function () { if (adPending) { showRefArea(); } }, 45000);
+    }).catch(function () {
+      setStatus('❌ নেটওয়ার্কে সমস্যা — আবার চেষ্টা করো।');
       btn.disabled = false;
     });
   }
 
-  function offerFallback() {
-    if (adSettled) { return; }
-    fallbackEl.style.display = 'block';
-    setStatus('⚠️ অ্যাড শেষ হয়নি বা বাইরে চলে গেছে।');
-    btn.disabled = false;
-  }
+  btn.addEventListener('click', startFlow);
+  claimBtn.addEventListener('click', claimKey);
 
-  // If the ad hijacked the tab (opened the browser), the user coming back
-  // to this page fires visibilitychange — offer the manual claim then.
   document.addEventListener('visibilitychange', function () {
-    if (!document.hidden && adPending && !adSettled) { offerFallback(); }
+    if (!document.hidden && adPending && session) { showRefArea(); }
   });
 
-  btn.addEventListener('click', function () {
-    if (typeof window.show_11949593 !== 'function') {
-      setStatus('⚠️ অ্যাড এখন লোড হয়নি। একটু পরে আবার চেষ্টা করো।');
-      return;
+  function copyText(text, done) {
+    function manual() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      done();
     }
-    btn.disabled = true;
-    adPending = true;
-    adSettled = false;
-    keyBox.style.display = 'none';
-    fallbackEl.style.display = 'none';
-    setStatus('📺 অ্যাড চলছে... পুরোটা দেখো!');
-    var p;
-    try { p = window.show_11949593(); } catch (e) { p = null; }
-    if (!p || typeof p.then !== 'function') { offerFallback(); return; }
-    // Normal rewarded path: full watch → promise resolves → mint.
-    p.then(function () {
-      adSettled = true;
-      adPending = false;
-      mintAndShow();
-    }).catch(function () {
-      adSettled = true;
-      adPending = false;
-      offerFallback();
-    });
-    // If the promise never settles (ad jumped to the browser and the user
-    // never comes back here), unstick the button after 60s.
-    setTimeout(function () { if (adPending && !adSettled) { offerFallback(); } }, 60000);
-  });
-
-  claimBtn.addEventListener('click', function () {
-    var last = 0;
-    try { last = parseInt(localStorage.getItem('rashdFbClaim') || '0', 10) || 0; } catch (e) {}
-    var wait = FB_COOLDOWN_MS - (Date.now() - last);
-    if (last && wait > 0) {
-      setStatus('⏳ একটু অপেক্ষা করো — আবার চেষ্টা করো ' + Math.ceil(wait / 60000) + ' মিনিট পর। এর মধ্যে রেফার করে কি নিতে পারো!');
-      return;
-    }
-    claimBtn.disabled = true;
-    try { localStorage.setItem('rashdFbClaim', String(Date.now())); } catch (e) {}
-    adPending = false;
-    adSettled = true;
-    mintAndShow();
-  });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(manual);
+    } else { manual(); }
+  }
 
   copyBtn.addEventListener('click', function () {
     if (!currentKey) { return; }
-    function done() {
+    copyText(currentKey, function () {
       copyBtn.textContent = '✅ কপি হয়েছে!';
-      setStatus('এবার RASHD App Store অ্যাপে গিয়ে কিটা বসাও।');
+      setStatus('এবার App Store / Number Lookup / File Host-এ গিয়ে কিটা বসাও।');
       setTimeout(function () { copyBtn.textContent = '📋 কি কপি করো'; }, 2200);
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(currentKey).then(done).catch(function () { fallbackCopy(done); });
-    } else { fallbackCopy(done); }
+    });
   });
 
-  function fallbackCopy(done) {
-    var ta = document.createElement('textarea');
-    ta.value = currentKey;
-    ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch (e) {}
-    document.body.removeChild(ta);
-    done();
-  }
-
   // ---- মোড সুইচ (Admin Panel -> key-config.json) ----
-  var KEYCFG_URL = 'https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/key-config.json';
-  var adArea = document.getElementById('adArea');
-  var refArea = document.getElementById('refArea');
-  var refLinkEl = document.getElementById('refLink');
-  var refCopyBtn = document.getElementById('refCopyBtn');
-  var refShareBtn = document.getElementById('refShareBtn');
-  var modeDesc = document.getElementById('modeDesc');
   var myRefLink = '';
-
   function applyMode(mode) {
     if (mode !== 'referral') { return; } // ডিফল্ট ভিউ = অ্যাড মোড
     adArea.style.display = 'none';
@@ -304,23 +378,10 @@
 
   refCopyBtn.addEventListener('click', function () {
     if (!myRefLink) { return; }
-    function done() {
+    copyText(myRefLink, function () {
       refCopyBtn.textContent = '✅ কপি হয়েছে!';
       setTimeout(function () { refCopyBtn.textContent = '📋 রেফার লিংক কপি করো'; }, 2200);
-    }
-    function manualCopy() {
-      var ta = document.createElement('textarea');
-      ta.value = myRefLink;
-      ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); } catch (e) {}
-      document.body.removeChild(ta);
-      done();
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(myRefLink).then(done).catch(manualCopy);
-    } else { manualCopy(); }
+    });
   });
 
   refShareBtn.addEventListener('click', function () {
