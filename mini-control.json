@@ -1,1 +1,123 @@
-{"apps":[{"ads":{"enabled":false,"zone":""},"announcement":"","bot":"rashxdbot","enabled":true,"gate":{"key":false,"membership":true},"id":"downloader","logo":"","name":"V4Z Downloader","url":"https://rashd-bro.vercel.app/dl.html"},{"ads":{"enabled":false,"zone":""},"announcement":"","bot":"rashd1_bot","enabled":true,"gate":{"key":true,"membership":true},"id":"number","logo":"","name":"Number Lookup","url":"https://rashd-bro.vercel.app/"},{"ads":{"enabled":false,"zone":""},"announcement":"","bot":"rashd_hosting_bot","enabled":true,"gate":{"key":true,"membership":true},"id":"filehost","logo":"","name":"V4Z File Host","url":"https://rashd-bro.vercel.app/host.html"},{"ads":{"enabled":true,"zone":"11949593"},"announcement":"","bot":"rashd12bot","enabled":true,"gate":{"key":false,"membership":false},"id":"store","logo":"https://v4zrashd.github.io/rashd-app--store/assets/site-logo.png","name":"RASHD App Store","url":"https://v4zrashd.github.io/rashd-app--store/"}],"broadcast":{},"services":{"downloader":{"announcement":"","enabled":true,"logo":"","maxFormats":8,"name":"V4Z Downloader","retries":1,"showSocial":false,"socketTimeout":10},"filehost":{"announcement":"","enabled":true,"logo":"","name":"V4Z File Host"},"number":{"announcement":"","enabled":true,"logo":"","name":"Number Lookup"},"store":{"announcement":"","enabled":true,"heading":"RASHD APP STORE","logo":"https://v4zrashd.github.io/rashd-app--store/assets/site-logo.png","title":"RASHD App Store"}},"updatedAt":"","version":2}
+{
+  "apps": [
+    {
+      "ads": {
+        "enabled": false,
+        "zone": ""
+      },
+      "announcement": "",
+      "bot": "rashxdbot",
+      "enabled": true,
+      "gate": {
+        "key": false,
+        "membership": true
+      },
+      "id": "downloader",
+      "logo": "",
+      "name": "V4Z Downloader",
+      "url": "https://rashd-bro.vercel.app/dl.html"
+    },
+    {
+      "ads": {
+        "enabled": false,
+        "zone": ""
+      },
+      "announcement": "",
+      "bot": "rashd1_bot",
+      "enabled": true,
+      "gate": {
+        "key": true,
+        "membership": true
+      },
+      "id": "number",
+      "logo": "",
+      "name": "Number Lookup",
+      "url": "https://rashd-bro.vercel.app/"
+    },
+    {
+      "ads": {
+        "enabled": false,
+        "zone": ""
+      },
+      "announcement": "",
+      "bot": "rashd_hosting_bot",
+      "enabled": true,
+      "gate": {
+        "key": true,
+        "membership": true
+      },
+      "id": "filehost",
+      "logo": "",
+      "name": "V4Z File Host",
+      "url": "https://rashd-bro.vercel.app/host.html"
+    },
+    {
+      "ads": {
+        "enabled": true,
+        "zone": "11949593"
+      },
+      "announcement": "",
+      "bot": "rashd12bot",
+      "enabled": true,
+      "gate": {
+        "key": false,
+        "membership": false
+      },
+      "id": "store",
+      "logo": "https://v4zrashd.github.io/rashd-app--store/assets/site-logo.png",
+      "name": "RASHD App Store",
+      "url": "https://v4zrashd.github.io/rashd-app--store/"
+    },
+    {
+      "id": "ffinfo",
+      "name": "Free Fire ID Info",
+      "bot": "",
+      "url": "https://v4zrashd.github.io/rashd-app--store/ff.html",
+      "enabled": true,
+      "logo": "",
+      "announcement": "",
+      "gate": {
+        "membership": false,
+        "key": false
+      },
+      "ads": {
+        "enabled": true,
+        "zone": "11949593"
+      }
+    }
+  ],
+  "broadcast": {},
+  "services": {
+    "downloader": {
+      "announcement": "",
+      "enabled": true,
+      "logo": "",
+      "maxFormats": 8,
+      "name": "V4Z Downloader",
+      "retries": 1,
+      "showSocial": false,
+      "socketTimeout": 10
+    },
+    "filehost": {
+      "announcement": "",
+      "enabled": true,
+      "logo": "",
+      "name": "V4Z File Host"
+    },
+    "number": {
+      "announcement": "",
+      "enabled": true,
+      "logo": "",
+      "name": "Number Lookup"
+    },
+    "store": {
+      "announcement": "",
+      "enabled": true,
+      "heading": "RASHD APP STORE",
+      "logo": "https://v4zrashd.github.io/rashd-app--store/assets/site-logo.png",
+      "title": "RASHD App Store"
+    }
+  },
+  "updatedAt": "",
+  "version": 2
+}
