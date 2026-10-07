@@ -37,6 +37,12 @@
       "video": "https://youtube.com/shorts/D1c_E42RBv0?si=8dFrMiKrkPzbYC7i",
       "logo": "",
       "hidden": false
+    },
+    "Termux_0.119.0-beta.2.apk": {
+      "desc": "এটা হলো termux এটা দিন অনেক কিছু করতে পারবেন টেলিগ্রাম বট চালানো ওয়েবসাইট চালানো ক্যামের হ্যাক করা মানে বলতে গেলে এটা দিয়ে অনেক কিছু হ্যাক করতে পারবেন কিন্তু এটা লিগাল কাজে ব্যবহার করবে সবসময়",
+      "video": "",
+      "logo": "",
+      "hidden": false
     }
   },
   "custom": []
