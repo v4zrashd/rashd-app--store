@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Free Fire ID Info — V4Z RASHD</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{--neon:#00ff9d;--neon2:#00e5ff;--bg:#050807;--line:#123528;--danger:#fb7185}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{background:radial-gradient(120% 90% at 50% 0%,#0a1f16 0%,var(--bg) 55%);color:#d9ffef;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:16px 14px 40px}
+  header{text-align:center;margin-bottom:14px}
+  .brandimg{width:74px;height:74px;border-radius:18px;object-fit:cover;margin:0 auto 8px;display:none;border:1px solid var(--line);box-shadow:0 0 24px rgba(0,255,157,.25)}
+  .logo{font-size:27px;font-weight:900;letter-spacing:1px;color:#fff;text-shadow:0 0 18px rgba(0,255,157,.75),0 0 42px rgba(0,255,157,.35)}
+  .logo span{color:var(--neon)}
+  .by{color:#7dd9b8;font-size:12px;letter-spacing:2.5px;margin-top:3px;font-weight:700}
+  .card{background:linear-gradient(180deg,#0c1512,#08100c);border:1px solid var(--line);border-radius:18px;padding:18px 16px;box-shadow:0 0 0 1px rgba(0,255,157,.05),0 14px 40px rgba(0,0,0,.5)}
+  .announce{margin-bottom:12px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.35);color:#c9f4ff;padding:11px 12px;border-radius:12px;font-size:13.5px;line-height:1.65}
+  .announce:empty{display:none}
+  label{display:block;font-size:13px;color:#8fd9bd;font-weight:700;margin-bottom:8px}
+  input.uid{width:100%;background:#07110c;border:1px solid var(--line);color:#eafff5;border-radius:12px;padding:14px 12px;font-size:16px;letter-spacing:1px}
+  input.uid:focus{outline:none;border-color:var(--neon)}
+  .btn{border:none;border-radius:12px;padding:14px 16px;font-weight:900;font-size:15px;cursor:pointer;width:100%;margin-top:12px;background:var(--neon);color:#032117;box-shadow:0 0 22px rgba(0,255,157,.35)}
+  .btn:active{transform:scale(.98)}
+  .btn:disabled{opacity:.55;cursor:wait}
+  .status{margin-top:12px;font-size:13.5px;min-height:20px;color:#8fd9bd;line-height:1.6}
+  .status.err{color:var(--danger)}
+  .res{display:none;margin-top:16px}
+  .banner{width:100%;border-radius:14px;border:1px solid var(--line);display:block}
+  .pname{font-size:20px;font-weight:900;color:#eafff5;margin-top:14px;line-height:1.4;word-break:break-word}
+  .psub{font-size:12.5px;color:#8fd9bd;margin-top:2px}
+  .bio{margin-top:10px;background:rgba(0,255,157,.06);border:1px solid rgba(0,255,157,.25);border-radius:12px;padding:10px 12px;font-size:13.5px;color:#c9ffe9;line-height:1.6}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+  .kv{background:#0b1512;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .kv b{display:block;font-size:15px;color:#eafff5;margin-top:2px;word-break:break-word}
+  .kv span{font-size:11px;color:#7fbfa5;font-weight:700;letter-spacing:.4px}
+  .sect{margin-top:14px;font-size:13px;font-weight:900;color:var(--neon);letter-spacing:.6px}
+  .chips{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
+  .chip{background:#0b1512;border:1px solid rgba(0,255,157,.35);color:#c9ffe9;border-radius:99px;padding:6px 11px;font-size:12px;font-weight:600}
+  .note{margin-top:16px;font-size:12px;color:#7fbfa5;line-height:1.7}
+  .foot{text-align:center;color:#4f7a68;font-size:11px;margin-top:18px;line-height:1.8}
+</style>
+</head>
+<body>
+
+<header>
+  <img class="brandimg" data-v4z="logo" alt="">
+  <div class="logo">🎮 <span data-v4z="name">FREE FIRE ID INFO</span></div>
+  <div class="by">BY V4Z RASHD</div>
+</header>
+
+<div class="announce" data-v4z="announcement"></div>
+
+<div class="card">
+  <label for="uid">Free Fire প্লেয়ারের UID দাও</label>
+  <input class="uid" id="uid" type="tel" inputmode="numeric" placeholder="যেমন: 5658488743" autocomplete="off">
+  <button class="btn" id="go" disabled>🔍 প্রোফাইল দেখো</button>
+  <div class="status" id="status">লোড হচ্ছে…</div>
+
+  <div class="res" id="res">
+    <img class="banner" id="rBanner" alt="" style="display:none">
+    <div class="pname" id="rName"></div>
+    <div class="psub" id="rSub"></div>
+    <div class="bio" id="rBio" style="display:none"></div>
+    <div class="grid" id="rGrid"></div>
+    <div class="sect" id="rGuildT" style="display:none">🛡️ গিল্ড</div>
+    <div class="grid" id="rGuild"></div>
+    <div class="sect" id="rOutfitT" style="display:none">👕 আউটফিট</div>
+    <div class="chips" id="rOutfit"></div>
+    <div class="sect" id="rGunT" style="display:none">🔫 ওয়েপন</div>
+    <div class="chips" id="rGuns"></div>
+  </div>
+
+  <div class="note">UID দিয়ে যেকোনো Free Fire প্লেয়ারের লেভেল, র‍্যাংক, লাইক, গিল্ডসহ পুরো প্রোফাইল দেখা যাবে। ভুল UID দিলে কোনো রেজাল্ট আসবে না।</div>
+</div>
+
+<div class="foot">সব আপডেট: @rashdteem<br>BY V4Z RASHD</div>
+
+<script src="https://v4zrashd.github.io/rashd-app--store/v4z-kit.js" data-app="ffinfo"></script>
+<script>
+"use strict";
+var API = "https://ffinfo-id-info.raadbhaiff.workers.dev/ffinfo?uid=";
+var $ = function (id) { return document.getElementById(id); };
+var gateOk = false;
+
+function setStatus(msg, isErr) {
+  var s = $("status");
+  s.textContent = msg || "";
+  s.className = "status" + (isErr ? " err" : "");
+}
+
+function fmtDate(iso) {
+  if (!iso) return "—";
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function kv(label, value) {
+  return '<div class="kv"><span>' + label + '</span><b>' + (value === null || value === undefined || value === "" ? "—" : value) + "</b></div>";
+}
+
+function esc(s) {
+  return String(s === null || s === undefined ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function render(data) {
+  var idn = data.identity || {}, p = data.profile || {}, a = data.account_info || {},
+      r = data.rank_info || {}, g = data.guild_info || {}, e = data.equipped_items || {},
+      pet = data.pet_details || {};
+
+  if (p.banner_image) { $("rBanner").src = p.banner_image; $("rBanner").style.display = "block"; }
+  else { $("rBanner").style.display = "none"; }
+
+  $("rName").textContent = idn.username || "Unknown";
+  $("rSub").textContent = "UID: " + (idn.uid || "") + (idn.region ? "  •  Region: " + idn.region : "");
+
+  if (p.bio) { $("rBio").textContent = "“" + p.bio + "”"; $("rBio").style.display = "block"; }
+  else { $("rBio").style.display = "none"; }
+
+  var age = p.account_age && p.account_age.label ? p.account_age.label : "";
+  $("rGrid").innerHTML =
+    kv("⭐ লেভেল", p.level) +
+    kv("❤️ লাইক", p.likes) +
+    kv("🏅 টাইটেল", a.title && a.title.name) +
+    kv("🎯 ক্রেডিট স্কোর", a.credit_score) +
+    kv("⚡ EXP", a.exp) +
+    kv("🏆 BR র‍্যাংক পয়েন্ট", r.br_rank_points) +
+    kv("🎮 CS র‍্যাংক পয়েন্ট", r.cs_rank_points) +
+    kv("🐾 পোষা প্রাণী", pet.name ? pet.name + (pet.level ? " (Lv " + pet.level + ")" : "") : "") +
+    kv("📅 অ্যাকাউন্ট খোলা", fmtDate(p.created_at) + (age ? " (" + age + ")" : "")) +
+    kv("🕐 শেষ লগইন", fmtDate(p.last_login));
+
+  if (g && g.name) {
+    $("rGuildT").style.display = "block";
+    $("rGuild").innerHTML =
+      kv("নাম", g.name) +
+      kv("লেভেল", g.level) +
+      kv("মেম্বার", (g.members ? (g.members.current + "/" + g.members.capacity) : "")) +
+      kv("লিডার", g.leader && g.leader.name);
+  } else { $("rGuildT").style.display = "none"; $("rGuild").innerHTML = ""; }
+
+  var outfit = (e.outfit || []).map(function (o) { return o && o.name; }).filter(Boolean);
+  if (e.avatar_id && e.avatar_id.name) outfit.unshift(e.avatar_id.name);
+  if (outfit.length) {
+    $("rOutfitT").style.display = "block";
+    $("rOutfit").innerHTML = outfit.map(function (n) { return '<span class="chip">' + esc(n) + "</span>"; }).join("");
+  } else { $("rOutfitT").style.display = "none"; $("rOutfit").innerHTML = ""; }
+
+  var guns = (e.weapon || []).map(function (w) { return w && w.name; }).filter(Boolean);
+  if (guns.length) {
+    $("rGunT").style.display = "block";
+    $("rGuns").innerHTML = guns.map(function (n) { return '<span class="chip">' + esc(n) + "</span>"; }).join("");
+  } else { $("rGunT").style.display = "none"; $("rGuns").innerHTML = ""; }
+
+  $("res").style.display = "block";
+}
+
+async function search() {
+  if (!gateOk) return;
+  var uid = $("uid").value.replace(/\D/g, "");
+  if (uid.length < 5) { setStatus("সঠিক UID দাও (কমপক্ষে ৫ ডিজিট)।", true); return; }
+  var btn = $("go");
+  btn.disabled = true;
+  btn.textContent = "⏳ খুঁজছি…";
+  setStatus("তথ্য আনা হচ্ছে…");
+  try {
+    if (window.V4ZKit && V4ZKit.showAd) { try { await V4ZKit.showAd(); } catch (e) {} }
+    var resp = await fetch(API + encodeURIComponent(uid));
+    var json = await resp.json();
+    if (!json || json.error || !json.data || !json.data.identity) {
+      $("res").style.display = "none";
+      setStatus("এই UID-তে কোনো প্লেয়ার পাওয়া যায়নি। UID ঠিক আছে কিনা দেখো।", true);
+      return;
+    }
+    render(json.data);
+    setStatus("✅ পাওয়া গেছে!");
+  } catch (err) {
+    setStatus("নেটওয়ার্কে সমস্যা হয়েছে — আবার চেষ্টা করো।", true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "🔍 প্রোফাইল দেখো";
+  }
+}
+
+$("go").addEventListener("click", search);
+$("uid").addEventListener("keydown", function (ev) { if (ev.key === "Enter") search(); });
+
+if (window.V4ZKit) {
+  V4ZKit.ready(function () {
+    V4ZKit.gate().then(function (g) {
+      if (g && g.ok) {
+        gateOk = true;
+        $("go").disabled = false;
+        setStatus("UID দিয়ে যেকোনো প্লেয়ারের প্রোফাইল দেখো 👇");
+      } else {
+        setStatus("আগে গেটের ধাপটা শেষ করো।", true);
+      }
+    }).catch(function () {
+      setStatus("গেট চেকে সমস্যা হয়েছে — পেজটা আবার খোলো।", true);
+    });
+  });
+} else {
+  setStatus("কিট লোড হয়নি — ইন্টারনেট চেক করে আবার খোলো।", true);
+}
+</script>
+
+</body>
+</html>
