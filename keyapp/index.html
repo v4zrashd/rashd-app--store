@@ -156,6 +156,14 @@
     font-weight:800; border-radius:10px; padding:10px 16px; font-size:14px;
   }
   .chatRow button:disabled { opacity:.55; }
+  .chatCta {
+    align-self:flex-start; margin-top:2px; cursor:pointer;
+    background:linear-gradient(90deg,#229ed9,#2aabee); color:#fff;
+    border:none; font-weight:800; font-size:14px;
+    padding:11px 18px; border-radius:12px;
+    box-shadow:0 0 16px rgba(42,171,238,.4);
+  }
+  .chatCta:active { transform:scale(.97); }
 </style>
 </head>
 <body>
@@ -528,6 +536,14 @@
       var reply = (res && res.ok && res.text) ? res.text : 'দুঃখিত, একটু সমস্যা হচ্ছে। হেল্পলাইন: t.me/Darkbdx1';
       wait.textContent = reply;
       chatHistory.push({ role: 'assistant', text: reply });
+      if (res.cta && res.cta.url) {
+        var ctaBtn = document.createElement('button');
+        ctaBtn.type = 'button';
+        ctaBtn.className = 'chatCta';
+        ctaBtn.textContent = res.cta.label || '✈️ টেলিগ্রামে যোগাযোগ করো';
+        (function (u) { ctaBtn.addEventListener('click', function () { openLink(u); }); })(res.cta.url);
+        chatMsgs.appendChild(ctaBtn);
+      }
       chatMsgs.scrollTop = chatMsgs.scrollHeight;
     }).catch(function () {
       wait.className = 'msg bot';
@@ -541,6 +557,17 @@
     var t = e.target;
     if (t && t.className === 'chip') { sendChat(t.textContent); }
   });
+
+  // প্রতি ১০ মিনিটে সব চ্যাট নিজে থেকেই মুছে যায়
+  setInterval(function () {
+    chatMsgs.innerHTML = '';
+    chatHistory = [];
+    greeted = false;
+    if (chatPanel.className.indexOf('open') !== -1) {
+      greeted = true;
+      addMsg('আসসালামু আলাইকুম! 👋 Rashd All Key Store-এ স্বাগতম। কি নেওয়া বা ব্যবহার করা নিয়ে কিছু জানতে চাইলে জিজ্ঞেস করো!', 'bot');
+    }
+  }, 10 * 60 * 1000);
 })();
 </script>
 </body>
