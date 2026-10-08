@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🔑 RASHD Key</title>
+<title>🔑 Rashd All Key Store</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src='//libtl.com/sdk.js' data-zone='11949593' data-sdk='show_11949593'></script>
 <style>
@@ -20,7 +20,7 @@
       radial-gradient(ellipse 45% 30% at 6% 62%, rgba(255,0,200,.06), transparent 70%);
   }
   .logo {
-    font-size:30px; font-weight:900; letter-spacing:3px; color:#fff; text-align:center;
+    font-size:29px; font-weight:900; letter-spacing:2.5px; color:#fff; text-align:center;
     text-shadow:0 0 18px rgba(0,255,157,.55);
   }
   .logo span { color:#00ff9d; }
@@ -52,18 +52,11 @@
     box-shadow:0 0 36px rgba(0,255,157,.11), inset 0 0 26px rgba(0,255,157,.035);
   }
   h1 { font-size:22px; margin-bottom:10px; }
-  .desc { color:#b9e8d2; font-size:14.5px; line-height:1.75; }
-  .desc b { color:#00ff9d; }
-  .uses { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
-  .use {
-    font-size:12px; font-weight:700; padding:7px 11px; border-radius:999px;
-    border:1px solid rgba(0,255,157,.4); background:rgba(0,255,157,.06); color:#a9f5d2;
-  }
-  .use.c { border-color:rgba(0,229,255,.45); background:rgba(0,229,255,.07); color:#a8ecff; }
-  .use.p { border-color:rgba(255,0,200,.4); background:rgba(255,0,200,.06); color:#ffc4f2; }
+  .oneline { color:#b9e8d2; font-size:15px; line-height:1.7; }
+  .oneline b { color:#00ff9d; }
 
   #adBtn {
-    margin-top:22px; width:100%; border:none; cursor:pointer; position:relative; overflow:hidden;
+    margin-top:20px; width:100%; border:none; cursor:pointer; position:relative; overflow:hidden;
     background:linear-gradient(90deg,#00d97a,#00ff9d); color:#02130a;
     font-size:18px; font-weight:900; letter-spacing:.3px; padding:16px 12px; border-radius:14px;
     box-shadow:0 0 24px rgba(0,255,157,.45);
@@ -94,45 +87,51 @@
     border-radius:12px; padding:15px 8px; text-shadow:0 0 12px rgba(0,255,157,.5);
     word-break:break-all;
   }
-  #copyBtn, .refBtn {
+  #copyBtn, .refBtn, .helpBtn {
     margin-top:14px; width:100%; background:transparent; color:#00ff9d; cursor:pointer;
     border:1.5px solid #00ff9d; font-size:16px; font-weight:700; padding:12px; border-radius:12px;
     transition:transform .12s ease, background .12s ease;
   }
-  #copyBtn:active, .refBtn:active { transform:scale(.98); background:rgba(0,255,157,.1); }
+  #copyBtn:active, .refBtn:active, .helpBtn:active { transform:scale(.98); background:rgba(0,255,157,.1); }
   #refArea { display:none; margin-top:6px; }
   #refLink {
     font-family:'Courier New', monospace; font-size:14px; color:#00ff9d;
     background:rgba(0,0,0,.5); border:1.5px dashed rgba(0,255,157,.55);
     border-radius:12px; padding:12px 8px; word-break:break-all; margin-top:14px;
   }
-  .secure { margin-top:16px; font-size:12px; color:#6fc79d; letter-spacing:.4px; }
   .note { margin-top:14px; font-size:13.5px; line-height:1.7; color:#a9d8c2; }
+
+  .social { display:flex; gap:10px; justify-content:center; margin-top:24px; }
+  .soc {
+    width:52px; height:52px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.04);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .soc:active { transform:scale(.93); }
+  .soc svg { width:26px; height:26px; }
+  .soc.yt { box-shadow:0 0 14px rgba(255,0,51,.25); }
+  .soc.tt { box-shadow:0 0 14px rgba(0,229,255,.22); }
+  .soc.ig { box-shadow:0 0 14px rgba(255,0,200,.22); }
+
   .foot { margin-top:auto; padding-top:34px; font-size:11.5px; color:#4d7a64; letter-spacing:1px; text-align:center; }
 </style>
 </head>
 <body>
-  <div class="logo">RASHD <span>APP STORE</span></div>
+  <div class="logo">RASHD ALL <span>KEY STORE</span></div>
   <div class="tagline">V4Z RASHD • OFFICIAL</div>
 
   <div class="keyring" aria-hidden="true"><span class="k">🔑</span></div>
 
   <div class="card">
-    <h1>🔑 RASHD Key</h1>
-    <p class="desc"><span id="modeDesc">ছোট্ট একটা অ্যাড দেখো → একটা <b>কি</b> পাও।</span> সেই কিটা দিয়ে <b>RASHD App Store</b>-এ <b>১টা ডাউনলোড</b>, <b>Number Lookup</b>-এ <b>১টা Lookup</b>, অথবা <b>File Host</b>-এ <b>১টা আপলোড</b> করা যাবে।</p>
-
-    <div class="uses" aria-hidden="true">
-      <span class="use">📥 App Store ডাউনলোড</span>
-      <span class="use c">🔍 Number Lookup</span>
-      <span class="use p">☁️ File Host আপলোড</span>
-    </div>
+    <h1>🔑 Rashd All Key Store</h1>
+    <p class="oneline">এই <b>একটা কি</b> দিয়েই সব চলবে — <b>ওয়েবসাইট, টেলিগ্রাম বট, অ্যাপ আর মিনি ওয়েব</b>।</p>
 
     <div id="adArea">
       <button id="adBtn" type="button">▶ অ্যাড দেখে কি নাও</button>
       <div id="status" role="status"></div>
 
       <div id="claimArea" style="display:none; margin-top:14px;">
-        <p class="note">অ্যাড শেষ করে ফিরে এলে নিচের বাটনে চাপ দাও — সার্ভার যাচাই করে কিটা দিয়ে দেবে:</p>
+        <p class="note">অ্যাড শেষ করে ফিরে এলে নিচের বাটনে চাপ দাও:</p>
         <button id="claimBtn" type="button" style="margin-top:10px; width:100%; background:transparent; color:#00ff9d; cursor:pointer; border:1.5px solid #00ff9d; font-size:16px; font-weight:700; padding:12px; border-radius:12px;">✅ কি নাও</button>
       </div>
     </div>
@@ -140,17 +139,28 @@
     <div id="keyBox">
       <div id="keyCode"></div>
       <button id="copyBtn" type="button">📋 কি কপি করো</button>
-      <p class="note">একটা কিতে ১টা App Store ডাউনলোড, বা Number Lookup-এ ১টা Lookup, বা File Host-এ ১টা আপলোড।<br>কিটা যেখানে আগে বসাবে সেখানেই খরচ হবে।</p>
     </div>
 
     <div id="refArea">
-      <p class="note">👥 এখন <b>রেফার মোড</b> চলছে — অ্যাড বন্ধ।<br>নিচের লিংকটা বন্ধুদের পাঠাও। বন্ধু লিংক দিয়ে এসে চ্যানেলে জয়েন করে তার <b>বোনাস কি</b> প্রথমবার ব্যবহার করলেই বট নিজে তোমার কাছে ১টা কি পাঠিয়ে দেবে। পাওয়া কি বটে <b>/key</b> লিখলে দেখা যাবে।</p>
+      <p class="note">👥 এখন <b>রেফার মোড</b> চলছে। লিংকটা বন্ধুদের পাঠাও — বন্ধু জয়েন করে কি ব্যবহার করলেই বট তোমাকে ১টা কি পাঠিয়ে দেবে (<b>/key</b> লিখলে দেখা যাবে)।</p>
       <div id="refLink"></div>
       <button id="refCopyBtn" class="refBtn" type="button">📋 রেফার লিংক কপি করো</button>
       <button id="refShareBtn" class="refBtn" type="button">📤 বন্ধুদের পাঠাও</button>
     </div>
 
-    <div class="secure">🔒 কি তৈরি হয় শুধু সার্ভারে — যাচাই ছাড়া কারো পক্ষে কি বানানো সম্ভব না</div>
+    <div class="social">
+      <div class="soc yt" id="socYt" role="button" aria-label="YouTube">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="4" fill="#ff0033"/><path d="M10 9.2v5.6L15 12z" fill="#fff"/></svg>
+      </div>
+      <div class="soc tt" id="socTt" role="button" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M16.6 3c.4 2.2 1.8 3.6 4.1 3.9v3c-1.6 0-3-.5-4.1-1.3v6.6c0 3.4-2.4 5.8-5.7 5.8A5.5 5.5 0 0 1 5.3 15c0-3.2 2.6-5.6 6-5.4v3.1c-1.5-.3-2.9.7-2.9 2.3 0 1.4 1.1 2.4 2.5 2.4 1.5 0 2.6-1.1 2.6-2.7V3h3.1z" fill="#00e5ff"/><path d="M16.6 3c.4 2.2 1.8 3.6 4.1 3.9v3c-1.6 0-3-.5-4.1-1.3v6.6c0 .5-.1 1-.2 1.4.9-1 1.4-2.3 1.4-3.9V3h-.2z" fill="#ff00c8" opacity=".65"/></svg>
+      </div>
+      <div class="soc ig" id="socIg" role="button" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none"><defs><linearGradient id="igg" x1="0" y1="24" x2="24" y2="0"><stop offset="0" stop-color="#ffd319"/><stop offset=".5" stop-color="#ff2975"/><stop offset="1" stop-color="#8c1eff"/></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5.5" stroke="url(#igg)" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="url(#igg)" stroke-width="2"/><circle cx="17.4" cy="6.6" r="1.5" fill="url(#igg)"/></svg>
+      </div>
+    </div>
+
+    <button id="helpBtn" class="helpBtn" type="button">💬 হেল্পলাইন: @Darkbdx1 — মেসেজ করলেই রিপ্লাই পাবে</button>
   </div>
 
   <div class="foot">© 2026 V4Z RASHD • t.me/rashdteem</div>
@@ -158,11 +168,10 @@
 <script>
 (function () {
   'use strict';
-  // v2: keys are minted ONLY by the server after Telegram initData
+  // v3: keys are minted ONLY by the server after Telegram initData
   // verification. This page holds no database write path at all.
   var API = 'https://rashd-bro.vercel.app/api/keymint';
   var KEYCFG_URL = 'https://raw.githubusercontent.com/v4zrashd/rashd-app--store/main/key-config.json';
-  var CHANNEL_URL = 'https://t.me/rashdteem';
 
   var btn = document.getElementById('adBtn');
   var statusEl = document.getElementById('status');
@@ -176,7 +185,6 @@
   var refLinkEl = document.getElementById('refLink');
   var refCopyBtn = document.getElementById('refCopyBtn');
   var refShareBtn = document.getElementById('refShareBtn');
-  var modeDesc = document.getElementById('modeDesc');
 
   var currentKey = '';
   var session = null;
@@ -200,6 +208,16 @@
       var u = Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user;
       return (u && u.id) ? u.id : null;
     } catch (e) { return null; }
+  }
+
+  function openLink(url) {
+    try {
+      if (window.Telegram && Telegram.WebApp) {
+        if (url.indexOf('https://t.me/') === 0 && Telegram.WebApp.openTelegramLink) { Telegram.WebApp.openTelegramLink(url); return; }
+        if (Telegram.WebApp.openLink) { Telegram.WebApp.openLink(url); return; }
+      }
+    } catch (e) {}
+    window.open(url, '_blank');
   }
 
   function setStatus(t, dots) {
@@ -232,7 +250,7 @@
     if (res.reason === 'setup') { return '⏳ সার্ভার প্রস্তুত হচ্ছে — একটু পরে আবার এসো।'; }
     if (res.reason === 'cooldown') {
       var m = Math.max(1, Math.ceil((res.waitSec || 300) / 60));
-      return '⏳ একটু থামো — আবার ' + m + ' মিনিট পর কি নেওয়া যাবে। ততক্ষণে রেফার করে কি নিতে পারো!';
+      return '⏳ একটু থামো — আবার ' + m + ' মিনিট পর কি নেওয়া যাবে।';
     }
     if (res.reason === 'daily_cap') { return '🌙 আজকের কি নেওয়ার সীমা শেষ — কাল আবার এসো। রেফার করলে যেকোনো সময় কি পাবে!'; }
     if (res.reason === 'too_fast') { return '📺 অ্যাডটা পুরোটা দেখনি মনে হচ্ছে — আবার অ্যাড দেখে চেষ্টা করো।'; }
@@ -251,10 +269,6 @@
     btn.disabled = false;
     btn.textContent = '▶ আরেকটা কি নাও';
     haptic('success');
-  }
-
-  function showRefArea() {
-    claimArea.style.display = 'block';
   }
 
   function claimKey() {
@@ -305,18 +319,18 @@
       setStatus('📺 অ্যাড চলছে... পুরোটা দেখো!');
       var p;
       try { p = window.show_11949593(); } catch (e) { p = null; }
-      if (!p || typeof p.then !== 'function') { adPending = false; showRefArea(); return; }
+      if (!p || typeof p.then !== 'function') { adPending = false; claimArea.style.display = 'block'; return; }
       p.then(function () {
         adPending = false;
         claimKey();
       }).catch(function () {
         adPending = false;
-        showRefArea();
+        claimArea.style.display = 'block';
         setStatus('⚠️ অ্যাডটা শেষ হয়নি। শেষ করে ফিরে এলে নিচের বাটনে চাপ দাও।');
       });
       // Ad sometimes takes over the whole tab; if the promise never settles,
       // returning to this page offers the server-side claim.
-      setTimeout(function () { if (adPending) { showRefArea(); } }, 45000);
+      setTimeout(function () { if (adPending) { claimArea.style.display = 'block'; } }, 45000);
     }).catch(function () {
       setStatus('❌ নেটওয়ার্কে সমস্যা — আবার চেষ্টা করো।');
       btn.disabled = false;
@@ -327,7 +341,7 @@
   claimBtn.addEventListener('click', claimKey);
 
   document.addEventListener('visibilitychange', function () {
-    if (!document.hidden && adPending && session) { showRefArea(); }
+    if (!document.hidden && adPending && session) { claimArea.style.display = 'block'; }
   });
 
   function copyText(text, done) {
@@ -350,7 +364,7 @@
     if (!currentKey) { return; }
     copyText(currentKey, function () {
       copyBtn.textContent = '✅ কপি হয়েছে!';
-      setStatus('এবার App Store / Number Lookup / File Host-এ গিয়ে কিটা বসাও।');
+      setStatus('এবার যেখানে দরকার সেখানে কিটা বসাও।');
       setTimeout(function () { copyBtn.textContent = '📋 কি কপি করো'; }, 2200);
     });
   });
@@ -361,7 +375,6 @@
     if (mode !== 'referral') { return; } // ডিফল্ট ভিউ = অ্যাড মোড
     adArea.style.display = 'none';
     refArea.style.display = 'block';
-    if (modeDesc) { modeDesc.innerHTML = 'বন্ধুদের রেফার করো → একটা <b>কি</b> পাও।'; }
     var uid = tgUserId();
     if (uid) {
       myRefLink = 'https://t.me/rashd12bot?start=ref_' + uid;
@@ -387,7 +400,7 @@
   refShareBtn.addEventListener('click', function () {
     if (!myRefLink) { return; }
     var shareUrl = 'https://t.me/share/url?url=' + encodeURIComponent(myRefLink) +
-      '&text=' + encodeURIComponent('RASHD App Store — জয়েন করে ফ্রি কি নাও!');
+      '&text=' + encodeURIComponent('Rashd All Key Store — জয়েন করে ফ্রি কি নাও!');
     try {
       if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openTelegramLink) {
         Telegram.WebApp.openTelegramLink(shareUrl);
@@ -396,6 +409,12 @@
     } catch (e) {}
     window.open(shareUrl, '_blank');
   });
+
+  // ---- সোশ্যাল + হেল্পলাইন ----
+  document.getElementById('socYt').addEventListener('click', function () { openLink('https://www.youtube.com/@V4Zteem'); });
+  document.getElementById('socTt').addEventListener('click', function () { openLink('https://www.tiktok.com/@v4zrashd'); });
+  document.getElementById('socIg').addEventListener('click', function () { openLink('https://www.instagram.com/v4zrashd'); });
+  document.getElementById('helpBtn').addEventListener('click', function () { openLink('https://t.me/Darkbdx1'); });
 })();
 </script>
 </body>
