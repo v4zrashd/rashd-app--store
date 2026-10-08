@@ -114,6 +114,48 @@
   .soc.ig { box-shadow:0 0 14px rgba(255,0,200,.22); }
 
   .foot { margin-top:auto; padding-top:34px; font-size:11.5px; color:#4d7a64; letter-spacing:1px; text-align:center; }
+
+  .chatFab {
+    position:fixed; right:16px; bottom:20px; z-index:60;
+    width:58px; height:58px; border-radius:50%; border:1px solid rgba(0,255,157,.6);
+    background:linear-gradient(135deg,#00d97a,#00ff9d); color:#02130a;
+    font-size:26px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 22px rgba(0,255,157,.5); cursor:pointer;
+    animation:pulse 2s infinite;
+  }
+  .chatPanel {
+    position:fixed; left:12px; right:12px; bottom:88px; z-index:61;
+    max-width:420px; margin:0 auto; display:none; flex-direction:column;
+    background:#06110c; border:1px solid rgba(0,255,157,.4); border-radius:18px;
+    box-shadow:0 10px 40px rgba(0,0,0,.6), 0 0 24px rgba(0,255,157,.12);
+    overflow:hidden;
+  }
+  .chatPanel.open { display:flex; animation:pop .35s cubic-bezier(.2,1.4,.4,1) both; }
+  .chatHead {
+    display:flex; align-items:center; gap:8px; padding:12px 14px;
+    background:rgba(0,255,157,.08); border-bottom:1px solid rgba(0,255,157,.25);
+    font-weight:800; font-size:15px;
+  }
+  .chatHead .x { margin-left:auto; cursor:pointer; font-size:18px; opacity:.8; }
+  .chatMsgs { padding:12px; height:260px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; }
+  .msg { max-width:88%; padding:9px 12px; border-radius:14px; font-size:13.5px; line-height:1.55; white-space:pre-wrap; word-break:break-word; }
+  .msg.bot { align-self:flex-start; background:rgba(0,255,157,.08); border:1px solid rgba(0,255,157,.25); }
+  .msg.me { align-self:flex-end; background:#00ff9d; color:#02130a; font-weight:600; }
+  .chatChips { display:flex; gap:6px; flex-wrap:wrap; padding:0 12px 10px; }
+  .chip {
+    font-size:12px; padding:6px 10px; border-radius:999px; cursor:pointer;
+    border:1px solid rgba(0,229,255,.45); color:#a8ecff; background:rgba(0,229,255,.06);
+  }
+  .chatRow { display:flex; gap:8px; padding:10px 12px; border-top:1px solid rgba(0,255,157,.2); }
+  .chatRow input {
+    flex:1; background:rgba(0,0,0,.45); border:1px solid rgba(0,255,157,.35); color:#e8fff4;
+    border-radius:10px; padding:10px 12px; font-size:14px; outline:none;
+  }
+  .chatRow button {
+    background:linear-gradient(90deg,#00d97a,#00ff9d); color:#02130a; border:none; cursor:pointer;
+    font-weight:800; border-radius:10px; padding:10px 16px; font-size:14px;
+  }
+  .chatRow button:disabled { opacity:.55; }
 </style>
 </head>
 <body>
@@ -164,6 +206,22 @@
   </div>
 
   <div class="foot">© 2026 V4Z RASHD • t.me/rashdteem</div>
+
+  <div class="chatFab" id="chatFab" role="button" aria-label="Live chat">💬</div>
+  <div class="chatPanel" id="chatPanel">
+    <div class="chatHead">🤖 Rashd All Key Store <span class="x" id="chatClose">✕</span></div>
+    <div class="chatMsgs" id="chatMsgs"></div>
+    <div class="chatChips" id="chatChips">
+      <span class="chip">কি কিভাবে পাব?</span>
+      <span class="chip">কি দিয়ে কী করা যায়?</span>
+      <span class="chip">রেফার করলে কি পাব?</span>
+      <span class="chip">সমস্যা হলে কী করব?</span>
+    </div>
+    <div class="chatRow">
+      <input id="chatInput" type="text" placeholder="কিছু জিজ্ঞেস করো..." maxlength="300">
+      <button id="chatSend" type="button">পাঠাও</button>
+    </div>
+  </div>
 
 <script>
 (function () {
@@ -415,6 +473,74 @@
   document.getElementById('socTt').addEventListener('click', function () { openLink('https://www.tiktok.com/@v4zrashd'); });
   document.getElementById('socIg').addEventListener('click', function () { openLink('https://www.instagram.com/v4zrashd'); });
   document.getElementById('helpBtn').addEventListener('click', function () { openLink('https://t.me/Darkbdx1'); });
+
+  // ---- লাইভ ওয়েলকাম চ্যাট ----
+  var CHAT_API = 'https://rashd-bro.vercel.app/api/aichat';
+  var chatPanel = document.getElementById('chatPanel');
+  var chatMsgs = document.getElementById('chatMsgs');
+  var chatInput = document.getElementById('chatInput');
+  var chatSend = document.getElementById('chatSend');
+  var greeted = false;
+  var chatHistory = [];
+
+  function addMsg(text, who) {
+    var d = document.createElement('div');
+    d.className = 'msg ' + who;
+    d.textContent = text;
+    chatMsgs.appendChild(d);
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    return d;
+  }
+
+  function toggleChat(open) {
+    if (open) {
+      chatPanel.className = 'chatPanel open';
+      if (!greeted) {
+        greeted = true;
+        addMsg('আসসালামু আলাইকুম! 👋 Rashd All Key Store-এ স্বাগতম। এই একটা কি দিয়েই ওয়েবসাইট, টেলিগ্রাম বট, অ্যাপ আর মিনি ওয়েব — সব জায়গায় কাজ হয়। কি নেওয়া বা ব্যবহার করা নিয়ে কিছু জানতে চাইলে জিজ্ঞেস করো!', 'bot');
+      }
+      setTimeout(function () { try { chatInput.focus(); } catch (e) {} }, 60);
+    } else {
+      chatPanel.className = 'chatPanel';
+    }
+  }
+
+  document.getElementById('chatFab').addEventListener('click', function () {
+    toggleChat(chatPanel.className.indexOf('open') === -1);
+  });
+  document.getElementById('chatClose').addEventListener('click', function () { toggleChat(false); });
+
+  function sendChat(text) {
+    var msg = (text || chatInput.value || '').trim();
+    if (!msg) { return; }
+    chatInput.value = '';
+    addMsg(msg, 'me');
+    chatHistory.push({ role: 'user', text: msg });
+    chatSend.disabled = true;
+    var wait = addMsg('লিখছে', 'bot');
+    wait.className = 'msg bot dots';
+    fetch(CHAT_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg, history: chatHistory.slice(-6) })
+    }).then(function (r) { return r.json(); }).then(function (res) {
+      wait.className = 'msg bot';
+      var reply = (res && res.ok && res.text) ? res.text : 'দুঃখিত, একটু সমস্যা হচ্ছে। হেল্পলাইন: t.me/Darkbdx1';
+      wait.textContent = reply;
+      chatHistory.push({ role: 'assistant', text: reply });
+      chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    }).catch(function () {
+      wait.className = 'msg bot';
+      wait.textContent = 'নেটওয়ার্কে সমস্যা হচ্ছে। হেল্পলাইন: t.me/Darkbdx1';
+    }).then(function () { chatSend.disabled = false; });
+  }
+
+  chatSend.addEventListener('click', function () { sendChat(); });
+  chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { sendChat(); } });
+  document.getElementById('chatChips').addEventListener('click', function (e) {
+    var t = e.target;
+    if (t && t.className === 'chip') { sendChat(t.textContent); }
+  });
 })();
 </script>
 </body>
