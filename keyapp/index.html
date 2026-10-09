@@ -220,6 +220,8 @@
     <button id="helpBtn" class="helpBtn" type="button">💬 হেল্পলাইন: @Darkbdx1 — মেসেজ করলেই রিপ্লাই পাবে</button>
   </div>
 
+  <button id="resetBtn" type="button" style="display:none; margin-top:18px; background:transparent; color:#ff8080; cursor:pointer; border:1px solid rgba(255,80,80,.5); font-size:13px; font-weight:700; padding:9px 16px; border-radius:10px;">♻️ মালিক: সব পুরনো কি বাতিল করে নতুন শুরু</button>
+
   <div class="foot">© 2026 V4Z RASHD • t.me/rashdteem</div>
 
   <div class="chatFab" id="chatFab" role="button" aria-label="Live chat">💬</div>
@@ -467,6 +469,37 @@
   });
 
   joinBtn.addEventListener('click', function () { openLink('https://t.me/rashdteem'); });
+
+  // মালিকের রিসেট বোতাম — শুধু মালিকের টেলিগ্রাম আইডিতেই দেখায়,
+  // সার্ভারও একই আইডি ছাড়া এই কাজ করবে না।
+  var resetBtn = document.getElementById('resetBtn');
+  if (tgUserId() === 8100055552) { resetBtn.style.display = 'block'; }
+  resetBtn.addEventListener('click', function () {
+    var msg = 'সব পুরনো কি বাতিল হয়ে যাবে আর সবাই আবার নতুন ইউজার হিসেবে ১টা করে ফ্রি কি পাবে। নিশ্চিত?';
+    function doReset() {
+      resetBtn.disabled = true;
+      setStatus('♻️ রিসেট চলছে', true);
+      api('owner_reset').then(function (res) {
+        resetBtn.disabled = false;
+        if (res && res.ok) {
+          setStatus('✅ নতুন শুরু হয়ে গেছে! বাতিল কি: ' + res.revoked + 'টা। এখন সবাই আবার ১টা করে ফ্রি কি পাবে।');
+          refreshStatus();
+        } else {
+          setStatus('❌ রিসেট হয়নি — আবার চেষ্টা করো।');
+        }
+      }).catch(function () {
+        resetBtn.disabled = false;
+        setStatus('❌ নেটওয়ার্কে সমস্যা — আবার চেষ্টা করো।');
+      });
+    }
+    try {
+      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.showConfirm) {
+        Telegram.WebApp.showConfirm(msg, function (ok) { if (ok) { doReset(); } });
+        return;
+      }
+    } catch (e) {}
+    if (window.confirm(msg)) { doReset(); }
+  });
 
   refreshStatus();
 
