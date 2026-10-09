@@ -184,11 +184,6 @@
 
     <div id="status" role="status"></div>
 
-    <div id="myKeysArea" style="display:none; margin-top:16px;">
-      <p class="note" style="margin-top:0;">✅ তোমার অব্যবহৃত কিগুলো:</p>
-      <div id="myKeys"></div>
-    </div>
-
     <div id="adArea">
       <button id="adBtn" type="button">▶ অ্যাড দেখে কি নাও</button>
 
@@ -266,8 +261,6 @@
   var freeArea = document.getElementById('freeArea');
   var freeBtn = document.getElementById('freeBtn');
   var joinBtn = document.getElementById('joinBtn');
-  var myKeysArea = document.getElementById('myKeysArea');
-  var myKeysEl = document.getElementById('myKeys');
 
   var currentKey = '';
   var session = null;
@@ -426,28 +419,15 @@
   claimBtn.addEventListener('click', claimKey);
 
   // ---- নতুন ইউজারের ফ্রি কি + রেফার ক্রেডিট (সার্ভার keymint status/free) ----
-  function renderMyKeys(codes) {
-    if (!codes || !codes.length) { myKeysArea.style.display = 'none'; return; }
-    myKeysEl.innerHTML = '';
-    codes.forEach(function (c) {
-      var d = document.createElement('div');
-      d.textContent = c;
-      d.style.cssText = 'font-family:Courier New,monospace;font-size:16px;font-weight:700;letter-spacing:1.5px;color:#00ff9d;background:rgba(0,0,0,.5);border:1px dashed rgba(0,255,157,.45);border-radius:10px;padding:9px 6px;margin-top:8px;word-break:break-all;';
-      myKeysEl.appendChild(d);
-    });
-    myKeysArea.style.display = 'block';
-  }
-
   function refreshStatus() {
     if (!initData()) { return; }
     api('status').then(function (res) {
       if (!res || !res.ok) { return; }
-      renderMyKeys(res.myKeys);
       if (res.freeClaimed) {
         freeArea.style.display = 'none';
         if (res.newRefKeys && res.newRefKeys.length) {
-          setStatus('🎉 তোমার রেফার বোনাস কি এসেছে! নিচে দেখো।');
           showKey(res.newRefKeys[0]);
+          setStatus('🎉 তোমার রেফার বোনাস কি এসেছে!');
           haptic('success');
         }
       } else {
