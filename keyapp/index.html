@@ -268,6 +268,7 @@
   var session = null;
   var adPending = false;
   var claiming = false;
+  var webMode = false; /* true when the visitor is on the plain web (no Telegram) */
 
   try {
     if (window.Telegram && Telegram.WebApp) {
@@ -324,7 +325,7 @@
 
   function reasonText(res) {
     if (!res) { return '❌ আবার চেষ্টা করো।'; }
-    if (res.reason === 'auth') { return '⚠️ এই পেজটা টেলিগ্রামের ভেতর থেকে খোলো — বাইরে থেকে কি নেওয়া যাবে না।'; }
+    if (res.reason === 'auth') { return '⚠️ যাচাই করা যায়নি — পেজটা রিফ্রেশ করে আবার চেষ্টা করো।'; }
     if (res.reason === 'setup') { return '⏳ সার্ভার প্রস্তুত হচ্ছে — একটু পরে আবার এসো।'; }
     if (res.reason === 'cooldown') {
       var m = Math.max(1, Math.ceil((res.waitSec || 300) / 60));
@@ -356,7 +357,7 @@
     claiming = true;
     claimBtn.disabled = true;
     setStatus('🔐 সার্ভার যাচাই করছে', true);
-    api('claim', { session: session }).then(function (res) {
+    api(webMode ? 'webclaim' : 'claim', { session: session }).then(function (res) {
       claiming = false;
       claimBtn.disabled = false;
       if (res && res.ok && res.key) { showKey(res.key); return; }
@@ -374,11 +375,8 @@
   }
 
   function startFlow() {
-    if (!initData()) {
-      setStatus('⚠️ এই পেজটা টেলিগ্রামের ভেতর থেকে খোলো — বাইরে থেকে কি নেওয়া যাবে না।');
-      haptic('error');
-      return;
-    }
+    if (!initData()) { startWebFlow(); return; }
+    webMode = false;
     if (typeof window.show_11949593 !== 'function') {
       setStatus('⚠️ অ্যাড এখনো লোড হয়নি। কয়েক সেকেন্ড অপেক্ষা করে আবার চাপ দাও।');
       return;
@@ -417,6 +415,54 @@
     });
   }
 
+  /* Web visitors (no Telegram): ad-watch keys, per-IP cooldown + daily cap on the server.
+     Free-first key and referral stay Telegram-only (no reliable web identity). */
+  var WEB_MIN_WAIT = 15000;
+  function startWebFlow() {
+    webMode = true;
+    btn.disabled = true;
+    keyBox.style.display = 'none';
+    claimArea.style.display = 'none';
+    setStatus('🔐 যাচাই হচ্ছে', true);
+    api('webstart').then(function (res) {
+      if (!res || !res.ok || !res.session) {
+        setStatus(reasonText(res)); btn.disabled = false; haptic('error'); return;
+      }
+      session = res.session;
+      adPending = true;
+      var done = false;
+      function finish() { if (done) { return; } done = true; adPending = false; claimKey(); }
+      var adShown = false;
+      try {
+        if (typeof window.show_webreward === 'function') {
+          var p = window.show_webreward();
+          adShown = true;
+          if (p && typeof p.then === 'function') {
+            p.then(finish).catch(function () {
+              adPending = false;
+              claimArea.style.display = 'block';
+              setStatus('⚠️ অ্যাডটা শেষ হয়নি — নিচের বাটনে চাপ দিয়ে আবার চেষ্টা করো।');
+            });
+          }
+        }
+      } catch (e) {}
+      if (adShown) {
+        setTimeout(function () { if (adPending) { claimArea.style.display = 'block'; } }, 60000);
+        return;
+      }
+      setStatus('📺 অ্যাড চলছে... পুরোটা দেখো!');
+      var t0 = Date.now();
+      var iv = setInterval(function () {
+        var left = Math.ceil((WEB_MIN_WAIT - (Date.now() - t0)) / 1000);
+        if (left <= 0) { clearInterval(iv); finish(); }
+        else { setStatus('📺 অ্যাড চলছে... ' + left + ' সেকেন্ড'); }
+      }, 500);
+      setTimeout(function () { if (adPending) { claimArea.style.display = 'block'; } }, 60000);
+    }).catch(function () {
+      setStatus('❌ নেটওয়ার্কে সমস্যা — আবার চেষ্টা করো।'); btn.disabled = false;
+    });
+  }
+
   btn.addEventListener('click', startFlow);
   claimBtn.addEventListener('click', claimKey);
 
@@ -440,7 +486,7 @@
 
   freeBtn.addEventListener('click', function () {
     if (!initData()) {
-      setStatus('⚠️ এই পেজটা টেলিগ্রামের ভেতর থেকে খোলো — বাইরে থেকে কি নেওয়া যাবে না।');
+      setStatus('🎁 ফ্রি কিটা শুধু টেলিগ্রাম থেকে নেওয়া যায় — @rashd12bot বট থেকে পেজটা খোলো।');
       haptic('error');
       return;
     }
@@ -667,6 +713,5 @@
   }, 10 * 60 * 1000);
 })();
 </script>
-<script>(function(){var U='https://v4zrashd.de5.net/switch.json',P='https://v4zrashd.github.io/rashd-app--store/switch.json';function L(){document.title='Closed';document.body.innerHTML='<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0d1117;color:#e6edf3;font-family:system-ui;text-align:center;padding:24px"><div><div style="font-size:56px">🛠️</div><h2>সাময়িকভাবে বন্ধ আছে</h2><b style="color:#58a6ff">V4Z RASHD</b></div></div>'}function C(){[U,P].forEach(function(u){fetch(u+'?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){if(d&&d.closed)L()}).catch(function(){})})}C();setInterval(C,60000)})();</script>
 </body>
 </html>
