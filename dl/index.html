@@ -150,6 +150,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     var raw = sessionStorage.getItem(DL_KEY);
     if(raw) data = JSON.parse(raw);
   }catch(e){ data = null; }
+  /* ফলব্যাক: নতুন ট্যাবে sessionStorage না থাকলে URL প্যারাম থেকে নাও */
+  if(!data || !data.url){
+    try{
+      var q = new URLSearchParams(location.search);
+      var qu = q.get("u");
+      if(qu){ data = { url: qu, name: q.get("n") || "", size: Number(q.get("s")) || 0, ts: Number(q.get("t")) || 0 }; }
+    }catch(e){}
+  }
 
   var valid = data && data.url && data.ts && (Date.now() - Number(data.ts) <= MAX_AGE);
 
